@@ -6,6 +6,13 @@ interface TaskBarProps {
 }
 
 const TaskBar: React.FC<TaskBarProps> = ({ placeholder = "" }) => {
+    const [currentTime, setCurrentTime] = useState("");
+
+
+    useEffect(() => {
+        const now = new Date();
+        setCurrentTime(now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }))
+    }, [])
 
 
     return (
@@ -16,7 +23,7 @@ const TaskBar: React.FC<TaskBarProps> = ({ placeholder = "" }) => {
                 <li>File Explorer</li>
             </ul>
             <div className={`${styles.systemTray} flex justify-center items-center`}>
-                <span>4:39 PM</span>
+                <span>{currentTime}</span>
             </div>
         </div>
     );
