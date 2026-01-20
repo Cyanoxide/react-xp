@@ -10,6 +10,8 @@
     max-width: 70vw;
     line-height: 1rem;
     font-size: 0.8rem;
+    opacity: 1;
+    transition: 0.3s opacity ease-in-out;
 
     &:before {
         content: "";
@@ -31,6 +33,11 @@
 
     h4 {
         font-weight: 600;
+    }
+
+    &[data-dismissed="true"] {
+        opacity: 0;
+        pointer-events: none;
     }
 
     .tooltipClose {
