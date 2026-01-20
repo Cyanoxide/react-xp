@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "sass-embedded": "^1.97.2"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "tailwindcss": "^4.1.18"
+  }
+}
