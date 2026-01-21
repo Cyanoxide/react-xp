@@ -63,7 +63,7 @@ const TaskBar = () => {
                 <ul className="flex">
                     <li className="relative" onClick={(e) => systemTrayIconClickHandler(e)}>
                         <img src="/icon__info.png" width="14" height="14" className="cursor-pointer mr-2 min-w-[14px]"></img>
-                        <Tooltip heading="Windows XP React Edition" content="Still a work in progress, but this is an semi-authentic recreation of Windows XP created using React." systemTrayIconDismissed={systemTrayIconDismissed} setSystemTrayIconDismissed={setSystemTrayIconDismissed} />
+                        <Tooltip heading="Windows XP React Edition" content="Still a work in progress, but this is a semi-authentic recreation of Windows XP created using React & Typescript." systemTrayIconDismissed={systemTrayIconDismissed} setSystemTrayIconDismissed={setSystemTrayIconDismissed} />
                     </li>
                 </ul>
                 <span className="whitespace-nowrap">{formattedTime}</span>

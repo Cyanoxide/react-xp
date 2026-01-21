@@ -85,6 +85,14 @@
                     black 0%,
                     black 80%,
                     transparent 100%);
+
+            span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: -webkit-fill-available;
+                width: -moz-available;
+                text-align: left;
+            }
         }
     }
 }
