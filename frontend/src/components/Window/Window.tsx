@@ -6,12 +6,15 @@ const Window = () => {
 
     const onTitleBarPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         const activeWindow = event.currentTarget.closest("[data-label=window]")?.getBoundingClientRect();
-        if (!activeWindow) return;
+        const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height;
+        if (!activeWindow || !taskBarHeight) return;
 
         const windowOffsetX = event.clientX - activeWindow.left;
         const windowOffsetY = event.clientY - activeWindow.top;
 
         const mouseMove = (event: MouseEvent) => {
+            if (event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
+
             setWindowPosition([event.clientX - windowOffsetX, event.clientY - windowOffsetY]);
             document.body.style.userSelect = "none";
         }

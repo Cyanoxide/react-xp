@@ -43,7 +43,7 @@ const TaskBar = () => {
     const formattedTime = currentTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
     return (
-        <div className={`${styles.taskBar} flex justify-between`} data-label="Tooltip">
+        <div className={`${styles.taskBar} flex justify-between`} data-label="taskbar">
             <button className={`${styles.startButton}`}>Start</button>
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
                 <li onClick={(e) => windowTabClickHandler(e)} data-active="true" data-label="taskBarWindowTab">
