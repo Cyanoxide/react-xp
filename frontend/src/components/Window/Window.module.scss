@@ -1,8 +1,13 @@
 .window {
     padding: 0.3rem;
 
+    &[data-active="true"] {
+        z-index: 1;
+    }
+
     &[data-maximized="true"] {
         padding: 0;
+        transition: 0.2s ease-in;
 
         &>div {
             padding: 0;

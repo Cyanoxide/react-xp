@@ -1,21 +1,32 @@
 import styles from "./Window.module.scss";
-import { act, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { ReactNode } from "react";
-import { throttle } from "../../utils/general";
+import { useContext } from "../../context/context";
+import { throttle, updateCurrentActiveWindow } from "../../utils/general";
 import { getWindowPadding, getMinimumWindowSize, getWindowClickRegion } from "../../utils/window";
 
 interface WindowProps {
+    id: string;
     icon: string;
     title: string;
     children: ReactNode;
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+    active: boolean;
 }
 
 const THROTTLE_DELAY = 50;
 const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
 
-const Window: React.FC<WindowProps> = ({ icon, title, children }) => {
-    const [[windowPositionX, windowPositionY], setWindowPosition] = useState([5, 5]);
-    const [[windowWidth, windowHeight], setWindowSize] = useState([500, 350]);
+const Window: React.FC<WindowProps> = ({ icon, title, id, active, children, ...props }) => {
+    const { currentWindows, dispatch } = useContext();
+
+    const { left, top, width, height } = props;
+
+    const [[windowPositionX, windowPositionY], setWindowPosition] = useState([left, top]);
+    const [[windowWidth, windowHeight], setWindowSize] = useState([width, height]);
     const [isMaximized, setIsMaximized] = useState(false);
     const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
     const activeWindow = useRef<HTMLDivElement | null>(null);
@@ -62,6 +73,9 @@ const Window: React.FC<WindowProps> = ({ icon, title, children }) => {
     }
 
     const onWindowPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+        const updatedCurrentWindows = updateCurrentActiveWindow(id, currentWindows);
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+
         if (event.currentTarget !== event.target) return;
 
         const activeWindowRect = activeWindow.current?.getBoundingClientRect();
@@ -120,8 +134,8 @@ const Window: React.FC<WindowProps> = ({ icon, title, children }) => {
         if (!activeWindow.current) return;
 
         if (buttonType === "close") {
-            activeWindow.current.remove();
-            // Todo: Remove Window from Taskbar
+            const updatedCurrentWindows = currentWindows.filter(item => item.id !== activeWindow.current?.dataset.windowId);
+            dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
         }
 
         if (buttonType === "minimize") {
@@ -149,7 +163,7 @@ const Window: React.FC<WindowProps> = ({ icon, title, children }) => {
 
     return (
         <>
-            <div ref={activeWindow} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={(e) => onWindowPointerDown(e)}>
+            <div ref={activeWindow} data-window-id={id} data-active={active} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={(e) => onWindowPointerDown(e)}>
                 <div className="w-full h-full pointer-events-none">
                     <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={(e) => onTitleBarPointerDown(e)}>
                         <div className="flex items-center">
@@ -162,7 +176,7 @@ const Window: React.FC<WindowProps> = ({ icon, title, children }) => {
                             <button onClick={(e) => onButtonClick(e)} data-button="close">Close</button>
                         </div>
                     </div>
-                    <div className={`${styles.windowContent}`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>
+                    <div className={`${styles.windowContent} pointer-events-auto`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>
                 </div>
             </div>
         </>

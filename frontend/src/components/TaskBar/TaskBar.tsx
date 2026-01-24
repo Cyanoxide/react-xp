@@ -2,9 +2,10 @@ import { useContext } from "../../context/context";
 import React, { useEffect, useState } from "react";
 import styles from "./TaskBar.module.scss";
 import Tooltip from "../Tooltip/Tooltip";
+import { updateCurrentActiveWindow } from "../../utils/general";
 
 const TaskBar = () => {
-    const { currentTime, dispatch } = useContext();
+    const { currentTime, currentWindows, dispatch } = useContext();
 
     //Todo: Add more accurate clock that updates in sync with system clock
     useEffect(() => {
@@ -20,13 +21,11 @@ const TaskBar = () => {
         const windowTab = (event.target as HTMLElement).closest<HTMLElement>(windowTabSelector);
         if (!windowTab) return;
 
-        const windowTabs = windowTab.parentElement?.querySelectorAll<HTMLElement>(windowTabSelector);
+        const windowId = windowTab.dataset.windowId;
+        if (!windowId) return;
 
-        windowTabs?.forEach((tab) => {
-            tab.dataset.active = "false";
-        });
-
-        windowTab.dataset.active = (windowTab.dataset.active === "true") ? "false" : "true";
+        const updatedCurrentWindows = updateCurrentActiveWindow(windowId, currentWindows);
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
 
     const [systemTrayIconDismissed, setSystemTrayIconDismissed] = useState(false);
@@ -46,18 +45,14 @@ const TaskBar = () => {
         <div className={`${styles.taskBar} flex justify-between`} data-label="taskbar">
             <button className={`${styles.startButton}`}>Start</button>
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
-                <li onClick={(e) => windowTabClickHandler(e)} data-active="true" data-label="taskBarWindowTab">
-                    <span className="w-full relative flex">
-                        <img src="/icon__internet_explorer.png" width="14" height="14" className="mr-2 min-w-[14px]"></img>
-                        <span className="absolute ml-7">Internet Explorer</span>
-                    </span>
-                </li>
-                <li onClick={(e) => windowTabClickHandler(e)} data-label="taskBarWindowTab">
-                    <span className="w-full relative flex">
-                        <img src="/icon__documents.png" width="14" height="14" className="mr-2 min-w-[14px]"></img>
-                        <span className="absolute ml-7">My Documents</span>
-                    </span>
-                </li>
+                {currentWindows.map((currentWindow, index) => (
+                    <li key={index} onClick={(e) => windowTabClickHandler(e)} data-label="taskBarWindowTab" data-active={currentWindow.active} data-window-id={currentWindow.id}>
+                        <span className="w-full relative flex">
+                            <img src={currentWindow.icon} width="14" height="14" className="mr-2 min-w-5.5"></img>
+                            <span className="absolute ml-7">{currentWindow.title}</span>
+                        </span>
+                    </li>
+                ))}
             </ul>
             <div className={`${styles.systemTray} flex justify-center items-center`}>
                 <ul className="flex">
