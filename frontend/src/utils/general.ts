@@ -26,7 +26,10 @@ export const generateUniqueId = () => {
 export const updateCurrentActiveWindow = (windowId: string, currentWindows: currentWindow[]) => {
     const updatedCurrentWindows = [...currentWindows];
     updatedCurrentWindows.map((currentWindow) => {
-        currentWindow.active = (windowId === currentWindow.id) ? true : false;
+        if (windowId === currentWindow.id) {
+            currentWindow.hidden = false
+            currentWindow.active = true
+        } else currentWindow.active = false
     });
 
     return updatedCurrentWindows;

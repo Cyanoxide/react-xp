@@ -4,30 +4,24 @@ import type { ReactNode } from "react";
 import { useContext } from "../../context/context";
 import { throttle, updateCurrentActiveWindow } from "../../utils/general";
 import { getWindowPadding, getMinimumWindowSize, getWindowClickRegion } from "../../utils/window";
+import type { currentWindow } from "../../context/types";
 
-interface WindowProps {
-    id: string;
-    icon: string;
-    title: string;
+interface WindowProps extends currentWindow {
     children: ReactNode;
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-    active: boolean;
 }
 
 const THROTTLE_DELAY = 50;
 const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
 
-const Window: React.FC<WindowProps> = ({ icon, title, id, active, children, ...props }) => {
+const Window: React.FC<WindowProps> = ({ ...props }) => {
     const { currentWindows, dispatch } = useContext();
 
-    const { left, top, width, height } = props;
+    const { icon, title, id, active, hidden, children, left, top, width, height } = props;
 
     const [[windowPositionX, windowPositionY], setWindowPosition] = useState([left, top]);
     const [[windowWidth, windowHeight], setWindowSize] = useState([width, height]);
     const [isMaximized, setIsMaximized] = useState(false);
+    const [isHidden, setIsHidden] = useState(false);
     const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
     const activeWindow = useRef<HTMLDivElement | null>(null);
     const titleBar = useRef<HTMLDivElement | null>(null);
@@ -139,7 +133,15 @@ const Window: React.FC<WindowProps> = ({ icon, title, id, active, children, ...p
         }
 
         if (buttonType === "minimize") {
-            activeWindow.current.classList.add("hidden");
+            const updatedCurrentWindows = [...currentWindows];
+            const currentWindow = updatedCurrentWindows.find((currentWindow) => currentWindow.id === id);
+
+            if (currentWindow) {
+                currentWindow.hidden = true;
+                currentWindow.active = false;
+            }
+
+            dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
         }
 
         if (buttonType === "maximize") {
@@ -163,7 +165,7 @@ const Window: React.FC<WindowProps> = ({ icon, title, id, active, children, ...p
 
     return (
         <>
-            <div ref={activeWindow} data-window-id={id} data-active={active} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={(e) => onWindowPointerDown(e)}>
+            <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={(e) => onWindowPointerDown(e)}>
                 <div className="w-full h-full pointer-events-none">
                     <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={(e) => onTitleBarPointerDown(e)}>
                         <div className="flex items-center">

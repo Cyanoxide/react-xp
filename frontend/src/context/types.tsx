@@ -10,6 +10,7 @@ export interface currentWindow {
     top: number,
     left: number,
     active: boolean,
+    hidden: boolean,
 }
 export type currentWindows = currentWindow[];
 

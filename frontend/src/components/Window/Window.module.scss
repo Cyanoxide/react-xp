@@ -43,6 +43,10 @@
         }
     }
 
+    &[data-hidden="true"] {
+        display: none;
+    }
+
     &>div {
 
 

@@ -29,6 +29,7 @@ export const initialState: State = {
             top: 5,
             left: 5,
             active: false,
+            hidden: false,
         },
         {
             id: generateUniqueId(),
@@ -40,6 +41,7 @@ export const initialState: State = {
             top: 30,
             left: 30,
             active: true,
+            hidden: false,
         }
     ]
 };
