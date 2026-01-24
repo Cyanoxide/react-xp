@@ -79,7 +79,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
 
         const WINDOW_PADDING = getWindowPadding(activeWindow.current);
         const MIN_WINDOW_WIDTH = getMinimumWindowSize(activeWindow.current);
-        const MIN_WINDOW_HEIGHT = activeTitleBarHeight + WINDOW_PADDING;
+        const MIN_WINDOW_HEIGHT = activeTitleBarHeight + (WINDOW_PADDING * 1.5);
         const activeWindowRegion = getWindowClickRegion(event, activeWindow.current, WINDOW_PADDING);
         document.body.style.userSelect = "none";
 

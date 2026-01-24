@@ -41,7 +41,18 @@
     }
 
     &[data-hidden="true"] {
-        display: none;
+        top: unset !important;
+        left: 12rem !important;
+        bottom: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        visibility: hidden;
+        transition:
+            width 0.3s ease-in-out,
+            height 0.3s ease-in-out,
+            bottom 0.3s ease-in-out,
+            left 0.2s ease-in-out,
+            visibility 0.25s ease-in-out;
     }
 
     &>div {
