@@ -1,0 +1,19 @@
+.desktopIcon {
+    width: 7rem;
+    height: 7rem;
+    margin: 0.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    h4 {
+        text-shadow: 1px 1px 1px #000;
+        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    img {
+        width: 50%;
+        margin: 0.35rem auto;
+    }
+}

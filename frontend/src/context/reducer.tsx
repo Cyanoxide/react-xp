@@ -24,12 +24,6 @@ export const initialState: State = {
             title: "My Documents",
             icon: "/icon__documents.png",
             content: <div></div>,
-            width: 500,
-            height: 350,
-            top: 5,
-            left: 5,
-            active: false,
-            hidden: false,
         },
         {
             id: generateUniqueId(),
@@ -41,7 +35,6 @@ export const initialState: State = {
             top: 30,
             left: 30,
             active: true,
-            hidden: false,
         }
     ]
 };
