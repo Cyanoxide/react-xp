@@ -1,0 +1,149 @@
+.window {
+    padding: 0.3rem;
+
+    &[data-active="true"] {
+        z-index: 1;
+
+        &>div {
+            background: #162abe;
+            box-shadow: none;
+        }
+
+        .titleBar {
+            background: linear-gradient(180deg, #2e61e4 0%, #5292f7 6%, #255ae1 25%, #2f6bf6 80%, #1133a0 100%);
+            box-shadow: inset 1px 0px 3px #162abe, inset -1px 0px 3px #162ab0;
+            text-shadow: 0.1rem 0.1rem 0.1rem #162abe;
+
+            button {
+                filter: none;
+
+                &:hover {
+                    filter: brightness(1.3);
+                }
+            }
+        }
+
+        .windowContent {
+            box-shadow: 0rem 0.05rem 0rem 0.1rem #2b5be0;
+        }
+
+
+    }
+
+    &[data-maximized="true"] {
+        padding: 0;
+        transition: 0.2s ease-in;
+
+        &>div {
+            padding: 0;
+            border-radius: 0;
+        }
+    }
+
+    &[data-hidden="true"] {
+        top: unset !important;
+        left: 12rem !important;
+        bottom: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        visibility: hidden;
+        transition:
+            width 0.3s ease-in-out,
+            height 0.3s ease-in-out,
+            bottom 0.3s ease-in-out,
+            left 0.2s ease-in-out,
+            visibility 0.25s ease-in-out;
+    }
+
+    &>div {
+        background: #7f92d9;
+        padding: 0.35rem;
+        border-radius: 0.9rem 0.9rem 0.1rem 0.1rem;
+        overflow: hidden;
+        min-width: fit-content;
+        box-shadow: inset 0px 0px 1px 1px #0004;
+        transition: all 0.1s ease;
+    }
+
+    .titleBar {
+        background: #a1b6e6;
+        background: linear-gradient(180deg, #7b95dc 0%, #a1b6e6 6%, #7f95d9 25%, #89a6e3 80%, #7f92d9 100%);
+        box-shadow: inset 1px 0px 3px #7f92d9, inset -1px 0px 3px #7f92d9;
+        text-shadow: 0.1rem 0.1rem 0.1rem #7f92d9;
+        margin: -0.3rem -0.1rem -0.1rem;
+        border-radius: 0.8rem 0.8rem 0 0;
+        font-family: Trebuchet MS;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding-right: 0.3rem;
+        height: 2.9rem;
+        white-space: nowrap;
+        gap: 1rem;
+        transition: all 0.1s ease;
+
+        h3 {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        button {
+            position: relative;
+            text-indent: -9999px;
+            background: none;
+            border: 0.1rem solid #d8e1ff;
+            border-radius: 0.3rem;
+            width: 1.9rem;
+            height: 1.9rem;
+            padding: 0;
+            margin: 0.5rem 0.1rem 0.4rem;
+            border-color: #fff;
+            box-shadow: inset 0 0 0 1px #2346b944, inset 2px 2px 3px #73a4ff, inset -2px -2px 1px #2348ba;
+            background: radial-gradient(circle at 85% 85%, #2560e4 50%, #4678e6 70%, #73a4ff 100%);
+            filter: saturate(0.7) opacity(0.6) brightness(1.3);
+            transition: all 0.1s ease;
+
+            &:hover {
+                filter: saturate(0.7) opacity(0.6) brightness(1.6);
+            }
+
+            &:after {
+                content: "";
+                background: url("/spritesheet__window_ui.png");
+                background-size: 7rem 1.7rem;
+                position: absolute;
+                inset: 0;
+            }
+
+            &[data-button="minimize"]:after {
+                background-position-x: 0;
+            }
+
+            &[data-button="maximize"] {
+                &:after {
+                    background-position-x: -1.8rem;
+                }
+
+                &[data-maximized="true"]:after {
+                    background-position-x: -3.66rem;
+                }
+            }
+
+            &[data-button="close"] {
+                box-shadow: inset 0 0 0 1px #ae452744, inset 2px 2px 5px #e4a491, inset -2px -2px 1px #ae4527;
+                background-color: #d45b34;
+                background: url("/spritesheet__window_ui.png"), radial-gradient(circle at 85% 85%, #cd512e 50%, #d45b34 70%, #e4a491 100%);
+
+                &:after {
+                    background: url("/spritesheet__window_ui.png");
+                    background-position-x: -5.35rem;
+                    background-size: 7rem 1.7rem;
+                }
+            }
+        }
+    }
+
+    .windowContent {
+        box-shadow: 0rem 0.05rem 0rem 0.1rem #a5afeb;
+        transition: all 0.1s ease;
+    }
+}

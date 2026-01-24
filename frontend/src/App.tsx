@@ -1,6 +1,7 @@
 import { Provider } from "./context/provider";
-import TaskBar from "./components/TaskBar/TaskBar"
-import Wallpaper from "./components/Wallpaper/Wallpaper"
+import TaskBar from "./components/TaskBar/TaskBar";
+import Wallpaper from "./components/Wallpaper/Wallpaper";
+import WindowManagement from "./components/WindowManagement/WindowManagement";
 import './App.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
     <Provider>
       <Wallpaper />
       <TaskBar />
+      <WindowManagement />
     </Provider>
   )
 }
