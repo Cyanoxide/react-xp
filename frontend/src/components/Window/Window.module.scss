@@ -32,7 +32,7 @@
 
     &[data-maximized="true"] {
         padding: 0;
-        transition: 0.2s ease-in;
+        transition: padding 0.15s ease-in;
 
         &>div {
             padding: 0;

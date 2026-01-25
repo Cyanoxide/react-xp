@@ -38,6 +38,25 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
 
     }, [isWindowMaximized, isMaximized, setIsMaximized]);
 
+    const toggleMaximizeWindow = (activeWindow: React.RefObject<HTMLDivElement | null>) => {
+        if (!activeWindow.current) return;
+        if (isMaximized) setIsMaximized(false);
+        else {
+            setIsMaximized(true);
+            setUnmaximizedValues({
+                left: activeWindow.current.style.left,
+                top: activeWindow.current.style.top,
+                width: activeWindow.current.style.width,
+                height: activeWindow.current.style.height,
+            });
+        }
+
+        activeWindow.current.style.left = (isMaximized) ? unmaximizedValues.left : "0px";
+        activeWindow.current.style.top = (isMaximized) ? unmaximizedValues.top : "0px";
+        activeWindow.current.style.width = (isMaximized) ? unmaximizedValues.width : "100%";
+        activeWindow.current.style.height = (isMaximized) ? unmaximizedValues.height : window.innerHeight - taskBarHeight + "px";
+    }
+
     const onTitleBarPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         const activeWindowRect = activeWindow.current?.getBoundingClientRect();
         if (!activeWindowRect) return;
@@ -46,7 +65,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         const windowOffsetY = event.clientY - activeWindowRect.top;
 
         const onMouseMove = (event: MouseEvent) => {
-            if (event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
+            if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
 
             setWindowPosition([event.clientX - windowOffsetX, event.clientY - windowOffsetY]);
             document.body.style.userSelect = "none";
@@ -58,7 +77,6 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
             window.removeEventListener("mouseup", onMouseUp);
             document.body.style.userSelect = "";
         }
-
 
         window.addEventListener("mousemove", throttledMouseMove);
         window.addEventListener("mouseup", onMouseUp);
@@ -142,21 +160,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         }
 
         if (buttonType === "maximize") {
-            if (isMaximized) setIsMaximized(false);
-            else {
-                setIsMaximized(true);
-                setUnmaximizedValues({
-                    left: activeWindow.current.style.left,
-                    top: activeWindow.current.style.top,
-                    width: activeWindow.current.style.width,
-                    height: activeWindow.current.style.height,
-                });
-            }
-
-            activeWindow.current.style.left = (isMaximized) ? unmaximizedValues.left : "0px";
-            activeWindow.current.style.top = (isMaximized) ? unmaximizedValues.top : "0px";
-            activeWindow.current.style.width = (isMaximized) ? unmaximizedValues.width : "100%";
-            activeWindow.current.style.height = (isMaximized) ? unmaximizedValues.height : window.innerHeight - taskBarHeight + "px";
+            toggleMaximizeWindow(activeWindow);
         }
     }
 
@@ -164,7 +168,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         <>
             <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={(e) => onWindowPointerDown(e)}>
                 <div className="w-full h-full pointer-events-none">
-                    <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={(e) => onTitleBarPointerDown(e)}>
+                    <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={(e) => onTitleBarPointerDown(e)} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
                         <div className="flex items-center">
                             <img src={icon} width="14" height="14" className="mx-2 min-w-[14px]"></img>
                             <h3>{title}</h3>
