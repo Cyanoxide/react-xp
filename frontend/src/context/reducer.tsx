@@ -1,6 +1,5 @@
 import type { State, Action } from "./types";
 import { defaultWallpaper } from "./defaults";
-import { generateUniqueId } from "../utils/general";
 
 export const reducer = (state: State, action: Action): State => {
     switch (action.type) {

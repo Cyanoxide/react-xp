@@ -5,14 +5,21 @@ import { generateUniqueId } from "../../utils/general";
 import { useState, useRef } from "react";
 import { throttle } from "../../utils/general";
 
-type DesktopIconProps = Omit<currentWindow, "id"> & {
+type AbsoluteObject = {
+    top?: number|undefined;
+    right?: number|undefined;
+    bottom?: number| undefined;
+    left?: number|undefined;
+}
+
+type DesktopIconProps = AbsoluteObject & Omit<currentWindow, "id"> & {
     iconLarge?: string;
 };
 
-const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, content, left = 5, top = 5 }) => {
+const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, content, top=undefined, right=undefined, bottom=undefined, left=undefined }) => {
     const { currentWindows, dispatch } = useContext();
     const [isSelected, setIsSelected] = useState(false);
-    const [position, setPosition] = useState<number[]>([left, top]);
+    const [position, setPosition] = useState<AbsoluteObject>({top, right, bottom, left});
     const desktopIcon = useRef<HTMLDivElement | null>(null);
 
     const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -24,7 +31,10 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, conte
         setIsSelected(true);
 
         const onMouseMove = (event: MouseEvent) => {
-            setPosition([event.clientX - xOffset, event.clientY - yOffset]);
+            setPosition({
+                top: event.clientY - yOffset,
+                left: event.clientX - xOffset,
+            });
             document.body.style.userSelect = "none";
         }
         const throttledMouseMove = throttle(onMouseMove, 50);
@@ -69,7 +79,7 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, conte
     const imageMask = (isSelected) ? `url("${iconLarge || icon}")` : "";
 
     return (
-        <div ref={desktopIcon} className={styles.desktopIcon} data-selected={isSelected} onClick={onClickHandler} onPointerDown={(e) => onPointerDown(e)} onDoubleClick={onDoubleClickHandler} style={{ left: position[0], top: position[1] }}>
+        <div ref={desktopIcon} className={styles.desktopIcon} data-selected={isSelected} onClick={onClickHandler} onPointerDown={(e) => onPointerDown(e)} onDoubleClick={onDoubleClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
             <span style={{ maskImage: imageMask}}><img src={iconLarge || icon} width="50" height="50" draggable={false} /></span>
             <h4>{title}</h4>
         </div>
