@@ -1,5 +1,6 @@
 .window {
     padding: 0.3rem;
+    transition: all 0.3s ease, padding 0.15s ease-in;
 
     &[data-active="true"] {
         z-index: 1;
@@ -32,7 +33,6 @@
 
     &[data-maximized="true"] {
         padding: 0;
-        transition: padding 0.15s ease-in;
 
         &>div {
             padding: 0;
@@ -41,20 +41,10 @@
     }
 
     &[data-hidden="true"] {
-        top: unset !important;
         left: 12rem !important;
-        bottom: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
         visibility: hidden;
         opacity: 0;
-        transition:
-            width 0.3s ease-in-out,
-            height 0.3s ease-in-out,
-            bottom 0.3s ease-in-out,
-            left 0.2s ease-in-out,
-            visibility 0.25s ease-in-out,
-            opacity 0.25s ease-in-out;
+        transform: translateY(80vh)translatex(-20vw)scale(0.1);
     }
 
     &>div {

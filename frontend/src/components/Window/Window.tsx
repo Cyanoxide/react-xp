@@ -63,6 +63,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
 
         const windowOffsetX = event.clientX - activeWindowRect.left;
         const windowOffsetY = event.clientY - activeWindowRect.top;
+        if (activeWindow.current) activeWindow.current.style.transition = "none";
 
         const onMouseMove = (event: MouseEvent) => {
             if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
@@ -76,6 +77,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
             window.removeEventListener("mousemove", throttledMouseMove);
             window.removeEventListener("mouseup", onMouseUp);
             document.body.style.userSelect = "";
+            if (activeWindow.current) activeWindow.current.style.removeProperty("transition");
         }
         window.addEventListener("mousemove", throttledMouseMove);
         window.addEventListener("mouseup", onMouseUp);
@@ -97,6 +99,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         const MIN_WINDOW_HEIGHT = activeTitleBarHeight + (WINDOW_PADDING * 1.5);
         const activeWindowRegion = getWindowClickRegion(event, activeWindow.current, WINDOW_PADDING);
         document.body.style.userSelect = "none";
+        if (activeWindow.current) activeWindow.current.style.transition = "none";
 
         const onMouseMove = (event: MouseEvent) => {
             let width = windowWidth;
@@ -131,6 +134,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
             window.removeEventListener("mousemove", throttledMouseMove);
             window.removeEventListener("mouseup", mouseUp);
             document.body.style.userSelect = "";
+            if (activeWindow.current) activeWindow.current.style.removeProperty("transition");
         }
 
         window.addEventListener("mousemove", throttledMouseMove);
