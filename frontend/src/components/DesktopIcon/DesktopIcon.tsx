@@ -38,6 +38,7 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, conte
         const updatedCurrentWindows = [...currentWindows];
         updatedCurrentWindows.push(newWindow);
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+        setIsSelected(false);
     }
 
     return (
