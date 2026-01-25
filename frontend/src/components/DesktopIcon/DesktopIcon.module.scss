@@ -2,19 +2,23 @@
     width: 7rem;
     height: 7rem;
     margin: 0.5rem;
-    position: relative;
+    position: absolute;
     display: flex;
     flex-direction: column;
 
     img {
         width: 50%;
         margin: 0.35rem auto;
+        user-select: none;
     }
 
     h4 {
         text-shadow: 1px 1px 1px #000;
         font-size: 1rem;
         font-size: 0.95rem;
+        line-height: 1rem;
+        padding-bottom: 0.2rem;
+        border: 1px solid transparent;
     }
 
 
@@ -34,8 +38,6 @@
         h4 {
             background-color: #4069bf;
             border: 1px dotted #a79c87;
-            line-height: 1rem;
-            padding-bottom: 0.2rem;
             text-shadow: none;
         }
     }
