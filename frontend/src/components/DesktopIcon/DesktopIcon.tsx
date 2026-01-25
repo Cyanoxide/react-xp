@@ -2,6 +2,7 @@ import styles from "./DesktopIcon.module.scss";
 import type { currentWindow } from "../../context/types";
 import { useContext } from "../../context/context";
 import { generateUniqueId } from "../../utils/general";
+import { useState, useRef } from "react";
 
 type DesktopIconProps = Omit<currentWindow, "id"> & {
     iconLarge?: string;
@@ -9,6 +10,21 @@ type DesktopIconProps = Omit<currentWindow, "id"> & {
 
 const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, content }) => {
     const { currentWindows, dispatch } = useContext();
+    const [isSelected, setIsSelected] = useState(false);
+    const desktopIcon = useRef<HTMLDivElement | null>(null);
+
+    const onClickHandler = () => {
+        setIsSelected(true);
+
+        const onSecondClick = (event: PointerEvent) => {
+            const target = (event.target as HTMLElement);
+            if (event.target && target.closest("[data-selected") === desktopIcon.current) return;
+            setIsSelected(false);
+            window.removeEventListener("click", onSecondClick);
+        }
+
+        window.addEventListener("click", onSecondClick);
+    }
 
     const onDoubleClickHandler = () => {
         const newWindow: currentWindow = {
@@ -25,8 +41,8 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, conte
     }
 
     return (
-        <div className={styles.desktopIcon} onDoubleClick={onDoubleClickHandler}>
-            <img src={iconLarge || icon} width="50" height="50" />
+        <div ref={desktopIcon} className={styles.desktopIcon} data-selected={isSelected} onClick={onClickHandler} onDoubleClick={onDoubleClickHandler}>
+            <span><img src={iconLarge || icon} width="50" height="50" /></span>
             <h4>{title}</h4>
         </div>
     );
