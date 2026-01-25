@@ -2,7 +2,6 @@ import { useContext } from "../../context/context";
 import React, { useEffect, useState } from "react";
 import styles from "./TaskBar.module.scss";
 import Tooltip from "../Tooltip/Tooltip";
-import { updateCurrentActiveWindow } from "../../utils/general";
 
 const TaskBar = () => {
     const { currentTime, currentWindows, dispatch } = useContext();
@@ -24,7 +23,14 @@ const TaskBar = () => {
         const windowId = windowTab.dataset.windowId;
         if (!windowId) return;
 
-        const updatedCurrentWindows = updateCurrentActiveWindow(windowId, currentWindows);
+        const updatedCurrentWindows = [...currentWindows];
+        updatedCurrentWindows.map((currentWindow) => {
+            if (windowId === currentWindow.id) {
+                currentWindow.hidden = (currentWindow.active === true) ? true : false
+                currentWindow.active = (currentWindow.active === true) ? false : true
+            } else currentWindow.active = false;
+
+        });
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
 

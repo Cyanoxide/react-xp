@@ -1,16 +1,16 @@
 import type { ReactNode } from "react";
 
 export interface currentWindow {
-    id: string,
     title: string,
     icon: string,
     content: ReactNode,
-    width: number,
-    height: number,
-    top: number,
-    left: number,
-    active: boolean,
-    hidden: boolean,
+    id: string,
+    width?: number,
+    height?: number,
+    top?: number,
+    left?: number,
+    active?: boolean,
+    hidden?: boolean,
 }
 export type currentWindows = currentWindow[];
 
