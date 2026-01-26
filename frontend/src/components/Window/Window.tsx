@@ -14,11 +14,12 @@ const THROTTLE_DELAY = 50;
 const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
 
 const Window: React.FC<WindowProps> = ({ ...props }) => {
-    const { icon, title, id, children, left = 100, top = 50, width = 500, height = 350, active = false, hidden = false } = props;
+    const { icon, title, id, children, left = 100, top = 75, width = 500, height = 350, active = false, hidden = false } = props;
     const { currentWindows, dispatch } = useContext();
-
-    const [[windowPositionX, windowPositionY], setWindowPosition] = useState([left, top]);
-    const [[windowWidth, windowHeight], setWindowSize] = useState([width, height]);
+    const isBiggerThanViewport = (width < window.innerWidth);
+    const [[windowPositionX, windowPositionY], setWindowPosition] = useState([(isBiggerThanViewport) ? left : 0, (isBiggerThanViewport) ? top : "22%"]);
+    const offset = (windowPositionX + width) - window.innerWidth;
+    const [[windowWidth, windowHeight], setWindowSize] = useState([Math.min(width, width - offset), height]);
     const [isMaximized, setIsMaximized] = useState(false);
     const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
     const activeWindow = useRef<HTMLDivElement | null>(null);
@@ -37,6 +38,13 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         activeWindow.current.dataset.maximized = isMaximized.toString();
 
     }, [isWindowMaximized, isMaximized, setIsMaximized]);
+
+    useEffect(() => {
+        const onResize = () => {
+            setWindowSize((prev) => [Math.min(width, width - offset), prev[1]]);
+        }
+        window.addEventListener("resize", onResize);
+    }, [offset, width]);
 
     const toggleMaximizeWindow = (activeWindow: React.RefObject<HTMLDivElement | null>) => {
         if (!activeWindow.current) return;
@@ -65,22 +73,22 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         const windowOffsetY = event.clientY - activeWindowRect.top;
         if (activeWindow.current) activeWindow.current.style.transition = "none";
 
-        const onMouseMove = (event: MouseEvent) => {
+        const onPointerMove = (event: PointerEvent) => {
             if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
 
             setWindowPosition([event.clientX - windowOffsetX, event.clientY - windowOffsetY]);
             document.body.style.userSelect = "none";
         }
-        const throttledMouseMove = throttle(onMouseMove, THROTTLE_DELAY);
+        const onThrottledPointerMove = throttle(onPointerMove, THROTTLE_DELAY);
 
-        const onMouseUp = () => {
-            window.removeEventListener("mousemove", throttledMouseMove);
-            window.removeEventListener("mouseup", onMouseUp);
+        const onPointerUp = () => {
+            window.removeEventListener("pointermove", onThrottledPointerMove);
+            window.removeEventListener("pointerup", onPointerUp);
             document.body.style.userSelect = "";
             if (activeWindow.current) activeWindow.current.style.removeProperty("transition");
         }
-        window.addEventListener("mousemove", throttledMouseMove);
-        window.addEventListener("mouseup", onMouseUp);
+        window.addEventListener("pointermove", onThrottledPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
     }
 
     const onWindowPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -101,7 +109,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         document.body.style.userSelect = "none";
         if (activeWindow.current) activeWindow.current.style.transition = "none";
 
-        const onMouseMove = (event: MouseEvent) => {
+        const onPointerMove = (event: MouseEvent) => {
             let width = windowWidth;
             let height = windowHeight;
             let x = windowPositionX;
@@ -128,17 +136,17 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
             setWindowPosition([x, y]);
             setWindowSize([width, height]);
         }
-        const throttledMouseMove = throttle(onMouseMove, THROTTLE_DELAY);
+        const onThrottledPointerMove = throttle(onPointerMove, THROTTLE_DELAY);
 
-        const mouseUp = () => {
-            window.removeEventListener("mousemove", throttledMouseMove);
-            window.removeEventListener("mouseup", mouseUp);
+        const onPointerUp = () => {
+            window.removeEventListener("pointermove", onThrottledPointerMove);
+            window.removeEventListener("pointerup", onPointerUp);
             document.body.style.userSelect = "";
             if (activeWindow.current) activeWindow.current.style.removeProperty("transition");
         }
 
-        window.addEventListener("mousemove", throttledMouseMove);
-        window.addEventListener("mouseup", mouseUp);
+        window.addEventListener("pointermove", onThrottledPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
     }
 
     const onButtonClick = (event: React.MouseEvent<HTMLElement>) => {
