@@ -11,6 +11,8 @@ export const reducer = (state: State, action: Action): State => {
             return { ...state, currentWindows: action.payload };
         case "SET_IS_START_VISIBLE":
             return { ...state, isStartVisible: action.payload };
+        case "SET_IS_ALL_PROGRAMS_OPEN":
+            return { ...state, isAllProgramsOpen: action.payload };
         default:
             return state;
     }
@@ -21,4 +23,5 @@ export const initialState: State = {
     currentTime: new Date(),
     currentWindows: [],
     isStartVisible: false,
+    isAllProgramsOpen: false,
 };

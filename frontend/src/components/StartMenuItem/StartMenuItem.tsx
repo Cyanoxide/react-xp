@@ -9,6 +9,7 @@ interface StartMenuItemProps {
     icon: string;
     iconSize?: number;
     content: ReactNode;
+    onMenuItemHandler?: () => void;
 }
 
 const StartMenuItem: React.FC<StartMenuItemProps> = ({ ...props }) => {
@@ -31,8 +32,12 @@ const StartMenuItem: React.FC<StartMenuItemProps> = ({ ...props }) => {
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
     }
 
+    const onMouseOver = () => {
+        dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
+    }
+
     return (
-        <button className="flex items-center p-1" onClick={onClickHandler}>
+        <button className="flex items-center p-1" onClick={onClickHandler} onMouseOver={onMouseOver}>
             {subTitle && <>
                 <img src={icon} className="mr-2" width={iconSize} height={iconSize} />
                 <span>

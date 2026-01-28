@@ -1,6 +1,6 @@
 import styles from "./StartMenu.module.scss";
 import { useContext } from "../../context/context";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import StartMenuItem from "../StartMenuItem/StartMenuItem";
 import StartMenuSubMenu from "../StartMenuSubMenu/StartMenuSubMenu";
 import subMenus from "../../data/subMenus.json"
@@ -10,7 +10,7 @@ interface StartMenuProps {
 }
 
 const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
-    const { isStartVisible, dispatch } = useContext();
+    const { isStartVisible, isAllProgramsOpen, dispatch } = useContext();
     const startMenu = useRef<HTMLDivElement | null>(null);
     const allPrograms = useRef<HTMLDivElement | null>(null);
 
@@ -29,9 +29,8 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
         document.addEventListener("click", onClick);
     }, [startButton, isStartVisible, dispatch]);
 
-    const [isAllProgramsOpen, setIsAllProgramsOpen] = useState(false);
     const allProgramsClickHandler = () => {
-        setIsAllProgramsOpen(true);
+        dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: true });
 
 
 
@@ -41,11 +40,15 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
 
             if (!allProgramsRef?.contains(target)) {
                 document.removeEventListener("click", onSecondClick);
-                setIsAllProgramsOpen(false);
+                dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
             }
         }
 
         document.addEventListener("click", onSecondClick);
+    }
+
+    const onMenuItemHandler = () => {
+        return;
     }
 
     return (
@@ -78,7 +81,7 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                     </div>
                     <div>
                         <div ref={allPrograms} className={`${styles.allPrograms} p-2 relative`}>
-                            <button className="flex items-center justify-center gap-2 p-1" onMouseOver={allProgramsClickHandler}>
+                            <button className="flex items-center justify-center gap-2 p-1" onMouseOver={allProgramsClickHandler} data-open={isAllProgramsOpen}>
                                 <h5 className="font-bold">All Programs</h5>
                                 <img src="/icon__green_arrow--large.png" className="mr-3" width="20" height="20" />
                             </button>
@@ -92,7 +95,7 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                             <StartMenuItem title="My Documents" icon="/icon__documents--large.png" content={<div></div>} />
                         </li>
                         <li>
-                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} />
+                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} onMenuItemHandler={onMenuItemHandler} />
                         </li>
                         <li>
                             <StartMenuItem title="My Pictures" icon="/icon__pictures--large.png" content={<div></div>} />

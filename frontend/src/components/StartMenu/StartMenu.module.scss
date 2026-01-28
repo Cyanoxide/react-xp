@@ -101,6 +101,7 @@
     button {
         width: 100%;
 
+        &[data-open="true"],
         &:hover {
             background: #4069bf;
             color: #fff;
