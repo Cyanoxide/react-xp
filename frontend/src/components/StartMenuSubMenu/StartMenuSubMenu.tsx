@@ -8,13 +8,13 @@ interface StartMenuSubMenuProps {
 }
 
 interface SubMenuData {
-    id: string;
-    featured: SubMenuItem[];
-    contents: SubMenuItem[];
+    id?: string | null;
+    featured?: SubMenuItem[];
+    contents?: SubMenuItem[];
 }
 
 interface SubMenuItem {
-    id: string;
+    id?: string | null;
     title: string;
     icon: string;
     content?: ReactNode | string;
@@ -24,9 +24,9 @@ interface SubMenuItem {
 const subMenus = (subMenusJSON as unknown as { [key: string]: SubMenuData });
 
 const template = (item: SubMenuItem) => {
-    const { id, title, icon, subMenu = "" } = { ...item };
+    const { id = null, title, icon, subMenu = "" } = { ...item };
     return (
-        <div key={id} className={`${styles.subMenuItem} relative`} data-has-sub-Menu={!!subMenu}>
+        <div key={id} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-Menu={!!subMenu}>
             <button className="flex items-center p-1.5 relative">
                 <img src={icon} className="mr-1.5" width="16" height="16" />
                 <span>{title}</span>
@@ -37,17 +37,20 @@ const template = (item: SubMenuItem) => {
 }
 const emptySubMenu = <div className={`${styles.emptySubMenu} flex items-center`}>(Empty)</div>
 
-
 const StartMenuSubMenu: React.FC<StartMenuSubMenuProps> = ({ data }) => {
     const { id, featured, contents } = { ...data };
 
-    const isEmpty = !contents && !featured;
+    const isEmpty = !featured && (!contents || contents?.length === 0);
 
     return (
-        <div className={`${styles.StartMenuSubMenu} ${isEmpty && styles.emptySubMenu} items-center`} data-sub-menu={id}>
-            {featured && featured.map((item) => template(item))}
-            {featured && contents && <hr/>}
-            {contents && contents.map((item) => template(item))}
+        <div className={`${styles.StartMenuSubMenu} items-center font-normal`} data-sub-menu={id}>
+            {featured && <div className={styles.featured}>
+                {featured.map((item) => template(item))}
+            </div>}
+            {featured && contents && <hr />}
+            {contents && <div className={styles.contents}>
+                {contents && contents.map((item) => template(item))}
+            </div>}
             {isEmpty && emptySubMenu}
         </div>
     );

@@ -34,6 +34,7 @@ const StartMenuItem: React.FC<StartMenuItemProps> = ({ ...props }) => {
 
     const onMouseOver = () => {
         dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
+        dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
     }
 
     return (

@@ -8,6 +8,7 @@
     padding-left: 0.3rem;
     box-shadow: 0.2rem 0.2rem 0.4rem #00000033;
     width: 18.5rem;
+    z-index: 1;
 
     &[data-sub-menu="allPrograms"] {
         left: 75%;
@@ -15,12 +16,16 @@
         width: 21rem;
     }
 
-    &[data-active="false"] {
-        display: none;
+    &[data-sub-menu="recentDocuments"] {
+        bottom: 0;
+        width: 11rem;
+        min-height: 100%;
+        color: #000;
+        display: flex;
     }
 
-    &.emptySubMenu {
-        width: 11rem;
+    &[data-active="false"] {
+        display: none;
     }
 
     &:before {
@@ -32,36 +37,41 @@
         left: 0;
     }
 
-    hr {
-        height: 0;
-        border-top: none;
-        border-bottom: 0.1rem solid;
-        border-image: linear-gradient(to right, transparent, #deded7, transparent 90%) 1;
-    }
-
-    &>div>div {
+    .StartMenuSubMenu {
         display: none;
         align-items: center;
-    }
+        width: 18rem;
 
-    &>div:hover>div {
-        display: flex;
-        color: #000;
-    }
+        &>div {
+            width: 100%;
+        }
 
-    &>div:hover:not(.emptySubMenu) {
-        background: #4069bf;
-        color: #fff;
-        cursor: pointer;
-    }
-
-    &>div>div>div>div {
-        width: 14rem;
+        .StartMenuSubMenu {
+            width: 14rem;
+        }
     }
 
     .subMenuItem {
         text-indent: 2rem;
         width: 100%;
+
+        &:hover {
+            &>.StartMenuSubMenu {
+                display: flex;
+                color: #000;
+            }
+
+            &:not(.emptySubMenu) {
+                background: #4069bf;
+                color: #fff;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .emptySubMenu {
+        width: 11rem;
+        text-indent: 1rem;
     }
 
     [data-has-sub-Menu="true"]:after {
@@ -72,7 +82,10 @@
         transform: translateY(-50%) scaleX(60%);
     }
 
-    button {
-        padding-right: 1.5rem;
+    hr {
+        height: 0;
+        border-top: none;
+        border-bottom: 0.1rem solid;
+        border-image: linear-gradient(to right, transparent, #deded7, transparent 90%) 1;
     }
 }

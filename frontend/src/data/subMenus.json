@@ -79,15 +79,8 @@
         ]
     },
     "recentDocuments": {
-        "contents": [
-            {
-                "id": "test",
-                "title": "Test Sub Menu Item",
-                "icon": "/icon__default_programs--large.png",
-                "content": "<div></div>",
-                "subMenu": "accessories"
-            }
-        ]
+        "id": "recentDocuments",
+        "contents": []
     },
     "startup": {
         "contents": [
@@ -95,8 +88,28 @@
                 "id": "test",
                 "title": "Test Sub Menu Item",
                 "icon": "/icon__default_programs--large.png",
+                "content": "<div></div>"
+            }
+        ]
+    },
+    "placeholder1": {
+        "contents": [
+            {
+                "id": "test",
+                "title": "Test Sub Menu Item",
+                "icon": "/icon__default_programs--large.png",
                 "content": "<div></div>",
-                "subMenu": "recentDocuments"
+                "subMenu": "placeholder2"
+            }
+        ]
+    },
+    "placeholder2": {
+        "contents": [
+            {
+                "id": "test",
+                "title": "Test Sub Menu Item",
+                "icon": "/icon__default_programs--large.png",
+                "content": "<div></div>"
             }
         ]
     }

@@ -27,6 +27,7 @@ export interface State {
     currentWindows: currentWindow[];
     isStartVisible: boolean;
     isAllProgramsOpen: boolean;
+    isRecentDocumentsOpen: boolean;
 }
 
 export type Action =
@@ -35,7 +36,7 @@ export type Action =
     | { type: "SET_CURRENT_WINDOWS"; payload: currentWindow[] }
     | { type: "SET_IS_START_VISIBLE"; payload: boolean }
     | { type: "SET_IS_ALL_PROGRAMS_OPEN"; payload: boolean }
-
+    | { type: "SET_IS_RECENT_DOCUMENTS_OPEN"; payload: boolean }
 
 export interface ContextType extends State {
     dispatch: React.Dispatch<Action>;

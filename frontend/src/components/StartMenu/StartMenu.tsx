@@ -10,7 +10,7 @@ interface StartMenuProps {
 }
 
 const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
-    const { isStartVisible, isAllProgramsOpen, dispatch } = useContext();
+    const { isStartVisible, isAllProgramsOpen, isRecentDocumentsOpen, dispatch } = useContext();
     const startMenu = useRef<HTMLDivElement | null>(null);
     const allPrograms = useRef<HTMLDivElement | null>(null);
 
@@ -47,8 +47,8 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
         document.addEventListener("click", onSecondClick);
     }
 
-    const onMenuItemHandler = () => {
-        return;
+    const onRecentDocumentsHandler = () => {
+        dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: true });
     }
 
     return (
@@ -94,8 +94,9 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                         <li>
                             <StartMenuItem title="My Documents" icon="/icon__documents--large.png" content={<div></div>} />
                         </li>
-                        <li>
-                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} onMenuItemHandler={onMenuItemHandler} />
+                        <li onMouseOver={onRecentDocumentsHandler} className="relative" data-open={isRecentDocumentsOpen}>
+                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} />
+                            {isRecentDocumentsOpen && <StartMenuSubMenu data={subMenus.recentDocuments} />}
                         </li>
                         <li>
                             <StartMenuItem title="My Pictures" icon="/icon__pictures--large.png" content={<div></div>} />
