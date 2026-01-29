@@ -9,15 +9,18 @@ interface StartMenuItemProps {
     icon: string;
     iconSize?: number;
     content: ReactNode;
+    subMenu?: string | null;
     onMenuItemHandler?: () => void;
 }
 
 const StartMenuItem: React.FC<StartMenuItemProps> = ({ ...props }) => {
-    const { title, subTitle = null, icon, content } = props;
+    const { title, subTitle = null, icon, content, subMenu = null } = props;
     const { iconSize = (subTitle) ? 30 : 22 } = props;
     const { currentWindows, dispatch } = useContext();
 
     const onClickHandler = () => {
+        if (subMenu) return;
+
         const newWindow: currentWindow = {
             id: generateUniqueId(),
             active: true,

@@ -95,7 +95,7 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                             <StartMenuItem title="My Documents" icon="/icon__documents--large.png" content={<div></div>} />
                         </li>
                         <li onMouseOver={onRecentDocumentsHandler} className="relative" data-open={isRecentDocumentsOpen}>
-                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} />
+                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} subMenu="recentDocuments" />
                             {isRecentDocumentsOpen && <StartMenuSubMenu data={subMenus.recentDocuments} />}
                         </li>
                         <li>
