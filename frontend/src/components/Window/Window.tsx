@@ -177,17 +177,17 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
 
     return (
         <>
-            <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={(e) => onWindowPointerDown(e)}>
+            <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown}>
                 <div className="w-full h-full pointer-events-none">
-                    <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={(e) => onTitleBarPointerDown(e)} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
+                    <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={onTitleBarPointerDown} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
                         <div className="flex items-center">
                             <img src={icon} width="14" height="14" className="mx-2 min-w-[14px]"></img>
                             <h3>{title}</h3>
                         </div>
                         <div className="flex">
-                            <button onClick={(e) => onButtonClick(e)} data-button="minimize">Minimise</button>
-                            <button onClick={(e) => onButtonClick(e)} data-button="maximize" data-maximized={isMaximized}>Maximise</button>
-                            <button onClick={(e) => onButtonClick(e)} data-button="close">Close</button>
+                            <button onClick={onButtonClick} data-button="minimize">Minimise</button>
+                            <button onClick={onButtonClick} data-button="maximize" data-maximized={isMaximized}>Maximise</button>
+                            <button onClick={onButtonClick} data-button="close">Close</button>
                         </div>
                     </div>
                     <div className={`${styles.windowContent} pointer-events-auto`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>

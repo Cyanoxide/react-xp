@@ -26,7 +26,8 @@
         background-position-y: -3rem;
     }
 
-    &:active {
+    &:active,
+    &[data-selected="true"] {
         background-position-y: -6rem;
         outline: none;
         border: none;

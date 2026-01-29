@@ -1,10 +1,13 @@
 import { useContext } from "../../context/context";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styles from "./TaskBar.module.scss";
 import Tooltip from "../Tooltip/Tooltip";
+import StartMenu from "../StartMenu/StartMenu";
 
 const TaskBar = () => {
-    const { currentTime, currentWindows, dispatch } = useContext();
+    const { currentTime, currentWindows, isStartVisible, dispatch } = useContext();
+    const [systemTrayIconDismissed, setSystemTrayIconDismissed] = useState(false);
+    const startButton = useRef<HTMLButtonElement | null>(null);
 
     //Todo: Add more accurate clock that updates in sync with system clock
     useEffect(() => {
@@ -34,25 +37,29 @@ const TaskBar = () => {
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
 
-    const [systemTrayIconDismissed, setSystemTrayIconDismissed] = useState(false);
-    const systemTrayIconClickHandler = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
-        const systemTrayIcon = (event.target as HTMLElement).closest<HTMLElement>("[data-label=Tooltip]");
-        if (!systemTrayIcon) return;
+    const systemTrayIconClickHandler = () => {
+        if (systemTrayIconDismissed) setSystemTrayIconDismissed(false);
+    }
 
-        const systemTrayContent = systemTrayIcon.querySelector<HTMLElement>("[data-dismissed");
-        if (!systemTrayContent || systemTrayContent?.dataset.dismissed === "false") return;
+    const startButtonClickHandler = () => {
+        dispatch({ type: "SET_IS_START_VISIBLE", payload: (isStartVisible) ? false : true });
 
-        setSystemTrayIconDismissed(false);
+        const updatedCurrentWindows = [...currentWindows];
+        const activeWindow = currentWindows.find(item => item.active === true);
+        if (activeWindow) activeWindow.active = false;
+
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     }
 
     const formattedTime = currentTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
     return (
         <div className={`${styles.taskBar} flex justify-between`} data-label="taskbar">
-            <button className={`${styles.startButton}`}>Start</button>
+            <button ref={startButton} className={`${styles.startButton}`} onClick={startButtonClickHandler} data-selected={isStartVisible}>Start</button>
+            {isStartVisible && <StartMenu startButton={startButton} />}
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
                 {currentWindows.map((currentWindow, index) => (
-                    <li key={index} onClick={(e) => windowTabClickHandler(e)} data-label="taskBarWindowTab" data-active={currentWindow.active} data-window-id={currentWindow.id}>
+                    <li key={index} onClick={windowTabClickHandler} data-label="taskBarWindowTab" data-active={currentWindow.active} data-window-id={currentWindow.id}>
                         <span className="w-full relative flex">
                             <img src={currentWindow.icon} width="14" height="14" className="mr-2 min-w-5.5"></img>
                             <span className="absolute ml-7">{currentWindow.title}</span>
@@ -62,8 +69,10 @@ const TaskBar = () => {
             </ul>
             <div className={`${styles.systemTray} flex justify-center items-center`}>
                 <ul className="flex">
-                    <li className="relative" onClick={(e) => systemTrayIconClickHandler(e)}>
-                        <img src="/icon__info.png" width="14" height="14" className="cursor-pointer mr-2 min-w-[14px]"></img>
+                    <li className=" flex relative">
+                        <button onClick={systemTrayIconClickHandler}>
+                            <img src="/icon__info.png" width="14" height="14" className="cursor-pointer mr-2 min-w-[14px]"></img>
+                        </button>
                         <Tooltip heading="Windows XP React Edition" content="Still a work in progress, but this is a semi-authentic recreation of Windows XP created using React & Typescript." systemTrayIconDismissed={systemTrayIconDismissed} setSystemTrayIconDismissed={setSystemTrayIconDismissed} />
                     </li>
                 </ul>

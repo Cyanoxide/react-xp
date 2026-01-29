@@ -23,7 +23,7 @@ export const generateUniqueId = () => {
     });
 }
 
-export const updateCurrentActiveWindow = (windowId: string, currentWindows: currentWindow[]) => {
+export const updateCurrentActiveWindow = (windowId: string | number, currentWindows: currentWindow[]) => {
     const updatedCurrentWindows = [...currentWindows];
     updatedCurrentWindows.map((currentWindow) => {
         if (windowId === currentWindow.id) {
