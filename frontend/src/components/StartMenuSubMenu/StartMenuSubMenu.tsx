@@ -29,7 +29,7 @@ const subMenus = (subMenusJSON as unknown as { [key: string]: SubMenuData });
 const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SubMenuItem) => void) => {
     const { id = null, title, icon, subMenu = "" } = { ...item };
     return (
-        <div key={id} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-Menu={!!subMenu}>
+        <div key={id} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-menu={!!subMenu}>
             <button className="flex items-center p-1.5 relative" onClick={(e) => onClickHandler(e, item)}>
                 <img src={icon} className="mr-1.5" width="16" height="16" />
                 <span>{title}</span>
