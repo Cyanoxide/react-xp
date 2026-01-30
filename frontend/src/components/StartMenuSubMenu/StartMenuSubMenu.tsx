@@ -22,7 +22,7 @@ interface SubMenuItem {
 }
 
 const subMenus = (subMenusJSON as unknown as { [key: string]: SubMenuData });
-const applications = (applicationsJSON as unknown as { [key: string]: Application });
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SubMenuItem) => void) => {
     const { appId, subMenu = "" } = { ...item };
@@ -40,7 +40,7 @@ const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLBu
 }
 const emptySubMenu = <div className={`${styles.emptySubMenu} flex items-center`}>(Empty)</div>
 
-const StartMenuSubMenu: React.FC<StartMenuSubMenuProps> = ({ data }) => {
+const StartMenuSubMenu = ({ data }: StartMenuSubMenuProps) => {
     const { id, featured, contents } = { ...data };
     const { currentWindows, dispatch } = useContext();
 

@@ -6,7 +6,7 @@ import StartMenu from "../StartMenu/StartMenu";
 import applicationsJSON from "../../data/applications.json";
 import type { Application } from "../../context/types";
 
-const applications = applicationsJSON as unknown as { [key: string]: Application }
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const TaskBar = () => {
     const { currentTime, currentWindows, isStartVisible, dispatch } = useContext();

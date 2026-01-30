@@ -13,9 +13,9 @@ type DesktopIconProps = AbsoluteObject & {
     setSelectedId: (value: string | number) => void;
 };
 
-const applications = (applicationsJSON as unknown as { [key: string]: Application });
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const DesktopIcon: React.FC<DesktopIconProps> = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedId, setSelectedId }) => {
+const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedId, setSelectedId }: DesktopIconProps) => {
     const { currentWindows, dispatch } = useContext();
     const [position, setPosition] = useState<AbsoluteObject>({ top, right, bottom, left });
     const desktopIcon = useRef<HTMLDivElement | null>(null);
