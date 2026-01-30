@@ -61,22 +61,13 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                 <section className="bg-white text-[#373738] flex flex-col justify-between">
                     <div>
                         <ul className="flex flex-col p-3">
-                            <li>
-                                <StartMenuItem title="Internet Explorer" subTitle="Internet" icon="/icon__internet_explorer--large.png" content={<div></div>} />
-                            </li>
-                            <li>
-                                <StartMenuItem title="Outlook Express" subTitle="E-mail" icon="/icon__outlook--large.png" content={<div></div>} />                            </li>
+                            <li><StartMenuItem appId="internetExplorer" subTitle="Internet" /></li>
+                            <li><StartMenuItem appId="outlook" subTitle="E-mail" /></li>
                         </ul>
                         <ul className="flex flex-col p-3">
-                            <li>
-                                <StartMenuItem title="Windows Messenger" icon="/icon__messenger--large.png" iconSize={30} content={<div></div>} />
-                            </li>
-                            <li>
-                                <StartMenuItem title="MSN" icon="/icon__msn--large.png" iconSize={30} content={<div></div>} />
-                            </li>
-                            <li>
-                                <StartMenuItem title="Windows Media Player" icon="/icon__media_player--large.png" iconSize={30} content={<div></div>} />
-                            </li>
+                            <li><StartMenuItem appId="winMessenger" iconSize={30} /></li>
+                            <li><StartMenuItem appId="msn" iconSize={30} /></li>
+                            <li><StartMenuItem appId="winMediaPlayer" iconSize={30} /></li>
                         </ul>
                     </div>
                     <div>
@@ -91,44 +82,24 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                 </section>
                 <section className="bg-[#d6e4f8] text-[#112366]">
                     <ul className="font-bold p-2">
-                        <li>
-                            <StartMenuItem title="My Documents" icon="/icon__documents--large.png" content={<div></div>} />
-                        </li>
+                        <li><StartMenuItem appId="documents" /></li>
                         <li onMouseOver={onRecentDocumentsHandler} className="relative" data-open={isRecentDocumentsOpen}>
-                            <StartMenuItem title="My Recent Documents" icon="/icon__recent_documents--large.png" content={<div></div>} subMenu="recentDocuments" />
+                            <StartMenuItem appId="recentDocuments" subMenu="recentDocuments" />
                             {isRecentDocumentsOpen && <StartMenuSubMenu data={subMenus.recentDocuments} />}
                         </li>
-                        <li>
-                            <StartMenuItem title="My Pictures" icon="/icon__pictures--large.png" content={<div></div>} />
-                        </li>
-                        <li>
-                            <StartMenuItem title="My Music" icon="/icon__music--large.png" content={<div></div>} />
-                        </li>
-                        <li>
-                            <StartMenuItem title="My Computer" icon="/icon__computer--large.png" content={<div></div>} />
-                        </li>
+                        <li><StartMenuItem appId="pictures" /></li>
+                        <li><StartMenuItem appId="music" /></li>
+                        <li><StartMenuItem appId="computer" /></li>
                     </ul>
                     <ul className="p-2">
-                        <li>
-                            <StartMenuItem title="Control Panel" icon="/icon__control_panel--large.png" content={<div></div>} />
-                        </li>
-                        <li>
-                            <StartMenuItem title="Set Program Access and Defaults" icon="/icon__default_programs--large.png" content={<div></div>} />
-                        </li>
-                        <li>
-                            <StartMenuItem title="Printers and Faxes" icon="/icon__printers_faxes--large.png" content={<div></div>} />
-                        </li>
+                        <li><StartMenuItem appId="controlPanel" /></li>
+                        <li><StartMenuItem appId="programDefaults" /></li>
+                        <li><StartMenuItem appId="printersFaxes" /></li>
                     </ul>
                     <ul className="p-2">
-                        <li>
-                            <StartMenuItem title="Help and Support" icon="/icon__recent_documents--large.png" content={<div></div>} />
-                        </li>
-                        <li>
-                            <StartMenuItem title="Search" icon="/icon__search--large.png" content={<div></div>} />
-                        </li>
-                        <li>
-                            <StartMenuItem title="Run..." icon="/icon__run--large.png" content={<div></div>} />
-                        </li>
+                        <li><StartMenuItem appId="support" /></li>
+                        <li><StartMenuItem appId="search" /></li>
+                        <li><StartMenuItem appId="run" /></li>
                     </ul>
                 </section>
             </main>
@@ -148,7 +119,7 @@ const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
                     </li>
                 </ul>
             </footer>
-        </div >
+        </div>
     );
 };
 

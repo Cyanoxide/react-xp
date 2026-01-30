@@ -3,6 +3,10 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./TaskBar.module.scss";
 import Tooltip from "../Tooltip/Tooltip";
 import StartMenu from "../StartMenu/StartMenu";
+import applicationsJSON from "../../data/applications.json";
+import type { Application } from "../../context/types";
+
+const applications = applicationsJSON as unknown as { [key: string]: Application }
 
 const TaskBar = () => {
     const { currentTime, currentWindows, isStartVisible, dispatch } = useContext();
@@ -58,14 +62,18 @@ const TaskBar = () => {
             <button ref={startButton} className={`${styles.startButton}`} onClick={startButtonClickHandler} data-selected={isStartVisible}>Start</button>
             {isStartVisible && <StartMenu startButton={startButton} />}
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
-                {currentWindows.map((currentWindow, index) => (
-                    <li key={index} onClick={windowTabClickHandler} data-label="taskBarWindowTab" data-active={currentWindow.active} data-window-id={currentWindow.id}>
-                        <span className="w-full relative flex">
-                            <img src={currentWindow.icon} width="14" height="14" className="mr-2 min-w-5.5"></img>
-                            <span className="absolute ml-7">{currentWindow.title}</span>
-                        </span>
-                    </li>
-                ))}
+                {currentWindows.map((currentWindow, index) => {
+                    const appData = applications[currentWindow.appId];
+                    const { title, icon, iconLarge } = { ...appData };
+                    return (
+                        <li key={index} onClick={windowTabClickHandler} data-label="taskBarWindowTab" data-active={currentWindow.active} data-window-id={currentWindow.id}>
+                            <span className="w-full relative flex">
+                                <img src={icon || iconLarge} width="14" height="14" className="mr-2 min-w-5.5"></img>
+                                <span className="absolute ml-7">{title}</span>
+                            </span>
+                        </li>
+                    )
+                })}
             </ul>
             <div className={`${styles.systemTray} flex justify-center items-center`}>
                 <ul className="flex">

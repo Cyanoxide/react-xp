@@ -1,0 +1,150 @@
+{
+    "documents": {
+        "title": "My Documents",
+        "icon": "/icon__documents.png",
+        "iconLarge": "/icon__documents--large.png",
+        "content": "placeholder"
+    },
+    "internetExplorer": {
+        "title": "Internet Explorer",
+        "icon": "/icon__internet_explorer.png",
+        "iconLarge": "/icon__internet_explorer--large.png",
+        "content": "placeholder"
+    },
+    "outlook": {
+        "title": "Microsoft Outlook",
+        "icon": null,
+        "iconLarge": "/icon__outlook--large.png",
+        "content": "placeholder"
+    },
+    "recycleBin": {
+        "title": "Recycle Bin",
+        "icon": "/icon__recycle_bin.png",
+        "iconLarge": "/icon__recycle_bin--large.png",
+        "content": "placeholder"
+    },
+    "winMessenger": {
+        "title": "Windows Messenger",
+        "icon": null,
+        "iconLarge": "/icon__messenger--large.png",
+        "content": "placeholder"
+    },
+    "winMediaPlayer": {
+        "title": "Windows Media Player",
+        "icon": null,
+        "iconLarge": "/icon__media_player--large.png",
+        "content": "placeholder"
+    },
+    "msn": {
+        "title": "MSN",
+        "icon": null,
+        "iconLarge": "/icon__msn--large.png",
+        "content": "placeholder"
+    },
+    "recentDocuments": {
+        "title": "My Recent Documents",
+        "icon": null,
+        "iconLarge": "/icon__recent_documents--large.png",
+        "content": "placeholder"
+    },
+    "music": {
+        "title": "My Music",
+        "icon": null,
+        "iconLarge": "/icon__music--large.png",
+        "content": "placeholder"
+    },
+    "pictures": {
+        "title": "My Pictures",
+        "icon": null,
+        "iconLarge": "/icon__pictures--large.png",
+        "content": "placeholder"
+    },
+    "computer": {
+        "title": "My Computer",
+        "icon": null,
+        "iconLarge": "/icon__computer--large.png",
+        "content": "placeholder"
+    },
+    "controlPanel": {
+        "title": "Control Panel",
+        "icon": null,
+        "iconLarge": "/icon__control_panel--large.png",
+        "content": "placeholder"
+    },
+    "programDefaults": {
+        "title": "Set Program Access and Defaults",
+        "icon": null,
+        "iconLarge": "/icon__default_programs--large.png",
+        "content": "placeholder"
+    },
+    "printersFaxes": {
+        "title": "Printers and Faxes",
+        "icon": null,
+        "iconLarge": "/icon__printers_faxes--large.png",
+        "content": "placeholder"
+    },
+    "support": {
+        "title": "Help and Support",
+        "icon": null,
+        "iconLarge": "/icon__support--large.png",
+        "content": "placeholder"
+    },
+    "search": {
+        "title": "Search",
+        "icon": null,
+        "iconLarge": "/icon__search--large.png",
+        "content": "placeholder"
+    },
+    "run": {
+        "title": "Run...",
+        "icon": null,
+        "iconLarge": "/icon__run--large.png",
+        "content": "placeholder",
+        "width": 300,
+        "height": 150,
+        "bottom": 35,
+        "left": 5
+    },
+    "winCatalog": {
+        "title": "Windows Catalog",
+        "icon": "/icon__win_catalog.png",
+        "iconLarge": null,
+        "content": "placeholder"
+    },
+    "winUpdate": {
+        "title": "Windows Update",
+        "icon": null,
+        "iconLarge": "/icon__win_update--large.png",
+        "content": "placeholder"
+    },
+    "remoteAssistance": {
+        "title": "Remote Assistance",
+        "icon": null,
+        "iconLarge": "/icon__remote_assistance--large.png",
+        "content": "placeholder"
+    },
+    "winMovieMaker": {
+        "title": "Windows Movie Maker",
+        "icon": null,
+        "iconLarge": "/icon__movie_maker--large.png",
+        "content": "placeholder"
+    },
+    "accessories": {
+        "title": "Accessories",
+        "icon": "/icon__directory.png",
+        "iconLarge": null,
+        "content": "placeholder"
+    },
+    "games": {
+        "title": "Games",
+        "icon": "/icon__directory.png",
+        "iconLarge": null,
+        "content": "placeholder"
+    },
+    "startup": {
+        "title": "Startup",
+        "icon": "/icon__directory.png",
+        "iconLarge": null,
+        "content": "placeholder"
+    }
+}

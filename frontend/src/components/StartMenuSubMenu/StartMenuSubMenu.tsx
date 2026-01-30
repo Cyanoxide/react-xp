@@ -1,9 +1,9 @@
 import styles from "./StartMenuSubMenu.module.scss";
-import type { ReactNode } from "react";
 import subMenusJSON from "../../data/subMenus.json";
+import applicationsJSON from "../../data/applications.json"
 import { useContext } from "../../context/context"
-import type { currentWindow } from "../../context/types";
-import { generateUniqueId } from "../../utils/general";
+import type { Application } from "../../context/types";
+import { openApplication } from "../../utils/general";
 
 interface StartMenuSubMenuProps {
     data?: SubMenuData;
@@ -17,21 +17,21 @@ interface SubMenuData {
 }
 
 interface SubMenuItem {
-    id?: string | null;
-    title: string;
-    icon: string;
-    content?: ReactNode | string;
+    appId: string;
     subMenu?: string;
 }
 
 const subMenus = (subMenusJSON as unknown as { [key: string]: SubMenuData });
+const applications = (applicationsJSON as unknown as { [key: string]: Application });
 
 const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SubMenuItem) => void) => {
-    const { id = null, title, icon, subMenu = "" } = { ...item };
+    const { appId, subMenu = "" } = { ...item };
+    const { title, icon, iconLarge } = { ...applications[appId] };
+
     return (
-        <div key={id} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-menu={!!subMenu}>
+        <div key={appId} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-menu={!!subMenu}>
             <button className="flex items-center p-1.5 relative" onClick={(e) => onClickHandler(e, item)}>
-                <img src={icon} className="mr-1.5" width="16" height="16" />
+                <img src={icon || iconLarge} className="mr-1.5" width="16" height="16" />
                 <span>{title}</span>
             </button>
             {subMenu && <StartMenuSubMenu data={subMenus[subMenu]} />}
@@ -45,19 +45,9 @@ const StartMenuSubMenu: React.FC<StartMenuSubMenuProps> = ({ data }) => {
     const { currentWindows, dispatch } = useContext();
 
     const onClickHandler = (_: unknown, item: SubMenuItem) => {
-        const { title, icon, content, subMenu } = { ...item };
+        const { subMenu, appId } = { ...item };
         if (subMenu) return;
-        const newWindow: currentWindow = {
-            id: generateUniqueId(),
-            active: true,
-            title,
-            icon,
-            content,
-        }
-
-        const updatedCurrentWindows = [...currentWindows];
-        updatedCurrentWindows.push(newWindow);
-        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+        openApplication(appId, currentWindows, dispatch);
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
     }
 

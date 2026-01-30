@@ -4,7 +4,8 @@ import type { ReactNode } from "react";
 import { useContext } from "../../context/context";
 import { throttle, updateCurrentActiveWindow } from "../../utils/general";
 import { getWindowPadding, getMinimumWindowSize, getWindowClickRegion } from "../../utils/window";
-import type { currentWindow } from "../../context/types";
+import type { Application, currentWindow } from "../../context/types";
+import applicationsJSON from "../../data/applications.json";
 
 interface WindowProps extends currentWindow {
     children: ReactNode;
@@ -12,13 +13,16 @@ interface WindowProps extends currentWindow {
 
 const THROTTLE_DELAY = 50;
 const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
+const applications = (applicationsJSON as unknown as { [key: string]: Application });
 
 const Window: React.FC<WindowProps> = ({ ...props }) => {
-    const { icon, title, id, children, left = 100, top = 75, width = 500, height = 350, active = false, hidden = false } = props;
+    const { id, appId, children, active = false, hidden = false } = props;
+    const { title, icon, iconLarge, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100 } = { ...applications[appId] };
     const { currentWindows, dispatch } = useContext();
     const isBiggerThanViewport = (width < window.innerWidth);
-    const [[windowPositionX, windowPositionY], setWindowPosition] = useState([(isBiggerThanViewport) ? left : 0, (isBiggerThanViewport) ? top : "22%"]);
-    const offset = (windowPositionX + width) - window.innerWidth;
+    const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? top : 0, left: (isBiggerThanViewport) ? left : 0, right, bottom });
+
+    const offset = (leftPos + width) - window.innerWidth;
     const [[windowWidth, windowHeight], setWindowSize] = useState([Math.min(width, width - offset), height]);
     const [isMaximized, setIsMaximized] = useState(false);
     const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
@@ -76,7 +80,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         const onPointerMove = (event: PointerEvent) => {
             if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
 
-            setWindowPosition([event.clientX - windowOffsetX, event.clientY - windowOffsetY]);
+            setWindowPosition({ top: event.clientY - windowOffsetY, left: event.clientX - windowOffsetX, right: undefined, bottom: undefined });
             document.body.style.userSelect = "none";
         }
         const onThrottledPointerMove = throttle(onPointerMove, THROTTLE_DELAY);
@@ -112,8 +116,8 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
         const onPointerMove = (event: MouseEvent) => {
             let width = windowWidth;
             let height = windowHeight;
-            let x = windowPositionX;
-            let y = windowPositionY;
+            let x = leftPos;
+            let y = topPos;
 
             if (activeWindowRegion.includes("right")) {
                 width = event.clientX - activeWindowRect.left;
@@ -133,7 +137,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
                 y = activeWindowRect.bottom - height;
             }
 
-            setWindowPosition([x, y]);
+            setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
             setWindowSize([width, height]);
         }
         const onThrottledPointerMove = throttle(onPointerMove, THROTTLE_DELAY);
@@ -177,11 +181,11 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
 
     return (
         <>
-            <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ left: windowPositionX, top: windowPositionY, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown}>
+            <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ top: (!bottomPos) ? topPos : undefined, right: rightPos, bottom: bottomPos, left: (!rightPos) ? leftPos : undefined, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown}>
                 <div className="w-full h-full pointer-events-none">
                     <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={onTitleBarPointerDown} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
                         <div className="flex items-center">
-                            <img src={icon} width="14" height="14" className="mx-2 min-w-[14px]"></img>
+                            <img src={icon || iconLarge} width="14" height="14" className="mx-2 min-w-[14px]"></img>
                             <h3>{title}</h3>
                         </div>
                         <div className="flex">

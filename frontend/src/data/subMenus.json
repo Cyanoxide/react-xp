@@ -1,80 +1,47 @@
 {
     "allPrograms": {
-        "id": "allPrograms",
+        "appId": "allPrograms",
         "featured": [
             {
-                "id": "setDefaults",
-                "title": "Set Program Access and Defaults",
-                "icon": "/icon__default_programs--large.png",
-                "content": "<div></div>"
+                "appId": "programDefaults"
             },
             {
-                "id": "winCatalog",
-                "title": "Windows Catalog",
-                "icon": "/icon__win_catalog.png",
-                "content": "<div></div>"
+                "appId": "winCatalog"
             },
             {
-                "id": "winUpdate",
-                "title": "Windows Update",
-                "icon": "/icon__win_update--large.png",
-                "content": "<div></div>"
+                "appId": "winUpdate"
             }
         ],
         "contents": [
             {
-                "id": "accessories",
-                "title": "Accessories",
-                "icon": "/icon__directory.png",
+                "appId": "accessories",
                 "subMenu": "accessories"
             },
             {
-                "id": "games",
-                "title": "Games",
-                "icon": "/icon__directory.png",
-                "subMenu": "games"
+                "appId": "games",
+                "subMenu": "accessories"
             },
             {
-                "id": "startup",
-                "title": "Startup",
-                "icon": "/icon__directory.png",
-                "subMenu": "startup"
+                "appId": "startup",
+                "subMenu": "accessories"
             },
             {
-                "id": "internetExplorer",
-                "title": "Internet Explorer",
-                "icon": "/icon__internet_explorer--large.png",
-                "content": "<div></div>"
+                "appId": "internetExplorer"
             },
             {
-                "id": "outlook",
-                "title": "Outlook Express",
-                "icon": "/icon__outlook--large.png",
-                "content": "<div></div>"
+                "appId": "outlook"
             },
             {
-                "id": "remoteAssistance",
-                "title": "Remote Assistance",
-                "icon": "/icon__remote_assistance--large.png",
-                "content": "<div></div>"
+                "appId": "remoteAssistance"
             },
             {
-                "id": "winMediaPlayer",
-                "title": "Windows Media Player",
-                "icon": "/icon__media_player--large.png",
-                "content": "<div></div>"
+                "appId": "winMediaPlayer"
             },
             {
-                "id": "winMessenger",
-                "title": "Windows Messenger",
-                "icon": "/icon__messenger--large.png",
-                "content": "<div></div>"
+                "appId": "winMessenger"
             },
             {
-                "id": "winMovieMaker",
-                "title": "Windows Movie Maker",
-                "icon": "/icon__movie_maker--large.png",
-                "content": "<div></div>"
+                "appId": "winMovieMaker"
             }
         ]
     },
@@ -85,10 +52,7 @@
     "startup": {
         "contents": [
             {
-                "id": "test",
-                "title": "Placeholder Item",
-                "icon": "/icon__default_programs--large.png",
-                "content": "<div></div>",
+                "appId": "test",
                 "subMenu": "placeholder1"
             }
         ]
@@ -96,10 +60,7 @@
     "placeholder1": {
         "contents": [
             {
-                "id": "placeholder1",
-                "title": "Placeholder Item 2",
-                "icon": "/icon__default_programs--large.png",
-                "content": "<div></div>",
+                "appId": "placeholder1",
                 "subMenu": "placeholder2"
             }
         ]

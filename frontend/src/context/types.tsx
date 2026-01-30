@@ -8,9 +8,7 @@ export interface startMenuItem {
 }
 
 export interface currentWindow {
-    title: string;
-    icon: string;
-    content: ReactNode;
+    appId: string;
     id: string | number;
     width?: number;
     height?: number;
@@ -20,6 +18,20 @@ export interface currentWindow {
     hidden?: boolean;
 }
 export type currentWindows = currentWindow[];
+
+export interface AbsoluteObject {
+    top?: number | undefined;
+    right?: number | undefined;
+    bottom?: number | undefined;
+    left?: number | undefined;
+}
+
+export interface Application {
+    title: string;
+    icon?: string;
+    iconLarge?: string;
+    content: ReactNode | string;
+}
 
 export interface State {
     wallpaper: string;

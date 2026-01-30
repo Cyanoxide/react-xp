@@ -1,28 +1,27 @@
 import styles from "./DesktopIcon.module.scss";
-import type { currentWindow } from "../../context/types";
+import type { AbsoluteObject, Application } from "../../context/types";
 import { useContext } from "../../context/context";
-import { generateUniqueId } from "../../utils/general";
 import { useState, useRef } from "react";
 import { throttle } from "../../utils/general";
+import applicationsJSON from "../../data/applications.json";
+import { openApplication } from "../../utils/general";
 
-type AbsoluteObject = {
-    top?: number | undefined;
-    right?: number | undefined;
-    bottom?: number | undefined;
-    left?: number | undefined;
-}
-
-type DesktopIconProps = AbsoluteObject & currentWindow & {
-    iconLarge?: string;
+type DesktopIconProps = AbsoluteObject & {
+    id: string | number;
+    appId: string;
     selectedId: string | number;
     setSelectedId: (value: string | number) => void;
 };
 
-const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, content, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedId, setSelectedId }) => {
+const applications = (applicationsJSON as unknown as { [key: string]: Application });
+
+const DesktopIcon: React.FC<DesktopIconProps> = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedId, setSelectedId }) => {
     const { currentWindows, dispatch } = useContext();
     const [position, setPosition] = useState<AbsoluteObject>({ top, right, bottom, left });
     const desktopIcon = useRef<HTMLDivElement | null>(null);
     const isActive = id === selectedId;
+    const appData = applications[appId];
+    const { title, icon, iconLarge } = { ...appData };
 
     const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         const desktopIconRect = desktopIcon.current?.getBoundingClientRect();
@@ -65,17 +64,7 @@ const DesktopIcon: React.FC<DesktopIconProps> = ({ title, iconLarge, icon, conte
     }
 
     const onDoubleClickHandler = () => {
-        const newWindow: currentWindow = {
-            id: generateUniqueId(),
-            active: true,
-            title,
-            icon,
-            content,
-        }
-
-        const updatedCurrentWindows = [...currentWindows];
-        updatedCurrentWindows.push(newWindow);
-        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+        openApplication(appId, currentWindows, dispatch);
         setSelectedId("");
     }
 

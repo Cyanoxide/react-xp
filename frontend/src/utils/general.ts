@@ -1,4 +1,5 @@
 import type { currentWindow } from "../context/types";
+import type { Action } from "../context/types";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export const throttle = (fn: Function, delay: number) => {
@@ -33,4 +34,16 @@ export const updateCurrentActiveWindow = (windowId: string | number, currentWind
     });
 
     return updatedCurrentWindows;
+}
+
+export const openApplication = (appId: string, currentWindows: currentWindow[], dispatch: (value: Action) => void) => {
+    const newWindow: currentWindow = {
+        id: generateUniqueId(),
+        appId,
+        active: true,
+    }
+
+    const updatedCurrentWindows = [...currentWindows];
+    updatedCurrentWindows.push(newWindow);
+    dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
 }
