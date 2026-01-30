@@ -3,7 +3,8 @@
         "title": "My Documents",
         "icon": "/icon__documents.png",
         "iconLarge": "/icon__documents--large.png",
-        "content": "placeholder"
+        "content": null,
+        "component": "FileExplorer"
     },
     "internetExplorer": {
         "title": "Internet Explorer",

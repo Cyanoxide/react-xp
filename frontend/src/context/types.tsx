@@ -31,6 +31,7 @@ export interface Application {
     icon?: string;
     iconLarge?: string;
     content: ReactNode | string;
+    component?: string | undefined;
     link?: string;
 }
 

@@ -2,17 +2,17 @@ import { useContext } from "../../context/context";
 import Window from "../Window/Window";
 import applicationsJSON from "../../data/applications.json";
 import type { Application } from "../../context/types";
+import { WindowContent } from "../WindowContent/WindowContent";
 
-const applications = (applicationsJSON as unknown as { [key: string]: Application });
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const WindowManagement = () => {
     const { currentWindows } = useContext();
 
     return (
         currentWindows.map((currentWindow) => {
-            const { content } = { ...applications[currentWindow.appId] };
-
-            return <Window key={currentWindow.id} {...currentWindow}>{content}</Window>
+            const appId = applications[currentWindow.appId].component;
+            return <Window key={currentWindow.id} {...currentWindow}><WindowContent key={appId} appId={appId} /></Window>
         })
     )
 };
