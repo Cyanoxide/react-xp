@@ -1,6 +1,7 @@
 .window {
     padding: 0.3rem;
     transition: all 0.3s ease, padding 0.15s ease-in;
+    min-width: fit-content;
 
     &[data-active="true"] {
         z-index: 1;
@@ -26,6 +27,7 @@
 
         .windowContent {
             box-shadow: 0rem 0.05rem 0rem 0.1rem #2b5be0;
+            overflow: hidden;
         }
 
 
