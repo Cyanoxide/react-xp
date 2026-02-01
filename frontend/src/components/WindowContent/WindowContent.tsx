@@ -1,35 +1,45 @@
 import { lazy, Suspense, useMemo } from "react";
 
+interface WindowAppProps {
+    appId?: string;
+    componentId?: string;
+}
+
+interface WindowContentProps {
+    appId?: string;
+    componentId?: string;
+}
+
 const windowModules = import.meta.glob("../Applications/*/*.tsx");
-const windowRegistry: Record<string, () => Promise<{ default: React.ComponentType<unknown> }>> = {};
+
+const windowRegistry: Record<
+    string,
+    () => Promise<{ default: React.ComponentType<WindowAppProps> }>
+> = {};
 
 for (const path in windowModules) {
     const match = path.match(/\..\/Applications\/(.+)\/\1\.tsx$/);
     if (match) {
-        const appId = match[1];
-        windowRegistry[appId] = windowModules[path] as () => Promise<{
-            default: React.ComponentType<unknown>;
+        const componentId = match[1];
+        windowRegistry[componentId] = windowModules[path] as () => Promise<{
+            default: React.ComponentType<WindowAppProps>;
         }>;
     }
 }
 
-interface WindowContentProps {
-    appId: string | undefined;
-}
-
-export const WindowContent = ({ appId }: WindowContentProps) => {
-    const importer = appId ? windowRegistry[appId] : null;
+export const WindowContent = ({ appId, componentId }: WindowContentProps) => {
+    const importer = componentId ? windowRegistry[componentId] : null;
 
     const Component = useMemo(() => {
         if (!importer) return null;
         return lazy(importer);
     }, [importer]);
 
-    if (!Component) return null;
+    if (!Component || !componentId) return null;
 
     return (
         <Suspense fallback={null}>
-            <Component />
+            <Component appId={appId} componentId={componentId} />
         </Suspense>
     );
-}
+};

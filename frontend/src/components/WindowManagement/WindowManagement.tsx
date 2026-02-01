@@ -11,8 +11,9 @@ const WindowManagement = () => {
 
     return (
         currentWindows.map((currentWindow) => {
-            const appId = applications[currentWindow.appId].component;
-            return <Window key={currentWindow.id} {...currentWindow}><WindowContent key={appId} appId={appId} /></Window>
+            const appId = currentWindow.appId;
+            const componentId = applications[currentWindow.appId].component;
+            return <Window key={currentWindow.id} {...currentWindow}><WindowContent key={appId} componentId={componentId} appId={appId} /></Window>
         })
     )
 };
