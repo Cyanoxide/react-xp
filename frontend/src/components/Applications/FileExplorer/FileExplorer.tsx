@@ -34,7 +34,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     }
 
-    const keyDownHandler = (event: KeyboardEvent) => {
+    const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
             updateWindow();
         }
