@@ -2,11 +2,43 @@ import styles from "./FileExplorer.module.scss";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import applicationsJSON from "../../../data/applications.json";
 import type { Application } from "../../../context/types";
+import { useContext } from "../../../context/context";
+import { useRef } from "react";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
+    const { currentWindows, dispatch } = useContext();
+    const inputField = useRef<HTMLInputElement | null>(null);
     const appData = Applications[appId];
+
+    const updateWindow = () => {
+        const inputRef = inputField.current;
+        const value = (inputRef) ? inputRef.value.toLowerCase() : null;
+        if (!inputRef || !value) return;
+
+        const titleAppIdMap = Object.fromEntries(
+            Object.entries(Applications).map(([key, app]) => [app.title.toLowerCase(), key])
+        );
+
+        const updatedCurrentWindows = [...currentWindows];
+        const currentWindow = updatedCurrentWindows.find((item) => item.active === true);
+        if (!currentWindow) return;
+
+        if (!(value in titleAppIdMap)) {
+            inputRef.value = appData.title;
+            return;
+        }
+
+        currentWindow.appId = titleAppIdMap[value];
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+    }
+
+    const keyDownHandler = (event: KeyboardEvent) => {
+        if (event.key === "Enter") {
+            updateWindow();
+        }
+    }
 
     return (
         <>
@@ -53,11 +85,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     <span className={`${styles.navLabel} mr-1`}>Address</span>
 
                     <div className={`${styles.navBar} flex mx-1 h-full`}>
-                        <img src={appData.icon} className="mx-1" width="14" height="14" />
-                        <input className={`${styles.navBar} h-full`} type="text" defaultValue={appData.title} />
+                        <img src={appData.icon || appData.iconLarge} className="mx-1" width="14" height="14" />
+                        <input ref={inputField} className={`${styles.navBar} h-full`} type="text" defaultValue={appData.title} onKeyDown={keyDownHandler} />
                         <button className={styles.dropDown}>Submit</button>
                     </div>
-                    <button className={`${styles.goButton} flex items-center`}>
+                    <button className={`${styles.goButton} flex items-center`} onClick={updateWindow}>
                         <img src="/icon__go.png" className="mr-1.5" width="19" height="19" />
                         <span>Go</span>
                     </button>

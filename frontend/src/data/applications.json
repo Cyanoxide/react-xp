@@ -20,7 +20,7 @@
         "title": "Recycle Bin",
         "icon": "/icon__recycle_bin.png",
         "iconLarge": "/icon__recycle_bin--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer"
     },
     "winMessenger": {
         "title": "Windows Messenger",
@@ -45,17 +45,17 @@
     "music": {
         "title": "My Music",
         "iconLarge": "/icon__music--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer"
     },
     "pictures": {
         "title": "My Pictures",
         "iconLarge": "/icon__pictures--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer"
     },
     "computer": {
         "title": "My Computer",
         "iconLarge": "/icon__computer--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer"
     },
     "controlPanel": {
         "title": "Control Panel",
