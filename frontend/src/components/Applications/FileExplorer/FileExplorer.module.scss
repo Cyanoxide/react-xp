@@ -141,3 +141,32 @@
         }
     }
 }
+
+.sidebar {
+    width: 18rem;
+    background: #6978d1;
+    font-size: 0.9rem;
+
+    section {
+        background: #d8dff5;
+        border-radius: 0.4rem 0.4rem 0 0;
+        overflow: hidden;
+        color: #325cbf;
+        border: 1px solid #fff7;
+
+        div:first-child {
+            background: linear-gradient(to right, #fff, #c9d4f4);
+            font-size: 0.8rem;
+        }
+
+        li {
+            line-height: 1.1rem;
+        }
+
+        h3,
+        h3+p {
+            color: #000;
+            font-size:0.9rem;
+        }
+    }
+}

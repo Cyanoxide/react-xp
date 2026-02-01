@@ -95,6 +95,60 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </button>
                 </div>
             </section>
+            <main className="h-full flex">
+                <aside className={`${styles.sidebar} h-full`}>
+                    <section className="m-5">
+                        <div className="flex justify-between items-center pl-3 pr-1 py-1">
+                            <h5 className="font-bold">File & Folder Tasks</h5>
+                            <img src="icon__dropdown.png" width="14" height="14" />
+                        </div>
+                        <ul className="flex flex-col gap-2 p-3">
+                            <li className="flex items-start">
+                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <p>Make a new folder</p>
+                            </li>
+                            <li className="flex items-start">
+                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <p>Publish this folder to the web</p>
+                            </li>
+                            <li className="flex items-start">
+                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <p>Share this folder</p>
+                            </li>
+                        </ul>
+                    </section>
+                    <section className="m-5">
+                        <div className="flex justify-between items-center pl-3 pr-1 py-1">
+                            <h5 className="font-bold">Other Places</h5>
+                            <img src="icon__dropdown.png" width="14" height="14" />
+                        </div>
+                        <ul className="flex flex-col gap-2 p-3">
+                            <li className="flex items-start">
+                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <p>Desktop</p>
+                            </li>
+                            <li className="flex items-start">
+                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <p>My Computer</p>
+                            </li>
+                            <li className="flex items-start">
+                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <p>My Network Places</p>
+                            </li>
+                        </ul>
+                    </section>
+                    <section className="m-5">
+                        <div className="flex justify-between items-center pl-3 pr-1 py-1">
+                            <h5 className="font-bold">File & Folder Tasks</h5>
+                            <img src="icon__dropdown.png" width="14" height="14" />
+                        </div>
+                        <div className="p-3">
+                            <h3 className="font-bold">{appData.title}</h3>
+                            <p>System Folder</p>
+                        </div>
+                    </section>
+                </aside>
+            </main>
         </>
     );
 };
