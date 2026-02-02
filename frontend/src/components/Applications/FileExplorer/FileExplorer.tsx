@@ -4,7 +4,7 @@ import CollapseBox from "../../CollapseBox/CollapseBox";
 import applicationsJSON from "../../../data/applications.json";
 import type { Application } from "../../../context/types";
 import { useContext } from "../../../context/context";
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
@@ -16,7 +16,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
-    const documents = ["documents", "pictures", "music"];
+    const documents = ["pictures", "music"];
 
     const updateWindow = (appId: string | null = null) => {
         const inputRef = inputField.current;
@@ -51,9 +51,22 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     }
 
     const fileClickHandler = (_: unknown, appId: string | null = null) => {
+        if (!appId) return;
         setSelectedItem(appId);
-    }
 
+        const secondClick = (e: PointerEvent) => onSecondClick(e, appId);
+        const onSecondClick = (event: PointerEvent, appId: string) => {
+            const target = (event.target as HTMLElement);
+
+            const targetId = (target.closest("[data-selected") as HTMLElement)?.dataset.id;
+            if (targetId === appId) return;
+
+            setSelectedItem((targetId) ? targetId : null);
+
+            document.removeEventListener("click", secondClick);
+        }
+        document.addEventListener("click", secondClick);
+    }
 
     return (
         <>
@@ -161,7 +174,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             const { title, icon, iconLarge } = Applications[id];
                             const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
                             return (
-                                <button data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
+                                <button data-id={id} data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
                                     <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>
