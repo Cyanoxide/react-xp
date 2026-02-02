@@ -7,7 +7,7 @@ interface TooltipProps {
     setSystemTrayIconDismissed: (dismissed: boolean) => void;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ heading, content, systemTrayIconDismissed, setSystemTrayIconDismissed }) => {
+const Tooltip = ({ heading, content, systemTrayIconDismissed, setSystemTrayIconDismissed }: TooltipProps) => {
     const onClickHandler = () => {
         setSystemTrayIconDismissed(true);
     }

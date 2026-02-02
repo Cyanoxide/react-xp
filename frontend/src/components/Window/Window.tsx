@@ -13,9 +13,9 @@ interface WindowProps extends currentWindow {
 
 const THROTTLE_DELAY = 50;
 const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
-const applications = (applicationsJSON as unknown as { [key: string]: Application });
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const Window: React.FC<WindowProps> = ({ ...props }) => {
+const Window = ({ ...props }: WindowProps) => {
     const { id, appId, children, active = false, hidden = false } = props;
     const { title, icon, iconLarge, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100 } = { ...applications[appId] };
     const { currentWindows, dispatch } = useContext();
@@ -194,7 +194,7 @@ const Window: React.FC<WindowProps> = ({ ...props }) => {
                             <button onClick={onButtonClick} data-button="close">Close</button>
                         </div>
                     </div>
-                    <div className={`${styles.windowContent} pointer-events-auto`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>
+                    <div className={`${styles.windowContent} pointer-events-auto flex flex-col`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>
                 </div>
             </div>
         </>

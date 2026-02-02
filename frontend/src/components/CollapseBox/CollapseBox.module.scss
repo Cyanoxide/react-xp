@@ -1,0 +1,55 @@
+.collapseBox {
+    background: #d8dff5;
+    border-radius: 0.4rem 0.4rem 0 0;
+    overflow: hidden;
+    color: #325cbf;
+    border: 1px solid #fff7;
+
+    &[data-open="false"] {
+        .header span {
+            transform: rotate(180deg);
+        }
+
+        .content {
+            max-height: 0;
+            opacity: 0;
+        }
+    }
+
+    .header {
+        background: linear-gradient(to right, #fff, #c9d4f4);
+        font-size: 0.8rem;
+
+        &:hover {
+            color: #568cf7;
+
+            span {
+                background-position: -1.4rem;
+            }
+        }
+
+        span {
+            background-image: url("spritesheet__collapse_dropdown.png");
+            background-size: cover;
+            height: 1.4rem;
+            aspect-ratio: 1/1;
+        }
+    }
+
+    .content {
+        line-height: 1rem;
+        transition: all 0.25s linear;
+        max-height: 20rem;
+    }
+
+    h3,
+    h3+p {
+        color: #000;
+        font-size: 0.9rem;
+    }
+
+    li:hover {
+        text-decoration: underline;
+        color: #568cf7;
+    }
+}

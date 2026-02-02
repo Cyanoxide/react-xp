@@ -3,7 +3,7 @@ import { openApplication } from "../../utils/general";
 import type { Application } from "../../context/types";
 import applicationsJSON from "../../data/applications.json";
 
-const applications = (applicationsJSON as unknown as { [key: string]: Application });
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
 interface StartMenuItemProps {
     appId: string;
@@ -13,7 +13,7 @@ interface StartMenuItemProps {
     onMenuItemHandler?: () => void;
 }
 
-const StartMenuItem: React.FC<StartMenuItemProps> = ({ ...props }) => {
+const StartMenuItem = ({ ...props }: StartMenuItemProps) => {
     const { subTitle = null, appId, subMenu = null } = props;
     const { iconSize = (subTitle) ? 30 : 22 } = props;
     const { currentWindows, dispatch } = useContext();

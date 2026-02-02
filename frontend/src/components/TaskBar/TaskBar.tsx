@@ -5,8 +5,9 @@ import Tooltip from "../Tooltip/Tooltip";
 import StartMenu from "../StartMenu/StartMenu";
 import applicationsJSON from "../../data/applications.json";
 import type { Application } from "../../context/types";
+import { getCurrentWindow } from "../../utils/general";
 
-const applications = applicationsJSON as unknown as { [key: string]: Application }
+const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const TaskBar = () => {
     const { currentTime, currentWindows, isStartVisible, dispatch } = useContext();
@@ -48,9 +49,8 @@ const TaskBar = () => {
     const startButtonClickHandler = () => {
         dispatch({ type: "SET_IS_START_VISIBLE", payload: (isStartVisible) ? false : true });
 
-        const updatedCurrentWindows = [...currentWindows];
-        const activeWindow = currentWindows.find(item => item.active === true);
-        if (activeWindow) activeWindow.active = false;
+        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        if (currentWindow) currentWindow.active = false;
 
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     }

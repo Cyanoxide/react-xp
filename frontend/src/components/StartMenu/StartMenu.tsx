@@ -9,7 +9,7 @@ interface StartMenuProps {
     startButton: React.RefObject<HTMLButtonElement | null>
 }
 
-const StartMenu: React.FC<StartMenuProps> = ({ startButton }) => {
+const StartMenu = ({ startButton }: StartMenuProps) => {
     const { isStartVisible, isAllProgramsOpen, isRecentDocumentsOpen, dispatch } = useContext();
     const startMenu = useRef<HTMLDivElement | null>(null);
     const allPrograms = useRef<HTMLDivElement | null>(null);

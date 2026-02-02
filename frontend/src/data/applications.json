@@ -3,7 +3,8 @@
         "title": "My Documents",
         "icon": "/icon__documents.png",
         "iconLarge": "/icon__documents--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer",
+        "height": 390
     },
     "internetExplorer": {
         "title": "Internet Explorer",
@@ -20,7 +21,8 @@
         "title": "Recycle Bin",
         "icon": "/icon__recycle_bin.png",
         "iconLarge": "/icon__recycle_bin--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer",
+        "height": 390
     },
     "winMessenger": {
         "title": "Windows Messenger",
@@ -44,18 +46,24 @@
     },
     "music": {
         "title": "My Music",
+        "icon": "/icon__music.png",
         "iconLarge": "/icon__music--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer",
+        "height": 390
     },
     "pictures": {
         "title": "My Pictures",
+        "icon": "/icon__pictures.png",
         "iconLarge": "/icon__pictures--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer",
+        "height": 390
     },
     "computer": {
         "title": "My Computer",
+        "icon": "/icon__computer.png",
         "iconLarge": "/icon__computer--large.png",
-        "content": "placeholder"
+        "component": "FileExplorer",
+        "height": 390
     },
     "controlPanel": {
         "title": "Control Panel",
