@@ -4,13 +4,24 @@ import CollapseBox from "../../CollapseBox/CollapseBox";
 import applicationsJSON from "../../../data/applications.json";
 import type { Application } from "../../../context/types";
 import { useContext } from "../../../context/context";
-import { useRef, useState, type ReactNode } from "react";
+import { useRef, useState, useEffect } from "react";
+import { getCurrentWindow } from "../../../utils/general";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
     const { currentWindows, dispatch } = useContext();
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
+    const [isBackDisabled, setIsBackDisabled] = useState(true);
+    const [isForwardDisabled, setIsForwardDisabled] = useState(true);
+
+    useEffect(() => {
+        const {currentWindow} = getCurrentWindow(currentWindows);
+        if (!currentWindow) return;
+
+        if (currentWindow.history) setIsBackDisabled(currentWindow.history.length === 0);
+        if (currentWindow.forward) setIsForwardDisabled(currentWindow.forward.length === 0);
+    }, [currentWindows])
 
     const inputField = useRef<HTMLInputElement | null>(null);
     const appData = Applications[appId];
@@ -27,8 +38,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             Object.entries(Applications).map(([key, app]) => [app.title.toLowerCase(), key])
         );
 
-        const updatedCurrentWindows = [...currentWindows];
-        const currentWindow = updatedCurrentWindows.find((item) => item.active === true);
+        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
         if (!currentWindow) return;
 
         if (!(value in titleAppIdMap)) {
@@ -36,6 +46,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             return;
         }
 
+        if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
         currentWindow.appId = appId || titleAppIdMap[value];
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     }
@@ -68,6 +79,30 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         document.addEventListener("click", secondClick);
     }
 
+    const backClickHandler = () => {
+        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        if (!currentWindow || !currentWindow.history) return;
+
+        if (currentWindow.forward) currentWindow.forward.push(currentWindow.appId);
+
+        const previousWindowId = currentWindow.history.pop() || "";
+
+        currentWindow.appId = previousWindowId;
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+    }
+
+    const forwardClickHandler = () => {
+        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        if (!currentWindow || !currentWindow.forward) return;
+
+        if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
+
+        const previousWindowId = currentWindow.forward.pop() || "";
+
+        currentWindow.appId = previousWindowId;
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+    }
+
     return (
         <>
             <div className={styles.menusContainer}>
@@ -75,12 +110,12 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                 <section className={`${styles.appMenu} relative`}>
                     <div className="flex absolute">
                         <div className="flex shrink-0">
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5" onClick={backClickHandler} disabled={isBackDisabled}>
                                 <img className="mr-2" src="/icon__back.png" width="20" height="20" />
                                 <h4>Back</h4>
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5" onClick={forwardClickHandler} disabled={isForwardDisabled}>
                                 <img src="/icon__forward.png" width="20" height="20" />
                                 <h4 className="hidden">Forward</h4>
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>
@@ -174,7 +209,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             const { title, icon, iconLarge } = Applications[id];
                             const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
                             return (
-                                <button data-id={id} data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
+                                <button key={id} data-id={id} data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
                                     <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>

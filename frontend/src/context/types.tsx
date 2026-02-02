@@ -16,6 +16,8 @@ export interface currentWindow {
     left?: number;
     active?: boolean;
     hidden?: boolean;
+    history?: string[];
+    forward?: string[];
 }
 export type currentWindows = currentWindow[];
 
