@@ -44,16 +44,19 @@
     },
     "music": {
         "title": "My Music",
+        "icon": "/icon__music.png",
         "iconLarge": "/icon__music--large.png",
         "component": "FileExplorer"
     },
     "pictures": {
         "title": "My Pictures",
+        "icon": "/icon__pictures.png",
         "iconLarge": "/icon__pictures--large.png",
         "component": "FileExplorer"
     },
     "computer": {
         "title": "My Computer",
+        "icon": "/icon__computer.png",
         "iconLarge": "/icon__computer--large.png",
         "component": "FileExplorer"
     },

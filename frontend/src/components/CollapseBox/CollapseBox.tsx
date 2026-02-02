@@ -16,10 +16,10 @@ const CollapseBox = ({ title, children }: CollapseBoxProps) => {
 
     return (
         <section className={`${styles.collapseBox} m-5`} data-open={isCollapseBoxOpen}>
-            <div className={`${styles.header} flex justify-between items-center pl-3 pr-1 py-1`}>
+            <button className={`${styles.header} flex justify-between items-center w-full pl-3 pr-1 py-1`} onClick={onClickHandler}>
                 <h5 className="font-bold">{title}</h5>
-                <img src="icon__dropdown.png" width="14" height="14" onClick={onClickHandler} />
-            </div>
+                <span className={styles.icon}></span>
+            </button>
             <div className={styles.content}>{children}</div>
         </section>
     );

@@ -142,8 +142,14 @@
     }
 }
 
+.mainContent {
+    overflow-y: auto;
+    height: 100%;
+}
+
 .sidebar {
     width: 18rem;
     background: #6978d1;
     font-size: 0.9rem;
+    overflow-y: auto;
 }

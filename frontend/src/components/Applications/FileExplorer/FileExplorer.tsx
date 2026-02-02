@@ -106,15 +106,15 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     <CollapseBox title="File & Folder Tasks">
                         <ul className="flex flex-col gap-2 p-3">
                             <li className="flex items-start">
-                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <img src="/icon__new_folder--large.png" className="mr-2" width="12" height="12" />
                                 <p>Make a new folder</p>
                             </li>
                             <li className="flex items-start">
-                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <img src="/icon__publish_web--large.png" className="mr-2" width="12" height="12" />
                                 <p>Publish this folder to the web</p>
                             </li>
                             <li className="flex items-start">
-                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <img src="/icon__file_explorer.png" className="mr-2" width="12" height="12" />
                                 <p>Share this folder</p>
                             </li>
                         </ul>
@@ -122,15 +122,15 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     <CollapseBox title="Other Places">
                         <ul className="flex flex-col gap-2 p-3">
                             <li className="flex items-start">
-                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
                                 <p>Desktop</p>
                             </li>
                             <li className="flex items-start">
-                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
                                 <p>My Computer</p>
                             </li>
                             <li className="flex items-start">
-                                <img className="mr-3 mt-1" width="10" height="10" />
+                                <img src="/icon__network_places--large.png" className="mr-2" width="12" height="12" />
                                 <p>My Network Places</p>
                             </li>
                         </ul>

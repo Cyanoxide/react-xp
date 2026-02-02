@@ -6,7 +6,7 @@
     border: 1px solid #fff7;
 
     &[data-open="false"] {
-        .header img {
+        .header span {
             transform: rotate(180deg);
         }
 
@@ -19,10 +19,25 @@
     .header {
         background: linear-gradient(to right, #fff, #c9d4f4);
         font-size: 0.8rem;
+
+        &:hover {
+            color: #568cf7;
+
+            span {
+                background-position: -1.4rem;
+            }
+        }
+
+        span {
+            background-image: url("spritesheet__collapse_dropdown.png");
+            background-size: cover;
+            height: 1.4rem;
+            aspect-ratio: 1/1;
+        }
     }
 
     .content {
-        line-height: 1.1rem;
+        line-height: 1rem;
         transition: all 0.25s linear;
         max-height: 20rem;
     }
