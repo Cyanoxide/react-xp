@@ -14,6 +14,8 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const inputField = useRef<HTMLInputElement | null>(null);
     const appData = Applications[appId];
 
+    const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
+
     const updateWindow = () => {
         const inputRef = inputField.current;
         const value = (inputRef) ? inputRef.value.toLowerCase() : null;
@@ -101,7 +103,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </button>
                 </div>
             </section>
-            <main className="h-full flex">
+            <main className={`${styles.mainContent} h-full flex overflow-auto`} data-bg-accent={bgAccent}>
                 <aside className={`${styles.sidebar} h-full`}>
                     <CollapseBox title="File & Folder Tasks">
                         <ul className="flex flex-col gap-2 p-3">

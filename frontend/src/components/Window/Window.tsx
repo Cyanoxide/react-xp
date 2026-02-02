@@ -194,7 +194,7 @@ const Window = ({ ...props }: WindowProps) => {
                             <button onClick={onButtonClick} data-button="close">Close</button>
                         </div>
                     </div>
-                    <div className={`${styles.windowContent} pointer-events-auto`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>
+                    <div className={`${styles.windowContent} pointer-events-auto flex flex-col`} style={{ height: "calc(100% - 2.5rem)", width: "100%", background: "#fff" }}>{children}</div>
                 </div>
             </div>
         </>

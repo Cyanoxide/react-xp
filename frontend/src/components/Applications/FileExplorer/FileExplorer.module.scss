@@ -145,6 +145,30 @@
 .mainContent {
     overflow-y: auto;
     height: 100%;
+
+    &[data-bg-accent] {
+        &:after {
+            content: "";
+            position: absolute;
+            height: 12rem;
+            width: 12rem;
+            background-size: cover;
+            background-repeat: no-repeat;
+            bottom: 0;
+            right: 0;
+            pointer-events: none;
+        }
+
+        &[data-bg-accent="pictures"]:after {
+            background-image: url("/background__pictures.png");
+        }
+
+        &[data-bg-accent="music"]:after {
+            background-image: url("/background__music.png");
+            width: 11rem;
+        }
+
+    }
 }
 
 .sidebar {
