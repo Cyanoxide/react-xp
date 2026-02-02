@@ -1,5 +1,6 @@
 import styles from "./FileExplorer.module.scss";
 import WindowMenu from "../../WindowMenu/WindowMenu";
+import CollapseBox from "../../CollapseBox/CollapseBox";
 import applicationsJSON from "../../../data/applications.json";
 import type { Application } from "../../../context/types";
 import { useContext } from "../../../context/context";
@@ -9,6 +10,7 @@ const Applications = applicationsJSON as unknown as Record<string, Application>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
     const { currentWindows, dispatch } = useContext();
+
     const inputField = useRef<HTMLInputElement | null>(null);
     const appData = Applications[appId];
 
@@ -38,6 +40,10 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         if (event.key === "Enter") {
             updateWindow();
         }
+    }
+
+    const onClickHandler = () => {
+
     }
 
     return (
@@ -97,11 +103,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             </section>
             <main className="h-full flex">
                 <aside className={`${styles.sidebar} h-full`}>
-                    <section className="m-5">
-                        <div className="flex justify-between items-center pl-3 pr-1 py-1">
-                            <h5 className="font-bold">File & Folder Tasks</h5>
-                            <img src="icon__dropdown.png" width="14" height="14" />
-                        </div>
+                    <CollapseBox title="File & Folder Tasks">
                         <ul className="flex flex-col gap-2 p-3">
                             <li className="flex items-start">
                                 <img className="mr-3 mt-1" width="10" height="10" />
@@ -116,12 +118,8 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                 <p>Share this folder</p>
                             </li>
                         </ul>
-                    </section>
-                    <section className="m-5">
-                        <div className="flex justify-between items-center pl-3 pr-1 py-1">
-                            <h5 className="font-bold">Other Places</h5>
-                            <img src="icon__dropdown.png" width="14" height="14" />
-                        </div>
+                    </CollapseBox>
+                    <CollapseBox title="Other Places">
                         <ul className="flex flex-col gap-2 p-3">
                             <li className="flex items-start">
                                 <img className="mr-3 mt-1" width="10" height="10" />
@@ -136,17 +134,13 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                 <p>My Network Places</p>
                             </li>
                         </ul>
-                    </section>
-                    <section className="m-5">
-                        <div className="flex justify-between items-center pl-3 pr-1 py-1">
-                            <h5 className="font-bold">File & Folder Tasks</h5>
-                            <img src="icon__dropdown.png" width="14" height="14" />
-                        </div>
+                    </CollapseBox>
+                    <CollapseBox title="Details">
                         <div className="p-3">
                             <h3 className="font-bold">{appData.title}</h3>
                             <p>System Folder</p>
                         </div>
-                    </section>
+                    </CollapseBox>
                 </aside>
             </main>
         </>

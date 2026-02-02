@@ -1,0 +1,35 @@
+.collapseBox {
+    background: #d8dff5;
+    border-radius: 0.4rem 0.4rem 0 0;
+    overflow: hidden;
+    color: #325cbf;
+    border: 1px solid #fff7;
+
+    &[data-open="false"] {
+        .header img {
+            transform: rotate(180deg);
+        }
+
+        .content {
+            max-height: 0;
+            opacity: 0;
+        }
+    }
+
+    .header {
+        background: linear-gradient(to right, #fff, #c9d4f4);
+        font-size: 0.8rem;
+    }
+
+    .content {
+        line-height: 1.1rem;
+        transition: all 0.25s linear;
+        max-height: 20rem;
+    }
+
+    h3,
+    h3+p {
+        color: #000;
+        font-size: 0.9rem;
+    }
+}
