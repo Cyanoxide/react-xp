@@ -1,3 +1,7 @@
+.menusContainer {
+    z-index: 1;
+}
+
 .appMenu {
     background: #f1f0eb;
     border-bottom: 0.1rem solid #dedaca;
@@ -176,4 +180,5 @@
     background: #6978d1;
     font-size: 0.9rem;
     overflow-y: auto;
+    z-index: 1;
 }
