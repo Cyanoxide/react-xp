@@ -4,19 +4,21 @@ import CollapseBox from "../../CollapseBox/CollapseBox";
 import applicationsJSON from "../../../data/applications.json";
 import type { Application } from "../../../context/types";
 import { useContext } from "../../../context/context";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
     const { currentWindows, dispatch } = useContext();
+    const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
     const inputField = useRef<HTMLInputElement | null>(null);
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
+    const documents = ["documents", "pictures", "music"];
 
-    const updateWindow = () => {
+    const updateWindow = (appId: string | null = null) => {
         const inputRef = inputField.current;
         const value = (inputRef) ? inputRef.value.toLowerCase() : null;
         if (!inputRef || !value) return;
@@ -34,7 +36,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             return;
         }
 
-        currentWindow.appId = titleAppIdMap[value];
+        currentWindow.appId = appId || titleAppIdMap[value];
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     }
 
@@ -44,9 +46,14 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         }
     }
 
-    const onClickHandler = () => {
-
+    const fileDBClickHandler = (_: unknown, appId: string | null = null) => {
+        updateWindow(appId);
     }
+
+    const fileClickHandler = (_: unknown, appId: string | null = null) => {
+        setSelectedItem(appId);
+    }
+
 
     return (
         <>
@@ -98,7 +105,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             <input ref={inputField} className={`${styles.navBar} h-full`} type="text" defaultValue={appData.title} onKeyDown={keyDownHandler} />
                             <button className={styles.dropDown}>Submit</button>
                         </div>
-                        <button className={`${styles.goButton} flex items-center`} onClick={updateWindow}>
+                        <button className={`${styles.goButton} flex items-center`} onClick={() => updateWindow()}>
                             <img src="/icon__go.png" className="mr-1.5" width="19" height="19" />
                             <span>Go</span>
                         </button>
@@ -109,7 +116,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                 <aside className={`${styles.sidebar} h-full`}>
                     <CollapseBox title="File & Folder Tasks">
                         <ul className="flex flex-col gap-2 p-3">
-                            <li className="flex items-start">
+                            <li className="flex items-center">
                                 <img src="/icon__new_folder--large.png" className="mr-2" width="12" height="12" />
                                 <p>Make a new folder</p>
                             </li>
@@ -117,7 +124,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                 <img src="/icon__publish_web--large.png" className="mr-2" width="12" height="12" />
                                 <p>Publish this folder to the web</p>
                             </li>
-                            <li className="flex items-start">
+                            <li className="flex items-center">
                                 <img src="/icon__file_explorer.png" className="mr-2" width="12" height="12" />
                                 <p>Share this folder</p>
                             </li>
@@ -125,15 +132,15 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </CollapseBox>
                     <CollapseBox title="Other Places">
                         <ul className="flex flex-col gap-2 p-3">
-                            <li className="flex items-start">
+                            <li className="flex items-center">
                                 <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
                                 <p>Desktop</p>
                             </li>
-                            <li className="flex items-start">
+                            <li className="flex items-center">
                                 <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
                                 <p>My Computer</p>
                             </li>
-                            <li className="flex items-start">
+                            <li className="flex items-center">
                                 <img src="/icon__network_places--large.png" className="mr-2" width="12" height="12" />
                                 <p>My Network Places</p>
                             </li>
@@ -146,7 +153,23 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                         </div>
                     </CollapseBox>
                 </aside>
-            </main>
+                <section className={`${styles.contents} relative w-full`}>
+                    <div className="absolute inset-0 p-3 h-fit">
+                        {documents.map((id) => {
+                            if (id === appId) return;
+                            const isActive = (selectedItem === id);
+                            const { title, icon, iconLarge } = Applications[id];
+                            const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
+                            return (
+                                <button data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
+                                    <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
+                                    <h4 className="px-0.5">{title}</h4>
+                                </button>
+                            )
+                        })}
+                    </div>
+                </section>
+            </main >
         </>
     );
 };

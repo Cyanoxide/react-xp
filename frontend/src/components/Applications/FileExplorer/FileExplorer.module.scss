@@ -181,4 +181,46 @@
     font-size: 0.9rem;
     overflow-y: auto;
     z-index: 1;
+    flex-shrink: 0;
+}
+
+.contents {
+    &>div {
+        color: #000;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: start;
+        gap: 1rem;
+    }
+
+    .file {
+        display: flex;
+        align-items: center;
+        width: 14rem;
+        flex-shrink: 0;
+        line-height: 1.2rem;
+
+        img {
+            margin-right: 0.5rem;
+        }
+
+        &[data-selected="true"] {
+            &>span {
+                background: #4069bf;
+                mask-position: bottom left;
+                mask-size: 40px;
+                mask-repeat: no-repeat;
+
+                img {
+                    mix-blend-mode: soft-light;
+                }
+            }
+
+            h4 {
+                background-color: #4069bf;
+                text-shadow: none;
+                color: #fff;
+            }
+        }
+    }
 }
