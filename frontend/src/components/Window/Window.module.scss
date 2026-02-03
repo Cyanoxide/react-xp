@@ -2,11 +2,10 @@
     padding: 0.3rem;
     transition: all 0.3s ease, padding 0.15s ease-in;
     min-width: fit-content;
+    z-index: 0;
 
     &[data-active="true"] {
         z-index: 1;
-        position: relative;
-
         &>div {
             background: #162abe;
             box-shadow: none;
