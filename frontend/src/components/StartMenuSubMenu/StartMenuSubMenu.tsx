@@ -46,8 +46,8 @@ const StartMenuSubMenu = ({ data }: StartMenuSubMenuProps) => {
     const { currentWindows, dispatch } = useContext();
 
     const onClickHandler = (_: unknown, item: SubMenuItem) => {
-        const { subMenu, appId, disabled } = { ...item };
-        if (subMenu || disabled) return;
+        const { subMenu, appId } = { ...item };
+        if (subMenu || applications[appId].disabled) return;
         openApplication(appId, currentWindows, dispatch);
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
     }

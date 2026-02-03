@@ -8,7 +8,7 @@ import { getBaseDomain, sameBaseDomain } from "../../../utils/general";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
-const FileExplorer = ({ appId }: Record<string, string>) => {
+const InternetExplorer = ({ appId }: Record<string, string>) => {
     // const [isBackDisabled, setIsBackDisabled] = useState(true);
     // const [isForwardDisabled, setIsForwardDisabled] = useState(true);
 
@@ -161,4 +161,4 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     );
 };
 
-export default FileExplorer;
+export default InternetExplorer;
