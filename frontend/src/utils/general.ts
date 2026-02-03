@@ -55,3 +55,25 @@ export const getCurrentWindow = (currentWindows: currentWindow[]) => {
     const currentWindow = updatedCurrentWindows.find((item) => item.active === true);
     return { currentWindow, updatedCurrentWindows };
 }
+
+export const getBaseDomain = (url: string = window.location.hostname) => {
+    if (url === "localhost") return "localhost";
+
+    const parts = url.split(".");
+
+    if (parts.length >= 2) {
+        return parts.slice(-2).join(".");
+    }
+
+    return url;
+}
+
+export const sameBaseDomain = (urlA: string, urlB: string = window.location.hostname) => {
+    try {
+        const a = getBaseDomain(new URL(urlA).hostname);
+        const b = getBaseDomain(new URL(urlB).hostname);
+        return a === b;
+    } catch {
+        return false;
+    }
+}

@@ -10,7 +10,9 @@
         "title": "Internet Explorer",
         "icon": "/icon__internet_explorer.png",
         "iconLarge": "/icon__internet_explorer--large.png",
-        "content": "placeholder"
+        "component": "InternetExplorer",
+        "height": 500,
+        "width": 500
     },
     "outlook": {
         "title": "Microsoft Outlook",
