@@ -10,24 +10,6 @@
     right: 0;
     min-height: 3.6rem;
 
-    [data-label="views"] {
-        img {
-            margin-right: 0.1rem;
-        }
-
-        &:hover {
-            span {
-                border-color: transparent;
-            }
-        }
-
-        &:active {
-            .dropdown {
-                transform: scaleY(0.6) translate(0.105rem, 0.205rem);
-            }
-        }
-    }
-
     &:not(:first-child) {
         border-top: 0.1rem solid #fff;
     }
@@ -46,6 +28,8 @@
 
         &>img {
             margin: 0.5rem;
+            height: 2rem;
+            width: auto;
         }
 
         &>span {

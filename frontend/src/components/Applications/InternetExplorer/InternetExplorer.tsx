@@ -92,15 +92,15 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>
                             </button>
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img src="" width="20" height="20" />
+                                <img src="/icon__stop--large.png" width="20" height="20" />
                                 <h4 className="hidden">Stop</h4>
                             </button>
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img src="" width="20" height="20" />
+                                <img src="/icon__refresh--large.png" width="20" height="20" />
                                 <h4 className="hidden">Refresh</h4>
                             </button>
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img src="" width="20" height="20" />
+                                <img src="/icon__home--large.png" width="20" height="20" />
                                 <h4 className="hidden">Home</h4>
                             </button>
                         </div>
@@ -110,30 +110,22 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                                 <h4>Search</h4>
                             </button>
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img className="mr-2" src="" width="20" height="20" />
+                                <img className="mr-2" src="/icon__favourites--large.png" width="20" height="20" />
                                 <h4>Favourites</h4>
                             </button>
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img className="mr-2" src="" width="20" height="20" />
+                                <img className="mr-2" src="/icon__history--large.png" width="20" height="20" />
                                 <h4 className="hidden">History</h4>
                             </button>
                         </div>
                         <div className="flex shrink-0">
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img className="mr-2" src="" width="20" height="20" />
+                                <img className="mr-2" src="/icon__mail--large.png" width="20" height="20" />
                                 <h4 className="hidden">Mail</h4>
                             </button>
                             <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img className="mr-2" src="" width="20" height="20" />
+                                <img className="mr-2" src="/icon__print--large.png" width="20" height="20" />
                                 <h4 className="hidden">Print</h4>
-                            </button>
-                            <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img className="mr-2" src="" width="20" height="20" />
-                                <h4 className="hidden">Edit</h4>
-                            </button>
-                            <button className="flex items-center m-0.5 cursor-not-allowed">
-                                <img className="mr-2" src="" width="20" height="20" />
-                                <h4 className="hidden">Messenger</h4>
                             </button>
                         </div>
                     </div>
