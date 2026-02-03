@@ -81,57 +81,57 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                 <section className={`${styles.appMenu} relative`}>
                     <div className="flex absolute">
                         <div className="flex shrink-0">
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="/icon__back.png" width="20" height="20" />
                                 <h4>Back</h4>
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img src="/icon__forward.png" width="20" height="20" />
                                 <h4 className="hidden">Forward</h4>
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img src="" width="20" height="20" />
                                 <h4 className="hidden">Stop</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img src="" width="20" height="20" />
                                 <h4 className="hidden">Refresh</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img src="" width="20" height="20" />
                                 <h4 className="hidden">Home</h4>
                             </button>
                         </div>
                         <div className="flex shrink-0">
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="/icon__search--large.png" width="20" height="20" />
                                 <h4>Search</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="" width="20" height="20" />
                                 <h4>Favourites</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="" width="20" height="20" />
                                 <h4 className="hidden">History</h4>
                             </button>
                         </div>
                         <div className="flex shrink-0">
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="" width="20" height="20" />
                                 <h4 className="hidden">Mail</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="" width="20" height="20" />
                                 <h4 className="hidden">Print</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="" width="20" height="20" />
                                 <h4 className="hidden">Edit</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="" width="20" height="20" />
                                 <h4 className="hidden">Messenger</h4>
                             </button>

@@ -120,23 +120,23 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                 <h4 className="hidden">Forward</h4>
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img src="/icon__up.png" width="20" height="20" />
                                 <h4 className="hidden">Up</h4>
                             </button>
                         </div>
                         <div className="flex shrink-0">
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="/icon__search--large.png" width="20" height="20" />
                                 <h4>Search</h4>
                             </button>
-                            <button className="flex items-center m-0.5">
+                            <button className="flex items-center m-0.5 cursor-not-allowed">
                                 <img className="mr-2" src="/icon__folders.png" width="20" height="20" />
                                 <h4>Folders</h4>
                             </button>
                         </div>
                         <div className="flex shrink-0">
-                            <button className="flex items-center m-0.5" data-label="views">
+                            <button className="flex items-center m-0.5 cursor-not-allowed" data-label="views">
                                 <img src="/icon__views.png" width="20" height="20" />
                                 <h4 className="hidden">Views</h4>
                                 <span className="h-full"><span className={styles.dropdown}>▼</span></span>

@@ -18,12 +18,12 @@ const applications = applicationsJSON as unknown as Record<string, Application>;
 const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedId, setSelectedId }: DesktopIconProps) => {
     const { currentWindows, dispatch } = useContext();
     const [position, setPosition] = useState<AbsoluteObject>({ top, right, bottom, left });
-    const desktopIcon = useRef<HTMLDivElement | null>(null);
+    const desktopIcon = useRef<HTMLButtonElement | null>(null);
     const isActive = id === selectedId;
     const appData = applications[appId];
     const { title, icon, iconLarge, link } = { ...appData };
 
-    const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const onPointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
         const desktopIconRect = desktopIcon.current?.getBoundingClientRect();
         if (!desktopIconRect) return;
 
@@ -73,10 +73,10 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
     const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
 
     return (
-        <div ref={desktopIcon} className={styles.desktopIcon} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
+        <button ref={desktopIcon} className={styles.desktopIcon} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
             <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="50" height="50" draggable={false} /></span>
             <h4 className="text-center">{title}</h4>
-        </div>
+        </button>
     );
 };
 

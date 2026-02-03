@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer base {
+  button {
+    cursor: pointer;
+  }
+}
+
 :root {
   font-family: Tahoma, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -22,4 +28,9 @@ body {
 
 button {
   text-align: left;
+
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
 }

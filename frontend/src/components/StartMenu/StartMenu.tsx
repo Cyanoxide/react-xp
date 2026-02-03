@@ -106,13 +106,13 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
             <footer>
                 <ul className="flex justify-end gap-2 p-2">
                     <li>
-                        <button className="flex items-center p-2">
+                        <button className="flex items-center p-2 cursor-not-allowed">
                             <img src="/icon__log_out--large.png" className="mr-2" width="22" height="22" />
                             <h6>Log Off</h6>
                         </button>
                     </li>
                     <li>
-                        <button className="flex items-center p-2">
+                        <button className="flex items-center p-2 cursor-not-allowed">
                             <img src="/icon__shut_down--large.png" className="mr-2" width="22" height="22" />
                             <h6>Turn Off Computer</h6>
                         </button>

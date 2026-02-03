@@ -35,6 +35,7 @@ export interface Application {
     content: ReactNode | string;
     component?: string | undefined;
     link?: string;
+    disabled?: boolean;
 }
 
 export interface State {

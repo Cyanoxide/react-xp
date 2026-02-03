@@ -19,6 +19,7 @@ interface SubMenuData {
 interface SubMenuItem {
     appId: string;
     subMenu?: string;
+    disabled?: boolean;
 }
 
 const subMenus = (subMenusJSON as unknown as { [key: string]: SubMenuData });
@@ -26,11 +27,11 @@ const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SubMenuItem) => void) => {
     const { appId, subMenu = "" } = { ...item };
-    const { title, icon, iconLarge } = { ...applications[appId] };
+    const { title, icon, iconLarge, disabled } = { ...applications[appId] };
 
     return (
         <div key={appId} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-menu={!!subMenu}>
-            <button className="flex items-center p-1.5 relative" onClick={(e) => onClickHandler(e, item)}>
+            <button className={`flex items-center p-1.5 relative ${(disabled) ? "cursor-not-allowed" : ""} ${(subMenu) ? "cursor-default" : ""}`} onClick={(e) => onClickHandler(e, item)} >
                 <img src={icon || iconLarge} className="mr-1.5" width="16" height="16" />
                 <span>{title}</span>
             </button>
@@ -45,8 +46,8 @@ const StartMenuSubMenu = ({ data }: StartMenuSubMenuProps) => {
     const { currentWindows, dispatch } = useContext();
 
     const onClickHandler = (_: unknown, item: SubMenuItem) => {
-        const { subMenu, appId } = { ...item };
-        if (subMenu) return;
+        const { subMenu, appId, disabled } = { ...item };
+        if (subMenu || disabled) return;
         openApplication(appId, currentWindows, dispatch);
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
     }
