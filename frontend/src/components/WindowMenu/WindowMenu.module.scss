@@ -18,6 +18,11 @@
             &:hover {
                 color: #fff;
                 background-color: #4069bf;
+                cursor: not-allowed;
+            }
+
+            button {
+                cursor: not-allowed;
             }
         }
     }

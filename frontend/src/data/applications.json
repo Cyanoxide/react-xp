@@ -10,12 +10,15 @@
         "title": "Internet Explorer",
         "icon": "/icon__internet_explorer.png",
         "iconLarge": "/icon__internet_explorer--large.png",
-        "content": "placeholder"
+        "component": "InternetExplorer",
+        "height": 500,
+        "width": 500
     },
     "outlook": {
         "title": "Microsoft Outlook",
         "iconLarge": "/icon__outlook--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "recycleBin": {
         "title": "Recycle Bin",
@@ -27,17 +30,20 @@
     "winMessenger": {
         "title": "Windows Messenger",
         "iconLarge": "/icon__messenger--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "winMediaPlayer": {
         "title": "Windows Media Player",
         "iconLarge": "/icon__media_player--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "msn": {
         "title": "MSN",
         "iconLarge": "/icon__msn--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "recentDocuments": {
         "title": "My Recent Documents",
@@ -68,27 +74,32 @@
     "controlPanel": {
         "title": "Control Panel",
         "iconLarge": "/icon__control_panel--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "programDefaults": {
         "title": "Set Program Access and Defaults",
         "iconLarge": "/icon__default_programs--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "printersFaxes": {
         "title": "Printers and Faxes",
         "iconLarge": "/icon__printers_faxes--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "support": {
         "title": "Help and Support",
         "iconLarge": "/icon__support--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "search": {
         "title": "Search",
         "iconLarge": "/icon__search--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "run": {
         "title": "Run...",
@@ -102,22 +113,26 @@
     "winCatalog": {
         "title": "Windows Catalog",
         "icon": "/icon__win_catalog.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "winUpdate": {
         "title": "Windows Update",
         "iconLarge": "/icon__win_update--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "remoteAssistance": {
         "title": "Remote Assistance",
         "iconLarge": "/icon__remote_assistance--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "winMovieMaker": {
         "title": "Windows Movie Maker",
         "iconLarge": "/icon__movie_maker--large.png",
-        "content": "placeholder"
+        "content": "placeholder",
+        "disabled": true
     },
     "accessories": {
         "title": "Accessories",

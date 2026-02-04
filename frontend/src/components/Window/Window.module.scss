@@ -2,10 +2,10 @@
     padding: 0.3rem;
     transition: all 0.3s ease, padding 0.15s ease-in;
     min-width: fit-content;
+    z-index: 0;
 
     &[data-active="true"] {
         z-index: 1;
-
         &>div {
             background: #162abe;
             box-shadow: none;
@@ -139,6 +139,6 @@
     .windowContent {
         box-shadow: 0rem 0.05rem 0rem 0.1rem #a5afeb;
         transition: all 0.1s ease;
-        position:relative;
+        position: relative;
     }
 }

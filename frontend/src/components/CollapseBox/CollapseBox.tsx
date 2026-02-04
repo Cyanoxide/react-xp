@@ -1,5 +1,5 @@
-import styles from "./CollapseBox.module.scss";
 import { useState } from "react";
+import styles from "./CollapseBox.module.scss";
 import type { ReactNode } from "react";
 
 interface CollapseBoxProps {
@@ -12,7 +12,7 @@ const CollapseBox = ({ title, children }: CollapseBoxProps) => {
 
     const onClickHandler = () => {
         setIsCollapseBoxOpen((isCollapseBoxOpen) ? false : true);
-    }
+    };
 
     return (
         <section className={`${styles.collapseBox} m-5`} data-open={isCollapseBoxOpen}>

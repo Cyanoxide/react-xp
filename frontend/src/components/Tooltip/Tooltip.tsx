@@ -10,7 +10,7 @@ interface TooltipProps {
 const Tooltip = ({ heading, content, systemTrayIconDismissed, setSystemTrayIconDismissed }: TooltipProps) => {
     const onClickHandler = () => {
         setSystemTrayIconDismissed(true);
-    }
+    };
 
     return (
         <span className={`${styles.tooltip} absolute`} data-dismissed={(systemTrayIconDismissed) ? "true" : "false"} data-label="tooltip">
