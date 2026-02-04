@@ -19,9 +19,9 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
     useEffect(() => {
         const onClick = (event: MouseEvent) => {
             const target = (event.target as Node);
-            if (!startButton || !startMenuRef) return;
+            if (!startMenu || !startButton) return;
 
-            if (!startMenu?.contains(target) && !startButton.contains(target)) {
+            if (!startMenu.contains(target) && !startButton.contains(target)) {
                 dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
                 document.removeEventListener("click", onClick);
             }

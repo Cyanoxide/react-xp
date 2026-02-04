@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { Activity, useEffect, useState, useRef } from "react";
 import { useContext } from "../../context/context";
 import applicationsJSON from "../../data/applications.json";
 import { getCurrentWindow } from "../../utils/general";
@@ -61,7 +61,9 @@ const TaskBar = () => {
     return (
         <div className={`${styles.taskBar} flex justify-between`} data-label="taskbar">
             <button ref={startButtonRef} className={`${styles.startButton}`} onClick={startButtonClickHandler} data-selected={isStartVisible}>Start</button>
-            {isStartVisible && <StartMenu startButton={startButton} />}
+            <Activity mode={isStartVisible ? "visible" : "hidden"}>
+                <StartMenu startButton={startButton} />
+            </Activity>
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
                 {currentWindows.map((currentWindow, index) => {
                     const appData = applications[currentWindow.appId];
