@@ -1,13 +1,13 @@
-import styles from "./StartMenuSubMenu.module.scss";
+import { useContext } from "../../context/context";
+import applicationsJSON from "../../data/applications.json";
 import subMenusJSON from "../../data/subMenus.json";
-import applicationsJSON from "../../data/applications.json"
-import { useContext } from "../../context/context"
-import type { Application } from "../../context/types";
 import { openApplication } from "../../utils/general";
+import styles from "./StartMenuSubMenu.module.scss";
+import type { Application } from "../../context/types";
 
 interface StartMenuSubMenuProps {
     data?: SubMenuData;
-    parentRef?: React.RefObject<HTMLDivElement | null>;
+    parentRef?: React.RefObject<HTMLElement | null>;
 }
 
 interface SubMenuData {
@@ -25,7 +25,7 @@ interface SubMenuItem {
 const subMenus = (subMenusJSON as unknown as { [key: string]: SubMenuData });
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: SubMenuItem) => void) => {
+const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLElement>, item: SubMenuItem) => void) => {
     const { appId, subMenu = "" } = { ...item };
     const { title, icon, iconLarge, disabled } = { ...applications[appId] };
 
@@ -37,9 +37,9 @@ const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLBu
             </button>
             {subMenu && <StartMenuSubMenu data={subMenus[subMenu]} />}
         </div>
-    )
-}
-const emptySubMenu = <div className={`${styles.emptySubMenu} flex items-center`}>(Empty)</div>
+    );
+};
+const emptySubMenu = <div className={`${styles.emptySubMenu} flex items-center`}>(Empty)</div>;
 
 const StartMenuSubMenu = ({ data }: StartMenuSubMenuProps) => {
     const { id, featured, contents } = { ...data };
@@ -50,7 +50,7 @@ const StartMenuSubMenu = ({ data }: StartMenuSubMenuProps) => {
         if (subMenu || applications[appId].disabled) return;
         openApplication(appId, currentWindows, dispatch);
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
-    }
+    };
 
     const hasFeatured = featured && featured.length > 0;
     const hasContents = contents && contents?.length > 0;

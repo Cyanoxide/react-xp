@@ -2,9 +2,9 @@ export const getRegionPosition = (position: number, size: number, edgePadding: n
     if (position <= edgePadding) return "start";
     if (position >= size - edgePadding) return "end";
     return "center";
-}
+};
 
-export const getWindowClickRegion = (event: React.PointerEvent<HTMLDivElement>, element: Element, edgePadding: number) => {
+export const getWindowClickRegion = (event: React.PointerEvent<HTMLElement>, element: Element, edgePadding: number) => {
     const { left, top, width, height } = element.getBoundingClientRect();
 
     const x = event.clientX - left;
@@ -26,7 +26,7 @@ export const getWindowClickRegion = (event: React.PointerEvent<HTMLDivElement>, 
     if (horizontal) region = region ? `${region}-${horizontal}` : horizontal;
 
     return region || "center";
-}
+};
 
 export const getWindowPadding = (window: Element) => {
     const styles = getComputedStyle(window) || 0;
@@ -35,7 +35,7 @@ export const getWindowPadding = (window: Element) => {
     const gap = parseFloat(styles.gap) || 0;
 
     return paddingLeft + gap + paddingRight;
-}
+};
 
 export const getMinimumWindowSize = (window: Element) => {
     const titleBar = window?.querySelector("[data-label=titlebar]");
@@ -52,4 +52,4 @@ export const getMinimumWindowSize = (window: Element) => {
     });
 
     return minWidth + windowPadding;
-}
+};

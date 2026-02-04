@@ -1,18 +1,19 @@
-import { useContext } from "../../context/context";
 import React, { useEffect, useState, useRef } from "react";
-import styles from "./TaskBar.module.scss";
-import Tooltip from "../Tooltip/Tooltip";
-import StartMenu from "../StartMenu/StartMenu";
+import { useContext } from "../../context/context";
 import applicationsJSON from "../../data/applications.json";
-import type { Application } from "../../context/types";
 import { getCurrentWindow } from "../../utils/general";
+import StartMenu from "../StartMenu/StartMenu";
+import Tooltip from "../Tooltip/Tooltip";
+import styles from "./TaskBar.module.scss";
+import type { Application } from "../../context/types";
 
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const TaskBar = () => {
     const { currentTime, currentWindows, isStartVisible, dispatch } = useContext();
     const [systemTrayIconDismissed, setSystemTrayIconDismissed] = useState(false);
-    const startButton = useRef<HTMLButtonElement | null>(null);
+    const startButtonRef = useRef<HTMLButtonElement | null>(null);
+    const startButton = startButtonRef.current;
 
     //Todo: Add more accurate clock that updates in sync with system clock
     useEffect(() => {
@@ -23,7 +24,7 @@ const TaskBar = () => {
         return () => clearInterval(interval);
     }, [dispatch]);
 
-    const windowTabClickHandler = (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    const windowTabClickHandler = (event: React.MouseEvent<HTMLElement>) => {
         const windowTabSelector = "[data-label=taskBarWindowTab]";
         const windowTab = (event.target as HTMLElement).closest<HTMLElement>(windowTabSelector);
         if (!windowTab) return;
@@ -34,8 +35,8 @@ const TaskBar = () => {
         const updatedCurrentWindows = [...currentWindows];
         updatedCurrentWindows.map((currentWindow) => {
             if (windowId === currentWindow.id) {
-                currentWindow.hidden = (currentWindow.active === true) ? true : false
-                currentWindow.active = (currentWindow.active === true) ? false : true
+                currentWindow.hidden = (currentWindow.active === true) ? true : false;
+                currentWindow.active = (currentWindow.active === true) ? false : true;
             } else currentWindow.active = false;
 
         });
@@ -44,22 +45,22 @@ const TaskBar = () => {
 
     const systemTrayIconClickHandler = () => {
         if (systemTrayIconDismissed) setSystemTrayIconDismissed(false);
-    }
+    };
 
     const startButtonClickHandler = () => {
         dispatch({ type: "SET_IS_START_VISIBLE", payload: (isStartVisible) ? false : true });
 
-        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (currentWindow) currentWindow.active = false;
 
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-    }
+    };
 
     const formattedTime = currentTime.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 
     return (
         <div className={`${styles.taskBar} flex justify-between`} data-label="taskbar">
-            <button ref={startButton} className={`${styles.startButton}`} onClick={startButtonClickHandler} data-selected={isStartVisible}>Start</button>
+            <button ref={startButtonRef} className={`${styles.startButton}`} onClick={startButtonClickHandler} data-selected={isStartVisible}>Start</button>
             {isStartVisible && <StartMenu startButton={startButton} />}
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
                 {currentWindows.map((currentWindow, index) => {
@@ -72,7 +73,7 @@ const TaskBar = () => {
                                 <span className="absolute ml-7">{title}</span>
                             </span>
                         </li>
-                    )
+                    );
                 })}
             </ul>
             <div className={`${styles.systemTray} flex justify-center items-center`}>

@@ -1,11 +1,11 @@
-import styles from "./InternetExplorer.module.scss";
-import WindowMenu from "../../WindowMenu/WindowMenu";
-import applicationsJSON from "../../../data/applications.json";
-import type { Application } from "../../../context/types";
 import { useRef, useState, useEffect } from "react";
+import { useContext } from "../../../context/context";
+import applicationsJSON from "../../../data/applications.json";
 import { getBaseDomain, sameBaseDomain } from "../../../utils/general";
 import { getCurrentWindow } from "../../../utils/general";
-import { useContext } from "../../../context/context";
+import WindowMenu from "../../WindowMenu/WindowMenu";
+import styles from "./InternetExplorer.module.scss";
+import type { Application } from "../../../context/types";
 
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
@@ -34,7 +34,7 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
         if (event.key === "Enter") {
             goClickHandler();
         }
-    }
+    };
 
     const backClickHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
@@ -47,7 +47,7 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
         updateIframe();
 
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-    }
+    };
 
     const forwardClickHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
@@ -60,14 +60,14 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
         updateIframe();
 
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-    }
+    };
 
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const iframe = iframeRef.current;
 
     const updateIframe = () => {
         const value = (!inputField?.value.startsWith("http")) ? `https://${inputField?.value}` : inputField?.value;
-        const wayBackUrl = "https://web.archive.org/web/20030612074004if_/"
+        const wayBackUrl = "https://web.archive.org/web/20030612074004if_/";
         const url = (!value.includes(getBaseDomain())) ? `/proxy.php?url=${wayBackUrl}${value}` : value;
 
         if (iframe) {
@@ -81,7 +81,7 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
         }
 
         if (inputField && iframe) iframe.setAttribute("src", url);
-    }
+    };
 
     const goClickHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
@@ -90,20 +90,20 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
         }
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
         updateIframe();
-    }
+    };
 
     const stopClickHandler = () => {
         if (iframe) iframe.setAttribute("src", "about:blank");
-    }
+    };
 
     const refreshClickHandler = () => {
         updateIframe();
-    }
+    };
 
     const homeClickHandler = () => {
         if (inputField) inputField.value = HOMEPAGE;
         if (iframe) iframe.setAttribute("src", HOMEPAGE);
-    }
+    };
 
     return (
         <>
@@ -180,6 +180,23 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
             <main className={`${styles.mainContent} h-full flex overflow-auto`}>
                 <iframe ref={iframeRef} src={HOMEPAGE} width="100%" height="100%" />
             </main >
+            <div className={`${styles.statusBar} flex justify-between px-2 py-0.5`}>
+                <div className="flex items-center gap-1">
+                    <img src="icon__internet_explorer.png" height="12" width="12" />
+                    <p>Done</p>
+                </div>
+                <div className="flex">
+                    <div className="flex items-center">
+                        {Array.from({ length: 6 }).map(() => (
+                            <div className={styles.verticaLine}></div>
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-1 ml-3 w-44">
+                        <img src="icon__globe.png" height="12" width="12" />
+                        <p>Internet</p>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };

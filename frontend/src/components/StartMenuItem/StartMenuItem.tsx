@@ -1,7 +1,7 @@
 import { useContext } from "../../context/context";
+import applicationsJSON from "../../data/applications.json";
 import { openApplication } from "../../utils/general";
 import type { Application } from "../../context/types";
-import applicationsJSON from "../../data/applications.json";
 
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
@@ -26,12 +26,12 @@ const StartMenuItem = ({ ...props }: StartMenuItemProps) => {
 
         openApplication(appId, currentWindows, dispatch);
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
-    }
+    };
 
     const onMouseOver = () => {
         dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
         dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
-    }
+    };
 
     return (
         <button className={`flex items-center p-1 ${(disabled) ? "cursor-not-allowed" : ""} ${(subMenu) ? "cursor-default" : ""}`} onClick={onClickHandler} onMouseOver={onMouseOver}>

@@ -1,8 +1,8 @@
-import { Provider } from "./context/provider";
 import Desktop from "./components/Desktop/Desktop";
 import TaskBar from "./components/TaskBar/TaskBar";
 import Wallpaper from "./components/Wallpaper/Wallpaper";
 import WindowManagement from "./components/WindowManagement/WindowManagement";
+import { Provider } from "./context/provider";
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <TaskBar />
       <WindowManagement />
     </Provider>
-  )
+  );
 }
 
 export default App;

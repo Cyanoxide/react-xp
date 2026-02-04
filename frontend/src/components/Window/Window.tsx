@@ -1,11 +1,11 @@
-import styles from "./Window.module.scss";
 import { useState, useRef, useEffect } from "react";
-import type { ReactNode } from "react";
 import { useContext } from "../../context/context";
+import applicationsJSON from "../../data/applications.json";
 import { throttle, updateCurrentActiveWindow } from "../../utils/general";
 import { getWindowPadding, getMinimumWindowSize, getWindowClickRegion } from "../../utils/window";
+import styles from "./Window.module.scss";
 import type { Application, currentWindow } from "../../context/types";
-import applicationsJSON from "../../data/applications.json";
+import type { ReactNode } from "react";
 
 interface WindowProps extends currentWindow {
     children: ReactNode;
@@ -26,92 +26,108 @@ const Window = ({ ...props }: WindowProps) => {
     const [[windowWidth, windowHeight], setWindowSize] = useState([Math.min(width, width - offset), height]);
     const [isMaximized, setIsMaximized] = useState(false);
     const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
-    const activeWindow = useRef<HTMLDivElement | null>(null);
-    const titleBar = useRef<HTMLDivElement | null>(null);
+    const activeWindowRef = useRef<HTMLDivElement | null>(null);
+    const activeWindow = activeWindowRef.current;
+    const titleBarRef = useRef<HTMLDivElement | null>(null);
+    const titleBar = titleBarRef.current;
 
     const isWindowMaximized = (
-        activeWindow.current?.style?.left === "0px"
-        && activeWindow.current?.style?.top === "0px"
-        && activeWindow.current?.style?.width === "100%"
-        && activeWindow.current?.style?.height === (window.innerHeight - taskBarHeight) + "px"
+        activeWindow?.style?.left === "0px"
+        && activeWindow?.style?.top === "0px"
+        && activeWindow?.style?.width === "100%"
+        && activeWindow?.style?.height === (window.innerHeight - taskBarHeight) + "px"
     );
 
     useEffect(() => {
-        if (!activeWindow.current) return;
+        if (!activeWindow) return;
         if (!isWindowMaximized) setIsMaximized(false);
-        activeWindow.current.dataset.maximized = isMaximized.toString();
+        activeWindow.dataset.maximized = isMaximized.toString();
 
-    }, [isWindowMaximized, isMaximized, setIsMaximized]);
+    }, [activeWindow, isWindowMaximized, isMaximized, setIsMaximized]);
 
     useEffect(() => {
         const onResize = () => {
             setWindowSize((prev) => [Math.min(width, width - offset), prev[1]]);
-        }
+        };
         window.addEventListener("resize", onResize);
     }, [offset, width]);
 
-    const toggleMaximizeWindow = (activeWindow: React.RefObject<HTMLDivElement | null>) => {
-        if (!activeWindow.current) return;
+    const toggleMaximizeWindow = (activeWindow: HTMLElement | null) => {
+        if (!activeWindow) return;
         if (isMaximized) setIsMaximized(false);
         else {
             setIsMaximized(true);
             setUnmaximizedValues({
-                left: activeWindow.current.style.left,
-                top: activeWindow.current.style.top,
-                width: activeWindow.current.style.width,
-                height: activeWindow.current.style.height,
+                left: activeWindow.style.left,
+                top: activeWindow.style.top,
+                width: activeWindow.style.width,
+                height: activeWindow.style.height,
             });
         }
 
-        activeWindow.current.style.left = (isMaximized) ? unmaximizedValues.left : "0px";
-        activeWindow.current.style.top = (isMaximized) ? unmaximizedValues.top : "0px";
-        activeWindow.current.style.width = (isMaximized) ? unmaximizedValues.width : "100%";
-        activeWindow.current.style.height = (isMaximized) ? unmaximizedValues.height : window.innerHeight - taskBarHeight + "px";
-    }
+        activeWindow.style.left = (isMaximized) ? unmaximizedValues.left : "0px";
+        activeWindow.style.top = (isMaximized) ? unmaximizedValues.top : "0px";
+        activeWindow.style.width = (isMaximized) ? unmaximizedValues.width : "100%";
+        activeWindow.style.height = (isMaximized) ? unmaximizedValues.height : window.innerHeight - taskBarHeight + "px";
+    };
 
-    const onTitleBarPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-        const activeWindowRect = activeWindow.current?.getBoundingClientRect();
+    const onTitleBarPointerDown = (event: React.PointerEvent<HTMLElement>) => {
+        const activeWindowRect = activeWindow?.getBoundingClientRect();
         if (!activeWindowRect) return;
 
         const windowOffsetX = event.clientX - activeWindowRect.left;
         const windowOffsetY = event.clientY - activeWindowRect.top;
-        if (activeWindow.current) activeWindow.current.style.transition = "none";
+        if (activeWindow) {
+            activeWindow.style.transition = "none";
+
+            const iframe = activeWindow.querySelector("iframe");
+            if (iframe) iframe.style.pointerEvents = "none";
+        }
 
         const onPointerMove = (event: PointerEvent) => {
             if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
 
             setWindowPosition({ top: event.clientY - windowOffsetY, left: event.clientX - windowOffsetX, right: undefined, bottom: undefined });
             document.body.style.userSelect = "none";
-        }
+        };
         const onThrottledPointerMove = throttle(onPointerMove, THROTTLE_DELAY);
 
         const onPointerUp = () => {
             window.removeEventListener("pointermove", onThrottledPointerMove);
             window.removeEventListener("pointerup", onPointerUp);
             document.body.style.userSelect = "";
-            if (activeWindow.current) activeWindow.current.style.removeProperty("transition");
-        }
+            if (activeWindow) {
+                activeWindow.style.removeProperty("transition");
+
+                const iframe = activeWindow.querySelector("iframe");
+                if (iframe) iframe.style.removeProperty("pointer-events");
+            }
+
+        };
         window.addEventListener("pointermove", onThrottledPointerMove);
         window.addEventListener("pointerup", onPointerUp);
-    }
+    };
 
-    const onWindowPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const onWindowPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         const updatedCurrentWindows = updateCurrentActiveWindow(id, currentWindows);
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
 
         if (event.currentTarget !== event.target) return;
 
-        const activeWindowRect = activeWindow.current?.getBoundingClientRect();
-        const activeTitleBarHeight = titleBar.current?.getBoundingClientRect().height || 0;
+        const activeWindowRect = activeWindow?.getBoundingClientRect();
+        const activeTitleBarHeight = titleBar?.getBoundingClientRect().height || 0;
 
-        if (!activeWindow.current || !activeWindowRect) return;
+        if (!activeWindow || !activeWindowRect) return;
 
-        const WINDOW_PADDING = getWindowPadding(activeWindow.current);
-        const MIN_WINDOW_WIDTH = getMinimumWindowSize(activeWindow.current);
+        const WINDOW_PADDING = getWindowPadding(activeWindow);
+        const MIN_WINDOW_WIDTH = getMinimumWindowSize(activeWindow);
         const MIN_WINDOW_HEIGHT = activeTitleBarHeight + (WINDOW_PADDING * 1.5);
-        const activeWindowRegion = getWindowClickRegion(event, activeWindow.current, WINDOW_PADDING);
+        const activeWindowRegion = getWindowClickRegion(event, activeWindow, WINDOW_PADDING);
         document.body.style.userSelect = "none";
-        if (activeWindow.current) activeWindow.current.style.transition = "none";
+        if (activeWindow) activeWindow.style.transition = "none";
+
+        const iframe = activeWindow.querySelector("iframe");
+        if (iframe) iframe.style.pointerEvents = "none";
 
         const onPointerMove = (event: MouseEvent) => {
             let width = windowWidth;
@@ -139,26 +155,31 @@ const Window = ({ ...props }: WindowProps) => {
 
             setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
             setWindowSize([width, height]);
-        }
+        };
         const onThrottledPointerMove = throttle(onPointerMove, THROTTLE_DELAY);
 
         const onPointerUp = () => {
             window.removeEventListener("pointermove", onThrottledPointerMove);
             window.removeEventListener("pointerup", onPointerUp);
             document.body.style.userSelect = "";
-            if (activeWindow.current) activeWindow.current.style.removeProperty("transition");
-        }
+            if (activeWindow) {
+                activeWindow.style.removeProperty("transition");
+
+                const iframe = activeWindow.querySelector("iframe");
+                if (iframe) iframe.style.removeProperty("pointer-events");
+            }
+        };
 
         window.addEventListener("pointermove", onThrottledPointerMove);
         window.addEventListener("pointerup", onPointerUp);
-    }
+    };
 
     const onButtonClick = (event: React.MouseEvent<HTMLElement>) => {
         const buttonType = event.currentTarget.dataset.button;
-        if (!activeWindow.current) return;
+        if (!activeWindow) return;
 
         if (buttonType === "close") {
-            const updatedCurrentWindows = currentWindows.filter(item => item.id !== activeWindow.current?.dataset.windowId);
+            const updatedCurrentWindows = currentWindows.filter(item => item.id !== activeWindow?.dataset.windowId);
             dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
         }
 
@@ -177,13 +198,13 @@ const Window = ({ ...props }: WindowProps) => {
         if (buttonType === "maximize") {
             toggleMaximizeWindow(activeWindow);
         }
-    }
+    };
 
     return (
         <>
-            <div ref={activeWindow} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ top: (!bottomPos) ? topPos : undefined, right: rightPos, bottom: bottomPos, left: (!rightPos) ? leftPos : undefined, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown}>
+            <div ref={activeWindowRef} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ top: (!bottomPos) ? topPos : undefined, right: rightPos, bottom: bottomPos, left: (!rightPos) ? leftPos : undefined, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown}>
                 <div className="w-full h-full pointer-events-none">
-                    <div ref={titleBar} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={onTitleBarPointerDown} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
+                    <div ref={titleBarRef} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={onTitleBarPointerDown} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
                         <div className="flex items-center">
                             <img src={icon || iconLarge} width="14" height="14" className="mx-2 min-w-[14px]"></img>
                             <h3>{title}</h3>
@@ -198,7 +219,7 @@ const Window = ({ ...props }: WindowProps) => {
                 </div>
             </div>
         </>
-    )
+    );
 };
 
 export default Window;

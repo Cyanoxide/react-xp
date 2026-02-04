@@ -1,11 +1,11 @@
-import styles from "./FileExplorer.module.scss";
-import WindowMenu from "../../WindowMenu/WindowMenu";
-import CollapseBox from "../../CollapseBox/CollapseBox";
-import applicationsJSON from "../../../data/applications.json";
-import type { Application } from "../../../context/types";
-import { useContext } from "../../../context/context";
 import { useRef, useState, useEffect } from "react";
+import { useContext } from "../../../context/context";
+import applicationsJSON from "../../../data/applications.json";
 import { getCurrentWindow } from "../../../utils/general";
+import CollapseBox from "../../CollapseBox/CollapseBox";
+import WindowMenu from "../../WindowMenu/WindowMenu";
+import styles from "./FileExplorer.module.scss";
+import type { Application } from "../../../context/types";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
@@ -16,50 +16,50 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const [isForwardDisabled, setIsForwardDisabled] = useState(true);
 
     useEffect(() => {
-        const {currentWindow} = getCurrentWindow(currentWindows);
+        const { currentWindow } = getCurrentWindow(currentWindows);
         if (!currentWindow) return;
 
         if (currentWindow.history) setIsBackDisabled(currentWindow.history.length === 0);
         if (currentWindow.forward) setIsForwardDisabled(currentWindow.forward.length === 0);
-    }, [currentWindows])
+    }, [currentWindows]);
 
-    const inputField = useRef<HTMLInputElement | null>(null);
+    const inputFieldRef = useRef<HTMLInputElement | null>(null);
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
     const documents = ["pictures", "music"];
 
     const updateWindow = (appId: string | null = null) => {
-        const inputRef = inputField.current;
-        const value = (inputRef) ? inputRef.value.toLowerCase() : null;
-        if (!inputRef || !value) return;
+        const inputField = inputFieldRef.current;
+        const value = (inputField) ? inputField.value.toLowerCase() : null;
+        if (!inputField || !value) return;
 
         const titleAppIdMap = Object.fromEntries(
             Object.entries(Applications).map(([key, app]) => [app.title.toLowerCase(), key])
         );
 
-        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow) return;
 
         if (!(value in titleAppIdMap)) {
-            inputRef.value = appData.title;
+            inputField.value = appData.title;
             return;
         }
 
         if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
         currentWindow.appId = appId || titleAppIdMap[value];
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-    }
+    };
 
     const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
             updateWindow();
         }
-    }
+    };
 
     const fileDBClickHandler = (_: unknown, appId: string | null = null) => {
         updateWindow(appId);
-    }
+    };
 
     const fileClickHandler = (_: unknown, appId: string | null = null) => {
         if (!appId) return;
@@ -75,12 +75,12 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             setSelectedItem((targetId) ? targetId : null);
 
             document.removeEventListener("click", secondClick);
-        }
+        };
         document.addEventListener("click", secondClick);
-    }
+    };
 
     const backClickHandler = () => {
-        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow || !currentWindow.history) return;
 
         if (currentWindow.forward) currentWindow.forward.push(currentWindow.appId);
@@ -89,10 +89,10 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
 
         currentWindow.appId = previousWindowId;
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-    }
+    };
 
     const forwardClickHandler = () => {
-        const {currentWindow, updatedCurrentWindows} = getCurrentWindow(currentWindows);
+        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow || !currentWindow.forward) return;
 
         if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
@@ -101,7 +101,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
 
         currentWindow.appId = previousWindowId;
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-    }
+    };
 
     return (
         <>
@@ -150,7 +150,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
 
                         <div className={`${styles.navBar} flex mx-1 h-full`}>
                             <img src={appData.icon || appData.iconLarge} className="mx-1" width="14" height="14" />
-                            <input ref={inputField} className={`${styles.navBar} h-full`} type="text" defaultValue={appData.title} onKeyDown={keyDownHandler} />
+                            <input ref={inputFieldRef} className={`${styles.navBar} h-full`} type="text" defaultValue={appData.title} onKeyDown={keyDownHandler} />
                             <button className={styles.dropDown}>Submit</button>
                         </div>
                         <button className={`${styles.goButton} flex items-center`} onClick={() => updateWindow()}>
@@ -213,7 +213,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                     <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>
-                            )
+                            );
                         })}
                     </div>
                 </section>
