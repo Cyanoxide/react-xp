@@ -54,6 +54,8 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             currentWindow.history.push(currentWindow.appId);
         };
 
+        if (currentWindow.forward) currentWindow.forward = [];
+
         currentWindow.appId = appId || titleAppIdMap[value];
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
