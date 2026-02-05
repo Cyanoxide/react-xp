@@ -30,20 +30,14 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
 
     const appData = Applications[appId];
 
-    const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter") {
-            goClickHandler();
-        }
-    };
-
     const backClickHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow || !currentWindow.history || !inputField) return;
 
         if (currentWindow.forward && currentUrl) currentWindow.forward.push(currentUrl);
-        const previousUrl = currentWindow.history.pop() || "";
+        const newUrl = currentWindow.history.pop() || "";
 
-        inputField.value = previousUrl;
+        inputField.value = newUrl;
         updateIframe();
 
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
@@ -79,17 +73,25 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                 iframe.removeAttribute("referrerPolicy");
             }
         }
-
+        
         if (inputField && iframe) iframe.setAttribute("src", url);
     };
 
-    const goClickHandler = () => {
+    const submitURLHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (currentWindow && currentWindow.history && currentUrl) {
-            currentWindow.history.push(currentUrl);
+            if (currentUrl !== inputField?.value) currentWindow.history.push(currentUrl);
+
+            if (currentWindow.forward) currentWindow.forward = [];
+            dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+            updateIframe();
         }
-        dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
-        updateIframe();
+    };
+
+    const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            submitURLHandler();
+        }
     };
 
     const stopClickHandler = () => {
@@ -170,7 +172,7 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                             <input ref={inputFieldRef} className={`${styles.navBar} h-full`} type="text" defaultValue={HOMEPAGE} onKeyDown={keyDownHandler} />
                             <button className={styles.dropDown}>Submit</button>
                         </div>
-                        <button className={`${styles.goButton} flex items-center`} onClick={() => updateIframe()}>
+                        <button className={`${styles.goButton} flex items-center`} onClick={submitURLHandler}>
                             <img src="/icon__go.png" className="mr-1.5" width="19" height="19" />
                             <span>Go</span>
                         </button>
