@@ -203,9 +203,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                     <p>My Computer</p>
                                 </button>
                             </li>
-                            <li className="flex items-center">
-                                <img src="/icon__network_places--large.png" className="mr-2" width="12" height="12" />
-                                <p>My Network Places</p>
+                            <li>
+                                <button className="flex items-center" onClick={() => updateWindow("recycleBin")}>
+                                    <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
+                                    <p>Recycle Bin</p>
+                                </button>
                             </li>
                         </ul>
                     </CollapseBox>
@@ -232,7 +234,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             
                             return (
                                 <button key={itemId} data-id={itemId} data-selected={isActive} data-link={!!link} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
-                                    <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
+                                    <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="35" height="35" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>
                             );

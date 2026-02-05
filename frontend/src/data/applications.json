@@ -201,7 +201,6 @@
     },
     "desktop": {
         "title": "Desktop",
-        "icon": "/icon__desktop.png",
         "iconLarge": "/icon__desktop--large.png",
         "component": "FileExplorer",
         "height": 390
