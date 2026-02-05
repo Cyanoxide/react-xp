@@ -32,6 +32,8 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const documents = Files[appId];
 
     const updateWindow = (appId: string | null = null) => {
+        if (appId && Applications[appId].link) return window.open(Applications[appId].link, "_blank", "noopener,noreferrer");
+
         const inputField = inputFieldRef.current;
         const value = (inputField) ? inputField.value.toLowerCase() : null;
         if (!inputField || !value) return;
@@ -76,7 +78,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         const onSecondClick = (event: PointerEvent, appId: string) => {
             const target = (event.target as HTMLElement);
 
-            const targetId = (target.closest("[data-selected") as HTMLElement)?.dataset.id;
+            const targetId = (target.closest("[data-selected]") as HTMLElement)?.dataset.id;
             if (targetId === appId) return;
 
             setSelectedItem((targetId) ? targetId : null);
@@ -189,9 +191,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </CollapseBox>
                     <CollapseBox title="Other Places">
                         <ul className="flex flex-col gap-2 p-3">
-                            <li className="flex items-center">
-                                <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
-                                <p>Desktop</p>
+                            <li>
+                                <button className="flex items-center" onClick={() => updateWindow("desktop")}>
+                                    <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
+                                    <p>Desktop</p>
+                                </button>
                             </li>
                             <li>
                                 <button className="flex items-center" onClick={() => updateWindow("computer")}>
@@ -223,11 +227,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             if (!appData) return;
                             
                             const isActive = (selectedItem === itemId);
-                            const { title, icon, iconLarge, disabled } = appData;
+                            const { title, icon, iconLarge, disabled, link } = appData;
                             const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
                             
                             return (
-                                <button key={itemId} data-id={item} data-selected={isActive} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
+                                <button key={itemId} data-id={itemId} data-selected={isActive} data-link={!!link} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
                                     <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>

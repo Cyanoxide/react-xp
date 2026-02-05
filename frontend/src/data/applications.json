@@ -198,5 +198,12 @@
         "title": "Local Disk (:C)",
         "iconLarge": "/icon__hdd--large.png",
         "disabled": true
+    },
+    "desktop": {
+        "title": "Desktop",
+        "icon": "/icon__desktop.png",
+        "iconLarge": "/icon__desktop--large.png",
+        "component": "FileExplorer",
+        "height": 390
     }
 }
