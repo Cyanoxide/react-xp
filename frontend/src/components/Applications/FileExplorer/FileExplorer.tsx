@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
+import filesJSON from "../../../data/files.json";
 import { getCurrentWindow } from "../../../utils/general";
 import CollapseBox from "../../CollapseBox/CollapseBox";
 import WindowMenu from "../../WindowMenu/WindowMenu";
@@ -8,6 +9,7 @@ import styles from "./FileExplorer.module.scss";
 import type { Application } from "../../../context/types";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
+const Files = filesJSON as unknown as Record<string, string[] | File[]>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
     const { currentWindows, dispatch } = useContext();
@@ -27,7 +29,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
-    const documents = ["pictures", "music"];
+    const documents = Files[appId];
 
     const updateWindow = (appId: string | null = null) => {
         const inputField = inputFieldRef.current;
@@ -58,7 +60,9 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     };
 
     const fileDBClickHandler = (_: unknown, appId: string | null = null) => {
-        updateWindow(appId);
+        if (!appId || Applications[appId].disabled) return;
+
+        updateWindow(Applications[appId].redirect || appId);
     };
 
     const fileClickHandler = (_: unknown, appId: string | null = null) => {
@@ -203,21 +207,30 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                 </aside>
                 <section className={`${styles.contents} relative w-full`}>
                     <div className="absolute inset-0 p-3 h-fit">
-                        {documents.map((id) => {
-                            if (id === appId) return;
-                            const isActive = (selectedItem === id);
-                            const { title, icon, iconLarge } = Applications[id];
+                        {appId === "computer" && <h3 className="w-full">Files Stored on this Computer</h3>}
+                        {documents.map((item) => {
+                            if (item === appId) return;
+
+                            const itemId = (Array.isArray(item) ? item[0] : item);
+                            const appData = Applications[itemId];
+                            if (!appData) return;
+                            
+                            const isActive = (selectedItem === itemId);
+                            const { title, icon, iconLarge, disabled } = appData;
                             const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
+                            
                             return (
-                                <button key={id} data-id={id} data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
-                                    <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
+                                <button key={itemId} data-id={item} data-selected={isActive} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
+                                    <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>
                             );
                         })}
+                        {appId === "computer" && <h3 className="w-full">Hard Disk Drives</h3>}
+
                     </div>
                 </section>
-            </main >
+            </main>
         </>
     );
 };

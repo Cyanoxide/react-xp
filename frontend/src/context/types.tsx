@@ -36,6 +36,11 @@ export interface Application {
     component?: string | undefined;
     link?: string;
     disabled?: boolean;
+    redirect?: string;
+}
+
+export type File = AbsoluteObject & {
+    id: string;
 }
 
 export interface State {
