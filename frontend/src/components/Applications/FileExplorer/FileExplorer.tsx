@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
+import filesJSON from "../../../data/files.json";
 import { getCurrentWindow } from "../../../utils/general";
 import CollapseBox from "../../CollapseBox/CollapseBox";
 import WindowMenu from "../../WindowMenu/WindowMenu";
@@ -8,6 +9,7 @@ import styles from "./FileExplorer.module.scss";
 import type { Application } from "../../../context/types";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
+const Files = filesJSON as unknown as Record<string, string[] | File[]>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
     const { currentWindows, dispatch } = useContext();
@@ -27,9 +29,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
-    const documents = ["pictures", "music"];
+    const documents = Files[appId];
 
     const updateWindow = (appId: string | null = null) => {
+        if (appId && Applications[appId].link) return window.open(Applications[appId].link, "_blank", "noopener,noreferrer");
+
         const inputField = inputFieldRef.current;
         const value = (inputField) ? inputField.value.toLowerCase() : null;
         if (!inputField || !value) return;
@@ -39,14 +43,17 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         );
 
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
-        if (!currentWindow) return;
+        if (!currentWindow || currentWindow.appId === appId) return;
 
         if (!(value in titleAppIdMap)) {
             inputField.value = appData.title;
             return;
         }
 
-        if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
+        if (currentWindow.history && currentWindow.history.at(-1) !== currentWindow.appId) {
+            currentWindow.history.push(currentWindow.appId);
+        };
+
         currentWindow.appId = appId || titleAppIdMap[value];
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
@@ -58,7 +65,9 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     };
 
     const fileDBClickHandler = (_: unknown, appId: string | null = null) => {
-        updateWindow(appId);
+        if (!appId || Applications[appId].disabled) return;
+
+        updateWindow(Applications[appId].redirect || appId);
     };
 
     const fileClickHandler = (_: unknown, appId: string | null = null) => {
@@ -69,7 +78,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         const onSecondClick = (event: PointerEvent, appId: string) => {
             const target = (event.target as HTMLElement);
 
-            const targetId = (target.closest("[data-selected") as HTMLElement)?.dataset.id;
+            const targetId = (target.closest("[data-selected]") as HTMLElement)?.dataset.id;
             if (targetId === appId) return;
 
             setSelectedItem((targetId) ? targetId : null);
@@ -95,7 +104,9 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow || !currentWindow.forward) return;
 
-        if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
+        if (currentWindow.history && currentWindow.history.at(-1) !== currentWindow.appId) {
+            currentWindow.history.push(currentWindow.appId);
+        };
 
         const previousWindowId = currentWindow.forward.pop() || "";
 
@@ -180,17 +191,23 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </CollapseBox>
                     <CollapseBox title="Other Places">
                         <ul className="flex flex-col gap-2 p-3">
-                            <li className="flex items-center">
-                                <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
-                                <p>Desktop</p>
+                            <li>
+                                <button className="flex items-center" onClick={() => updateWindow("desktop")}>
+                                    <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
+                                    <p>Desktop</p>
+                                </button>
                             </li>
-                            <li className="flex items-center">
-                                <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
-                                <p>My Computer</p>
+                            <li>
+                                <button className="flex items-center" onClick={() => updateWindow("computer")}>
+                                    <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
+                                    <p>My Computer</p>
+                                </button>
                             </li>
-                            <li className="flex items-center">
-                                <img src="/icon__network_places--large.png" className="mr-2" width="12" height="12" />
-                                <p>My Network Places</p>
+                            <li>
+                                <button className="flex items-center" onClick={() => updateWindow("recycleBin")}>
+                                    <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
+                                    <p>Recycle Bin</p>
+                                </button>
                             </li>
                         </ul>
                     </CollapseBox>
@@ -203,21 +220,30 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                 </aside>
                 <section className={`${styles.contents} relative w-full`}>
                     <div className="absolute inset-0 p-3 h-fit">
-                        {documents.map((id) => {
-                            if (id === appId) return;
-                            const isActive = (selectedItem === id);
-                            const { title, icon, iconLarge } = Applications[id];
+                        {appId === "computer" && <h3 className="w-full">Files Stored on this Computer</h3>}
+                        {documents.map((item) => {
+                            if (item === appId) return;
+
+                            const itemId = (Array.isArray(item) ? item[0] : item);
+                            const appData = Applications[itemId];
+                            if (!appData) return;
+                            
+                            const isActive = (selectedItem === itemId);
+                            const { title, icon, iconLarge, disabled, link } = appData;
                             const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
+                            
                             return (
-                                <button key={id} data-id={id} data-selected={isActive} className={styles.file} onDoubleClick={(e) => fileDBClickHandler(e, id)} onClick={(e) => fileClickHandler(e, id)}>
-                                    <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="40" height="40" draggable={false} /></span>
+                                <button key={itemId} data-id={itemId} data-selected={isActive} data-link={!!link} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
+                                    <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="35" height="35" draggable={false} /></span>
                                     <h4 className="px-0.5">{title}</h4>
                                 </button>
                             );
                         })}
+                        {appId === "computer" && <h3 className="w-full">Hard Disk Drives</h3>}
+
                     </div>
                 </section>
-            </main >
+            </main>
         </>
     );
 };

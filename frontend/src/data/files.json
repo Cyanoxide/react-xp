@@ -1,0 +1,59 @@
+{
+    "desktop": [
+        [
+            "documents",
+            {
+                "top": 5,
+                "left": 5
+            }
+        ],
+        [
+            "internetExplorer",
+            {
+                "top": 70,
+                "left": 5
+            }
+        ],
+        [
+            "gitHub",
+            {
+                "top": 145,
+                "left": 5
+            }
+        ],
+        [
+            "kofi",
+            {
+                "top": 210,
+                "left": 5
+            }
+        ],
+        [
+            "recycleBin",
+            {
+                "bottom": 5,
+                "right": 5
+            }
+        ]
+    ],
+    "documents": [
+        "pictures",
+        "music"
+    ],
+    "recycleBin": [
+        "win11"
+    ],
+    "pictures": [
+        "over9000",
+        "orly",
+        "rickroll"
+    ],
+    "music": [
+        "inTheEnd"
+    ],
+    "computer": [
+        "userDocuments",
+        "sharedDocuments",
+        "localDisk"
+    ]
+}

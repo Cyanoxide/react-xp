@@ -158,5 +158,51 @@
         "title": "Donate",
         "iconLarge": "/icon__kofi--large.png",
         "link": "https://ko-fi.com/cyanoxide"
+    },
+    "over9000": {
+        "title": "Over_9000.gif",
+        "iconLarge": "/file__over_9000.png",
+        "disabled": true
+    },
+    "orly": {
+        "title": "ORLY.jpg",
+        "iconLarge": "/file__orly_owl.jpg",
+        "disabled": true
+    },
+    "rickroll": {
+        "title": "rickroll.gif",
+        "iconLarge": "/file__rickroll.gif",
+        "disabled": true
+    },
+    "inTheEnd": {
+        "title": "In the End.mp3",
+        "iconLarge": "/file__linkin_park.jpeg",
+        "disabled": true
+    },
+    "win11": {
+        "title": "windows_11.exe",
+        "iconLarge": "/file__win11--large.png",
+        "disabled": true
+    },
+    "userDocuments": {
+        "title": "User's Documents",
+        "iconLarge": "/icon__file_explorer--large.png",
+        "redirect": "documents"
+    },
+    "sharedDocuments": {
+        "title": "Shared Documents",
+        "iconLarge": "/icon__file_explorer--large.png",
+        "disabled": true
+    },
+    "localDisk": {
+        "title": "Local Disk (:C)",
+        "iconLarge": "/icon__hdd--large.png",
+        "disabled": true
+    },
+    "desktop": {
+        "title": "Desktop",
+        "iconLarge": "/icon__desktop--large.png",
+        "component": "FileExplorer",
+        "height": 390
     }
 }

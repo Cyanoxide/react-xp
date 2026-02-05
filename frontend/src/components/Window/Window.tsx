@@ -72,9 +72,10 @@ const Window = ({ ...props }: WindowProps) => {
     };
 
     const onTitleBarPointerDown = (event: React.PointerEvent<HTMLElement>) => {
+        const activeWindow = activeWindowRef.current;
         const activeWindowRect = activeWindow?.getBoundingClientRect();
         if (!activeWindowRect) return;
-
+        
         const windowOffsetX = event.clientX - activeWindowRect.left;
         const windowOffsetY = event.clientY - activeWindowRect.top;
         if (activeWindow) {
@@ -114,6 +115,7 @@ const Window = ({ ...props }: WindowProps) => {
 
         if (event.currentTarget !== event.target) return;
 
+        const activeWindow = activeWindowRef.current;
         const activeWindowRect = activeWindow?.getBoundingClientRect();
         const activeTitleBarHeight = titleBar?.getBoundingClientRect().height || 0;
 
