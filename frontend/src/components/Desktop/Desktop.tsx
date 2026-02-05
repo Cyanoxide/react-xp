@@ -16,7 +16,6 @@ const Desktop = () => {
         <div className={styles.desktop}>
             {desktopItems.map((item) => { 
                 const [ id, {top=undefined, right=undefined, bottom=undefined, left=undefined}] = item;
-                console.log(id, top);
                 
                 return (
                     <DesktopIcon key={next()} id={next()} appId={id} top={top} right={right} bottom={bottom} left={left} selectedId={selectedId} setSelectedId={setSelectedId} />
