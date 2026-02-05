@@ -1,19 +1,27 @@
 import { useState } from "react";
+import filesJSON from "../../data/files.json";
 import DesktopIcon from "../DesktopIcon/DesktopIcon";
 import styles from "./Desktop.module.scss";
+import type { AbsoluteObject } from "../../context/types";
+
+const Files = filesJSON as unknown as Record<string, [string, AbsoluteObject][]>;
 
 const Desktop = () => {
     const [selectedId, setSelectedId] = useState<number | string>("");
     const next = (() => { let count = 0; return () => ++count; })();
 
+    const desktopItems = Files["desktop"];
 
     return (
         <div className={styles.desktop}>
-            <DesktopIcon id={next()} appId="documents" top={5} left={5} selectedId={selectedId} setSelectedId={setSelectedId} />
-            <DesktopIcon id={next()} appId="internetExplorer" top={70} left={5} selectedId={selectedId} setSelectedId={setSelectedId} />
-            <DesktopIcon id={next()} appId="gitHub" top={145} left={5} selectedId={selectedId} setSelectedId={setSelectedId} />
-            <DesktopIcon id={next()} appId="kofi" top={210} left={5} selectedId={selectedId} setSelectedId={setSelectedId} />
-            <DesktopIcon id={next()} appId="recycleBin" bottom={5} right={5} selectedId={selectedId} setSelectedId={setSelectedId} />
+            {desktopItems.map((item) => { 
+                const [ id, {top=undefined, right=undefined, bottom=undefined, left=undefined}] = item;
+                console.log(id, top);
+                
+                return (
+                    <DesktopIcon key={next()} id={next()} appId={id} top={top} right={right} bottom={bottom} left={left} selectedId={selectedId} setSelectedId={setSelectedId} />
+                );
+            })}
         </div>
     );
 };
