@@ -41,14 +41,17 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         );
 
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
-        if (!currentWindow) return;
+        if (!currentWindow || currentWindow.appId === appId) return;
 
         if (!(value in titleAppIdMap)) {
             inputField.value = appData.title;
             return;
         }
 
-        if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
+        if (currentWindow.history && currentWindow.history.at(-1) !== currentWindow.appId) {
+            currentWindow.history.push(currentWindow.appId);
+        };
+
         currentWindow.appId = appId || titleAppIdMap[value];
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
@@ -99,7 +102,9 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow || !currentWindow.forward) return;
 
-        if (currentWindow.history) currentWindow.history.push(currentWindow.appId);
+        if (currentWindow.history && currentWindow.history.at(-1) !== currentWindow.appId) {
+            currentWindow.history.push(currentWindow.appId);
+        };
 
         const previousWindowId = currentWindow.forward.pop() || "";
 
@@ -188,9 +193,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                 <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
                                 <p>Desktop</p>
                             </li>
-                            <li className="flex items-center">
-                                <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
-                                <p>My Computer</p>
+                            <li>
+                                <button className="flex items-center" onClick={() => updateWindow("computer")}>
+                                    <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
+                                    <p>My Computer</p>
+                                </button>
                             </li>
                             <li className="flex items-center">
                                 <img src="/icon__network_places--large.png" className="mr-2" width="12" height="12" />
