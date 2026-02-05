@@ -187,8 +187,8 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                 </div>
                 <div className="flex">
                     <div className="flex items-center">
-                        {Array.from({ length: 6 }).map(() => (
-                            <div className={styles.verticaLine}></div>
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <div key={index} className={styles.verticaLine}></div>
                         ))}
                     </div>
                     <div className="flex items-center gap-1 ml-3 w-44">
