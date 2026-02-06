@@ -1,7 +1,18 @@
+import { useRef, useState } from "react";
 import styles from "./Run.module.scss";
 
 
 const Run = () => {
+    const inputFieldRef = useRef<HTMLInputElement | null>(null);
+    const inputField = inputFieldRef.current;
+
+    const [isOkayDisabled, setIsOkayDisabled] = useState(true);
+
+    const onChangeHandler = () => {
+        if (!inputField) return;
+        setIsOkayDisabled((inputField?.value.length === 0));
+    };
+
     return (
         <div className={`${styles.run} py-5 px-4`}>
             <div className="flex">
@@ -11,12 +22,12 @@ const Run = () => {
             <div className="flex my-5">
                 <span className={`${styles.inputLabel} mr-2`}>Open:</span>
                 <div className={`${styles.inputField} flex mx-1 h-full`}>
-                    <input className={`${styles.input} h-full w-full p-1`} type="text" />
+                    <input ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onChange={onChangeHandler} />
                     <span className={styles.dropDown}></span>
                 </div>
             </div>
             <div className="flex justify-end gap-2 mt-8 mb-5">
-                <button>Ok</button>
+                <button disabled={isOkayDisabled}>Ok</button>
                 <button>Cancel</button>
                 <button disabled>Browse</button>
             </div>
