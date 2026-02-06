@@ -16,6 +16,10 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
     const [isForwardDisabled, setIsForwardDisabled] = useState(true);
     const HOMEPAGE = "https://www.jamiepates.com";
 
+    const inputFieldRef = useRef<HTMLInputElement | null>(null);
+    const inputField = inputFieldRef.current;
+    const currentUrl = useRef<string>(HOMEPAGE);
+
     useEffect(() => {
         const { currentWindow } = getCurrentWindow(currentWindows);
         if (!currentWindow) return;
@@ -24,35 +28,30 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
         if (currentWindow.forward) setIsForwardDisabled(currentWindow.forward.length === 0);
     }, [currentWindows]);
 
-    const inputFieldRef = useRef<HTMLInputElement | null>(null);
-    const inputField = inputFieldRef.current;
-    const currentUrl = (inputField) ? inputField.value : null;
 
     const appData = Applications[appId];
 
     const backClickHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
-        if (!currentWindow || !currentWindow.history || !inputField) return;
+        if (!currentWindow?.history || !currentWindow?.forward || !inputField?.value) return;
 
-        if (currentWindow.forward && currentUrl) currentWindow.forward.push(currentUrl);
-        const newUrl = currentWindow.history.pop() || "";
-
-        inputField.value = newUrl;
+        currentUrl.current = inputField.value;
+        currentWindow.forward.push(currentUrl.current);
+        inputField.value = currentWindow.history.pop() || "";
+        
         updateIframe();
-
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
 
     const forwardClickHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
-        if (!currentWindow || !currentWindow.forward || !inputField) return;
+        if (!currentWindow?.history || !currentWindow?.forward || !inputField?.value) return;
 
-        if (currentWindow.history && currentUrl) currentWindow.history.push(currentUrl);
-        const previousUrl = currentWindow.forward.pop() || "";
-
-        inputField.value = previousUrl;
+        currentUrl.current = inputField.value;
+        currentWindow.history.push(currentUrl.current);
+        inputField.value = currentWindow.forward.pop() || "";
+        
         updateIframe();
-
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
 
@@ -79,10 +78,12 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
 
     const submitURLHandler = () => {
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
+        if (currentUrl.current === inputField?.value) return;
         if (currentWindow && currentWindow.history && currentUrl) {
-            if (currentUrl !== inputField?.value) currentWindow.history.push(currentUrl);
+            if (currentUrl.current !== currentWindow.history.at(-1)) currentWindow.history.push(currentUrl.current);
 
             if (currentWindow.forward) currentWindow.forward = [];
+            if (inputField?.value) currentUrl.current = inputField?.value;
             dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
             updateIframe();
         }
