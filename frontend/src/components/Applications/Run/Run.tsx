@@ -5,7 +5,7 @@ import { openApplication } from "../../../utils/general";
 import styles from "./Run.module.scss";
 import type { Application } from "../../../context/types";
 
-const Applications = applicationsJSON as unknown as Application;
+const Applications = applicationsJSON as unknown as Record<string, Application>;
 
 const Run = () => {
     const { currentWindows, dispatch } = useContext();
@@ -36,8 +36,8 @@ const Run = () => {
             return;
         }
 
-        const appId = Object.entries(Applications).find(([, item]) => item.title === inputField.value)?.[0];
-        if (appId) openApplication(appId, currentWindows, dispatch);
+        const appId = Object.entries(Applications).find(([, item]) => item.title.toLowerCase() === inputField.value.toLowerCase())?.[0];
+        if (appId && !Applications[appId].disabled && !Applications[appId].link) openApplication(appId, currentWindows, dispatch);
     };
 
     return (
