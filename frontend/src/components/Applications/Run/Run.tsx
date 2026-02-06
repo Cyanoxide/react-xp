@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
+import { useContext } from "../../../context/context";
 import styles from "./Run.module.scss";
 
 
 const Run = () => {
+    const { currentWindows, dispatch } = useContext();
     const inputFieldRef = useRef<HTMLInputElement | null>(null);
     const inputField = inputFieldRef.current;
 
@@ -11,6 +13,10 @@ const Run = () => {
     const onChangeHandler = () => {
         if (!inputField) return;
         setIsOkayDisabled((inputField?.value.length === 0));
+    };
+
+    const onCancelClick = () => {
+        dispatch({type: "SET_CURRENT_WINDOWS", payload: currentWindows.filter((item) => !item.active)});
     };
 
     return (
@@ -28,7 +34,7 @@ const Run = () => {
             </div>
             <div className="flex justify-end gap-2 mt-8 mb-5">
                 <button disabled={isOkayDisabled}>Ok</button>
-                <button>Cancel</button>
+                <button onClick={onCancelClick}>Cancel</button>
                 <button disabled>Browse</button>
             </div>
         </div>
