@@ -1,0 +1,77 @@
+.run {
+    color: #000;
+    background: #f1f0eb;
+
+    img {
+        object-fit: contain;
+    }
+
+    p {
+        width: 21rem;
+        font-size: 0.9rem;
+    }
+
+    // .inputLabel {
+    //     color: #7f7c74;
+    // }
+
+    .inputField {
+        background: #fff;
+        border: 1px solid #859cb6aa;
+        flex-grow: 1;
+        margin-bottom: -0.2rem;
+        height: 1.8rem;
+
+        img {
+            object-fit: contain;
+        }
+
+        input {
+            border: none;
+
+            &:hover,
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .dropDown {
+            text-indent: -999rem;
+            background-image: url("/spritesheet__drop_down.png");
+            width: 1.45rem;
+            height: 100%;
+            background-size: cover;
+
+            &:hover {
+                background-position: -1.3rem;
+            }
+        }
+    }
+
+    button {
+        border: 0.1rem solid #496a90;
+        font-size: 0.9rem;
+        width: 5.5rem;
+        height: 1.8rem;
+        line-height: 1.6rem;
+        border-radius: 0.3rem;
+        background-image: linear-gradient(to top, #d8d4ca, #fff);
+        text-align: center;
+
+        &:hover {
+            box-shadow: inset 0 0 0 1px #d89c3388;
+        }
+
+        &:active {
+            box-shadow: inset 0px 15px 0 0px #0001;
+        }
+
+        &[disabled] {
+            box-shadow: none;
+            color: #b6b6a9;
+            border-color: #d2d0c2;
+            cursor: not-allowed;
+            background: none;
+        }
+    }
+}
