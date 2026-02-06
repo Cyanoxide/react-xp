@@ -37,6 +37,7 @@ export interface Application {
     link?: string;
     disabled?: boolean;
     redirect?: string;
+    resizable?: boolean;
 }
 
 export type File = AbsoluteObject & {

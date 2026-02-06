@@ -109,7 +109,8 @@
         "width": 300,
         "height": 160,
         "bottom": 35,
-        "left": 5
+        "left": 5,
+        "resizable": false
     },
     "winCatalog": {
         "title": "Windows Catalog",
