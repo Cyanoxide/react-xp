@@ -206,5 +206,12 @@
         "iconLarge": "/icon__desktop--large.png",
         "component": "FileExplorer",
         "height": 390
+    },
+    "notepad": {
+        "title": "Notepad",
+        "iconLarge": "/icon__notepad--large.png",
+        "component": "Notepad",
+        "height": 400,
+        "width": 500
     }
 }
