@@ -4,6 +4,7 @@ interface WindowAppProps {
     appId?: string;
     componentId?: string;
     landingUrl?: string;
+    content?: unknown;
 }
 
 type WindowContentProps = WindowAppProps;

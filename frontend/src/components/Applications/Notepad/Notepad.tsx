@@ -6,12 +6,11 @@ interface NotepadProps {
     content: string;
 }
 
-const Notepad = ({ title, content }: NotepadProps) => {
-
+const Notepad = ({ content }: NotepadProps) => {
     return (
         <div className={`${styles.notepad} flex flex-col h-full`}>
             <WindowMenu menuItems={["File", "Edit", "Format", "View", "Help"]}/>
-            <textarea className="p-2">{content}</textarea>
+            <textarea className="py-1 px-2" defaultValue={content}></textarea>
         </div>
     );
 };

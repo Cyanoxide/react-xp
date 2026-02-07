@@ -34,6 +34,13 @@
                 "bottom": 5,
                 "right": 5
             }
+        ],
+        [
+            "readme",
+            {
+                "top": 270,
+                "left": 5
+            }
         ]
     ],
     "documents": [
