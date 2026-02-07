@@ -31,7 +31,6 @@ const Run = () => {
         const inputField = form.elements.namedItem("command") as HTMLInputElement;
 
         if (inputField.value.startsWith("http")) {
-            closeWindow();
             const newWindow: currentWindow = {
                 id: generateUniqueId(),
                 appId: "internetExplorer",
@@ -45,19 +44,18 @@ const Run = () => {
             updatedCurrentWindows.push(newWindow);
 
             dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+            return;
         };
 
 
         if (inputField.value in Applications) {
             openApplication(inputField.value, currentWindows, dispatch);
-            closeWindow();
             return;
         }
 
         const appId = Object.entries(Applications).find(([, item]) => item.title.toLowerCase() === inputField.value.toLowerCase())?.[0];
         if (appId && !Applications[appId].disabled && !Applications[appId].link) {
             openApplication(appId, currentWindows, dispatch);
-            closeWindow();
         } 
     };
 
