@@ -23,6 +23,7 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
 
             if (!startMenu.contains(target) && !startButton.contains(target)) {
                 dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
+                dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
                 document.removeEventListener("click", onClick);
             }
         };
@@ -31,8 +32,6 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
 
     const allProgramsClickHandler = () => {
         dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: true });
-
-
 
         const onSecondClick = (event: MouseEvent) => {
             const target = (event.target as Node);
