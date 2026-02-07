@@ -10,25 +10,28 @@ interface StartMenuProps {
 }
 
 const StartMenu = ({ startButton }: StartMenuProps) => {
-    const { isAllProgramsOpen, isRecentDocumentsOpen, dispatch } = useContext();
+    const { isStartVisible, isAllProgramsOpen, isRecentDocumentsOpen, dispatch } = useContext();
     const startMenuRef = useRef<HTMLDivElement | null>(null);
     const startMenu = startMenuRef.current;
     const allProgramsRef = useRef<HTMLDivElement | null>(null);
     const allPrograms = allProgramsRef.current;
 
-    useEffect(() => {
-        const onClick = (event: MouseEvent) => {
-            const target = (event.target as Node);
-            if (!startMenu || !startButton) return;
+useEffect(() => {
+  if (!isStartVisible || !startMenuRef.current || !startButton) return;
 
-            if (!startMenu.contains(target) && !startButton.contains(target)) {
-                dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
-                dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
-                document.removeEventListener("click", onClick);
-            }
-        };
-        document.addEventListener("click", onClick);
-    }, [startButton, startMenu, dispatch]);
+  const onClick = (event: MouseEvent) => {
+    const target = event.target as Node;
+    if (!startMenuRef.current) return;
+
+    if (!startMenuRef.current.contains(target) && !startButton.contains(target)) {
+      dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
+      dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
+    }
+  };
+
+  document.addEventListener("click", onClick);
+  return () => document.removeEventListener("click", onClick);
+}, [isStartVisible, startMenu, startButton, dispatch]);
 
     const allProgramsClickHandler = () => {
         dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: true });

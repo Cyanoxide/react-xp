@@ -47,24 +47,12 @@ const TaskBar = () => {
         if (systemTrayIconDismissed) setSystemTrayIconDismissed(false);
     };
 
-    const startButtonClickHandler = () => {
+    const startButtonClickHandler = (event: React.MouseEvent) => {
+        event?.stopPropagation();
         dispatch({ type: "SET_IS_START_VISIBLE", payload: (isStartVisible) ? false : true });
 
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (currentWindow) currentWindow.active = false;
-
-        
-        const onSecondClick = (event: MouseEvent) => {
-            const target = (event.target as Node);
-            
-            if (!startButton?.contains(target)) {
-                document.removeEventListener("click", onSecondClick);
-                dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
-                dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
-                dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
-            }
-        };
-        document.addEventListener("click", onSecondClick);
 
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
     };
