@@ -105,10 +105,12 @@
         "title": "Run...",
         "iconLarge": "/icon__run--large.png",
         "content": "placeholder",
+        "component": "Run",
         "width": 300,
-        "height": 150,
+        "height": 160,
         "bottom": 35,
-        "left": 5
+        "left": 5,
+        "resizable": false
     },
     "winCatalog": {
         "title": "Windows Catalog",

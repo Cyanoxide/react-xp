@@ -17,7 +17,7 @@ const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const Window = ({ ...props }: WindowProps) => {
     const { id, appId, children, active = false, hidden = false } = props;
-    const { title, icon, iconLarge, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100 } = { ...applications[appId] };
+    const { title, icon, iconLarge, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100, resizable = true } = { ...applications[appId] };
     const { currentWindows, dispatch } = useContext();
     const isBiggerThanViewport = (width < window.innerWidth);
     const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? top : 0, left: (isBiggerThanViewport) ? left : 0, right, bottom });
@@ -113,7 +113,7 @@ const Window = ({ ...props }: WindowProps) => {
         const updatedCurrentWindows = updateCurrentActiveWindow(id, currentWindows);
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
 
-        if (event.currentTarget !== event.target) return;
+        if (event.currentTarget !== event.target || !resizable) return;
 
         const activeWindow = activeWindowRef.current;
         const activeWindowRect = activeWindow?.getBoundingClientRect();
@@ -212,8 +212,12 @@ const Window = ({ ...props }: WindowProps) => {
                             <h3>{title}</h3>
                         </div>
                         <div className="flex">
-                            <button onClick={onButtonClick} data-button="minimize">Minimise</button>
-                            <button onClick={onButtonClick} data-button="maximize" data-maximized={isMaximized}>Maximise</button>
+                            {resizable && (
+                                <>
+                                    <button onClick={onButtonClick} data-button="minimize">Minimise</button>
+                                    <button onClick={onButtonClick} data-button="maximize" data-maximized={isMaximized}>Maximise</button>
+                                </>
+                            )}
                             <button onClick={onButtonClick} data-button="close">Close</button>
                         </div>
                     </div>

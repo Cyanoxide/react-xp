@@ -3,12 +3,10 @@ import { lazy, Suspense, useMemo } from "react";
 interface WindowAppProps {
     appId?: string;
     componentId?: string;
+    landingUrl?: string;
 }
 
-interface WindowContentProps {
-    appId?: string;
-    componentId?: string;
-}
+type WindowContentProps = WindowAppProps;
 
 const windowModules = import.meta.glob("../Applications/*/*.tsx");
 
@@ -27,7 +25,7 @@ for (const path in windowModules) {
     }
 }
 
-export const WindowContent = ({ appId, componentId }: WindowContentProps) => {
+export const WindowContent = ({ componentId, ...props }: WindowContentProps) => {
     const importer = componentId ? windowRegistry[componentId] : null;
 
     const Component = useMemo(() => {
@@ -39,7 +37,7 @@ export const WindowContent = ({ appId, componentId }: WindowContentProps) => {
 
     return (
         <Suspense fallback={null}>
-            <Component appId={appId} componentId={componentId} />
+            <Component {...props} />
         </Suspense>
     );
 };
