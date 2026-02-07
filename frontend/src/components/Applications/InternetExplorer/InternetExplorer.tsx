@@ -14,25 +14,24 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
     const { currentWindows, dispatch } = useContext();
     const [isBackDisabled, setIsBackDisabled] = useState(true);
     const [isForwardDisabled, setIsForwardDisabled] = useState(true);
-    const HOMEPAGE = "https://www.jamiepates.com";
+    const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
+    const HOMEPAGE = currentWindow?.landingUrl || "https://www.jamiepates.com";
 
     const inputFieldRef = useRef<HTMLInputElement | null>(null);
     const inputField = inputFieldRef.current;
     const currentUrl = useRef<string>(HOMEPAGE);
-
+    
     useEffect(() => {
-        const { currentWindow } = getCurrentWindow(currentWindows);
         if (!currentWindow) return;
 
         if (currentWindow.history) setIsBackDisabled(currentWindow.history.length === 0);
         if (currentWindow.forward) setIsForwardDisabled(currentWindow.forward.length === 0);
-    }, [currentWindows]);
+    }, [currentWindow, currentWindows]);
 
 
     const appData = Applications[appId];
 
     const backClickHandler = () => {
-        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow?.history || !currentWindow?.forward || !inputField?.value) return;
 
         currentUrl.current = inputField.value;
@@ -44,7 +43,6 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
     };
 
     const forwardClickHandler = () => {
-        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (!currentWindow?.history || !currentWindow?.forward || !inputField?.value) return;
 
         currentUrl.current = inputField.value;
@@ -58,10 +56,16 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const iframe = iframeRef.current;
 
-    const updateIframe = () => {
-        const value = (!inputField?.value.startsWith("http")) ? `https://${inputField?.value}` : inputField?.value;
+    const getIframeSrc = (inputValue: string) => {
+        const value = (!inputValue.startsWith("http")) ? `https://${inputValue}` : inputValue;
         const wayBackUrl = "https://web.archive.org/web/20030612074004if_/";
         const url = (!value.includes(getBaseDomain())) ? `/proxy.php?url=${wayBackUrl}${value}` : value;
+        return {url, value};
+    };
+
+    const updateIframe = () => {
+        if (!inputField) return;
+        const {url, value} = getIframeSrc(inputField.value || HOMEPAGE);
 
         if (iframe) {
             if (sameBaseDomain(value)) {
@@ -77,7 +81,6 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
     };
 
     const submitURLHandler = () => {
-        const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (currentUrl.current === inputField?.value) return;
         if (currentWindow && currentWindow.history && currentUrl) {
             if (currentUrl.current !== currentWindow.history.at(-1)) currentWindow.history.push(currentUrl.current);
@@ -181,7 +184,7 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                 </section>
             </div>
             <main className={`${styles.mainContent} h-full flex overflow-auto`}>
-                <iframe ref={iframeRef} src={HOMEPAGE} width="100%" height="100%" />
+                <iframe ref={iframeRef} src={getIframeSrc(inputField?.value || HOMEPAGE).url} width="100%" height="100%" />
             </main >
             <div className={`${styles.statusBar} flex justify-between px-2 py-0.5`}>
                 <div className="flex items-center gap-1">

@@ -2,8 +2,10 @@ import { useRef, useState } from "react";
 import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
 import { openApplication } from "../../../utils/general";
+import { generateUniqueId } from "../../../utils/general";
 import styles from "./Run.module.scss";
 import type { Application } from "../../../context/types";
+import type { currentWindow } from "../../../context/types";
 
 const Applications = applicationsJSON as unknown as Record<string, Application>;
 
@@ -19,8 +21,8 @@ const Run = () => {
         setIsOkayDisabled((inputField?.value.length === 0));
     };
 
-    const onCancelClick = () => {
-        dispatch({type: "SET_CURRENT_WINDOWS", payload: currentWindows.filter((item) => !item.active)});
+    const closeWindow = () => {
+        dispatch({type: "SET_CURRENT_WINDOWS", payload: currentWindows.filter((item) => item.appId !== "run")});
     };
 
     const onSubmitHandler = (event: React.SubmitEvent<HTMLFormElement>) => {
@@ -28,16 +30,35 @@ const Run = () => {
         const form = event.currentTarget;
         const inputField = form.elements.namedItem("command") as HTMLInputElement;
 
-        if (inputField.value.startsWith("http")) return;
-        // Todo: Add Url handling
+        if (inputField.value.startsWith("http")) {
+            closeWindow();
+            const newWindow: currentWindow = {
+                id: generateUniqueId(),
+                appId: "internetExplorer",
+                active: true,
+                history: [],
+                forward: [],
+                landingUrl: inputField.value
+            };
+            
+            const updatedCurrentWindows = currentWindows.filter((item) => item.appId !== "run");
+            updatedCurrentWindows.push(newWindow);
+
+            dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+        };
+
 
         if (inputField.value in Applications) {
             openApplication(inputField.value, currentWindows, dispatch);
+            closeWindow();
             return;
         }
 
         const appId = Object.entries(Applications).find(([, item]) => item.title.toLowerCase() === inputField.value.toLowerCase())?.[0];
-        if (appId && !Applications[appId].disabled && !Applications[appId].link) openApplication(appId, currentWindows, dispatch);
+        if (appId && !Applications[appId].disabled && !Applications[appId].link) {
+            openApplication(appId, currentWindows, dispatch);
+            closeWindow();
+        } 
     };
 
     return (
@@ -55,7 +76,7 @@ const Run = () => {
             </div>
             <div className="flex justify-end gap-2 mt-8 mb-5">
                 <button type="submit" disabled={isOkayDisabled}>Ok</button>
-                <button onClick={onCancelClick}>Cancel</button>
+                <button onClick={closeWindow}>Cancel</button>
                 <button disabled>Browse</button>
             </div>
         </form>
