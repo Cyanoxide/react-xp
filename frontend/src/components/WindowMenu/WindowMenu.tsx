@@ -8,7 +8,6 @@ interface WindowMenuProps {
 
 const WindowMenu = ({ menuItems = [], hasWindowsLogo = false, isMinified = false }: WindowMenuProps) => {
 
-
     return (
         <section className={`${styles.windowMenu} flex ${hasWindowsLogo ? "justify-between" : "justify-start"}`} data-minified={isMinified}>
             <div className="relative overflow-hidden w-full">

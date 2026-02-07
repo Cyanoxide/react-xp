@@ -1,0 +1,12 @@
+.notepad {
+    textarea {
+        height: 100%;
+        width: 100%;
+        color: #000;
+        resize: none;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

@@ -44,8 +44,7 @@ export const openApplication = (appId: string, currentWindows: currentWindow[], 
         history: [],
         forward: []
     };
-
-    const updatedCurrentWindows = [...currentWindows];
+    const updatedCurrentWindows = currentWindows.filter((item) => item.appId !== "run");
     updatedCurrentWindows.push(newWindow);
     dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
 };

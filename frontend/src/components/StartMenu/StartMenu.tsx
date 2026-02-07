@@ -69,6 +69,7 @@ useEffect(() => {
                             <li><StartMenuItem appId="winMessenger" iconSize={30} /></li>
                             <li><StartMenuItem appId="msn" iconSize={30} /></li>
                             <li><StartMenuItem appId="winMediaPlayer" iconSize={30} /></li>
+                            <li><StartMenuItem appId="notepad" iconSize={30} /></li>
                         </ul>
                     </div>
                     <div>
