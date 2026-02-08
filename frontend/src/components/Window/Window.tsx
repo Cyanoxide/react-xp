@@ -114,12 +114,15 @@ const Window = ({ ...props }: WindowProps) => {
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
 
         if (event.currentTarget !== event.target || !resizable) return;
-
+        
         const activeWindow = activeWindowRef.current;
         const activeWindowRect = activeWindow?.getBoundingClientRect();
         const activeTitleBarHeight = titleBar?.getBoundingClientRect().height || 0;
-
+        
         if (!activeWindow || !activeWindowRect) return;
+
+        activeWindow.style.left = `${activeWindowRect.left}px`;
+        activeWindow.style.removeProperty("right");
 
         const WINDOW_PADDING = getWindowPadding(activeWindow);
         const MIN_WINDOW_WIDTH = getMinimumWindowSize(activeWindow);
@@ -139,7 +142,7 @@ const Window = ({ ...props }: WindowProps) => {
 
             if (activeWindowRegion.includes("right")) {
                 width = event.clientX - activeWindowRect.left;
-                x = activeWindowRect.right - width;
+                x = activeWindowRect.left;
             }
 
             if (activeWindowRegion.includes("left")) {
@@ -149,12 +152,13 @@ const Window = ({ ...props }: WindowProps) => {
 
             if (activeWindowRegion.includes("bottom")) {
                 height = Math.max((event.clientY - activeWindowRect.top), MIN_WINDOW_HEIGHT);
-                x = activeWindowRect.right - width;
+                x = activeWindowRect.left;
             }
 
             if (activeWindowRegion.includes("top")) {
                 height = Math.max((activeWindowRect.bottom - event.clientY), MIN_WINDOW_HEIGHT);
                 y = activeWindowRect.bottom - height;
+                x = activeWindowRect.left;
             }
 
             setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
