@@ -27,8 +27,6 @@ This is an ongoing project, with many more features I’d like to include in the
 
 ## Demo
 
-[![Alt text]([https://img.youtube.com/vi/qkSAdzypCK8/maxresdefault.jpg](https://i3.ytimg.com/vi/qkSAdzypCK8/maxresdefault.jpg))](https://www.youtube.com/watch?v=qkSAdzypCK8)
-
 [https://react-xp.jamiepates.com/](https://react-xp.jamiepates.com/)
 
 
