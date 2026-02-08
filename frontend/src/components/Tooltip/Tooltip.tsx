@@ -1,3 +1,4 @@
+import GitHubButton from "react-github-btn";
 import styles from "./Tooltip.module.scss";
 
 interface TooltipProps {
@@ -19,7 +20,11 @@ const Tooltip = ({ heading, content, systemTrayIconDismissed, setSystemTrayIconD
                 <h4>{heading}</h4>
                 <button className={styles.tooltipClose} onClick={onClickHandler}><span>+</span></button>
             </span>
-            <p className="text-left">{content}</p>
+            <p className="text-left mb-3">{content}</p>
+            <div className={`${styles.social} flex gap-3`}>
+                <GitHubButton href="https://github.com/Cyanoxide/react-xp" data-show-count="true" data-color-scheme="no-preference: light_high_contrast; light: light_high_contrast; dark: light_high_contrast;" aria-label="Star Cyanoxide/react-xp on GitHub">Star</GitHubButton>
+                <GitHubButton href="https://github.com/Cyanoxide" data-color-scheme="no-preference: light_high_contrast; light: light_high_contrast; dark: light_high_contrast;" data-show-count="true" aria-label="Follow @Cyanoxide on GitHub">Follow</GitHubButton>
+            </div>
         </span>
     );
 };
