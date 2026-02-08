@@ -139,6 +139,7 @@ const Window = ({ ...props }: WindowProps) => {
 
             if (activeWindowRegion.includes("right")) {
                 width = event.clientX - activeWindowRect.left;
+                x = activeWindowRect.right - width;
             }
 
             if (activeWindowRegion.includes("left")) {
@@ -148,6 +149,7 @@ const Window = ({ ...props }: WindowProps) => {
 
             if (activeWindowRegion.includes("bottom")) {
                 height = Math.max((event.clientY - activeWindowRect.top), MIN_WINDOW_HEIGHT);
+                x = activeWindowRect.right - width;
             }
 
             if (activeWindowRegion.includes("top")) {
