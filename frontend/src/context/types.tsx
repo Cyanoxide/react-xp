@@ -52,6 +52,7 @@ export interface State {
     isStartVisible: boolean;
     isAllProgramsOpen: boolean;
     isRecentDocumentsOpen: boolean;
+    isLoginDismissed: boolean;
 }
 
 export type Action =
@@ -61,6 +62,7 @@ export type Action =
     | { type: "SET_IS_START_VISIBLE"; payload: boolean }
     | { type: "SET_IS_ALL_PROGRAMS_OPEN"; payload: boolean }
     | { type: "SET_IS_RECENT_DOCUMENTS_OPEN"; payload: boolean }
+    | { type: "SET_IS_LOGIN_DISMISSED"; payload: boolean }
 
 export interface ContextType extends State {
     dispatch: React.Dispatch<Action>;

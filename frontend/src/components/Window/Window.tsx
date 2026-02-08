@@ -161,7 +161,6 @@ const Window = ({ ...props }: WindowProps) => {
                 x = activeWindowRect.right - width;
             }
 
-
             setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
             setWindowSize([width, height]);
         };

@@ -1,18 +1,25 @@
+import { Activity } from "react";
 import Desktop from "./components/Desktop/Desktop";
+import Login from "./components/Login/Login";
 import TaskBar from "./components/TaskBar/TaskBar";
 import Wallpaper from "./components/Wallpaper/Wallpaper";
 import WindowManagement from "./components/WindowManagement/WindowManagement";
-import { Provider } from "./context/provider";
+import { useContext } from "./context/context";
 
 function App() {
-  return (
-    <Provider>
-      <Wallpaper />
-      <Desktop />
-      <TaskBar />
-      <WindowManagement />
-    </Provider>
-  );
+    const {isLoginDismissed} = useContext();
+
+    return (
+        <>
+            <Wallpaper />
+            <Desktop />
+            <TaskBar />
+            <WindowManagement />
+            <Activity mode={(!isLoginDismissed) ? "visible" : "hidden"}>
+                <Login user="User" />
+            </Activity>
+        </>
+    );
 }
 
 export default App;
