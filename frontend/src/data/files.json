@@ -38,8 +38,8 @@
         [
             "readme",
             {
-                "top": 270,
-                "left": 5
+                "bottom": 70,
+                "right": 5
             }
         ]
     ],
