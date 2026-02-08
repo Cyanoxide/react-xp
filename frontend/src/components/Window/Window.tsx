@@ -144,22 +144,23 @@ const Window = ({ ...props }: WindowProps) => {
                 width = event.clientX - activeWindowRect.left;
                 x = activeWindowRect.left;
             }
-
-            if (activeWindowRegion.includes("left")) {
-                width = Math.max((activeWindowRect.right - event.clientX), MIN_WINDOW_WIDTH);
-                x = activeWindowRect.right - width;
-            }
-
+            
             if (activeWindowRegion.includes("bottom")) {
                 height = Math.max((event.clientY - activeWindowRect.top), MIN_WINDOW_HEIGHT);
                 x = activeWindowRect.left;
             }
-
+            
             if (activeWindowRegion.includes("top")) {
                 height = Math.max((activeWindowRect.bottom - event.clientY), MIN_WINDOW_HEIGHT);
                 y = activeWindowRect.bottom - height;
                 x = activeWindowRect.left;
             }
+            
+            if (activeWindowRegion.includes("left")) {
+                width = Math.max((activeWindowRect.right - event.clientX), MIN_WINDOW_WIDTH);
+                x = activeWindowRect.right - width;
+            }
+
 
             setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
             setWindowSize([width, height]);
