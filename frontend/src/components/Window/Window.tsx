@@ -113,7 +113,6 @@ const Window = ({ ...props }: WindowProps) => {
         const updatedCurrentWindows = updateCurrentActiveWindow(id, currentWindows);
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
 
-        
         if (event.currentTarget !== event.target || !resizable) return;
         
         const activeWindow = activeWindowRef.current;
