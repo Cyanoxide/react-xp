@@ -1,6 +1,7 @@
 import { Activity } from "react";
 import { useState, useEffect } from "react";
 import { useContext } from "../../context/context";
+import playSound from "../../utils/sounds";
 import styles from "./Login.module.scss";
 
 interface LoginProps {
@@ -24,6 +25,7 @@ const Login = ({ user }: LoginProps) => {
     const onUserClickHandler = () => {
         setIsLoggingIn(true);
         const loggingInDelay = setTimeout(() => {
+            playSound("startup", true);
             dispatch({ type: "SET_IS_LOGIN_DISMISSED", payload: true });
         }, 500);
 
