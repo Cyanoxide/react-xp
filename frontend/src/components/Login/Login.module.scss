@@ -13,72 +13,17 @@
             margin-left: 10rem;
         }
 
+        &.loginMsg {
+            font-size: 4.5rem;
+
+            @media (min-width: 30rem) {
+                margin-left: 3.1rem;
+            }
+        }
     }
 
     h3 {
         font-size: 1.5rem;
-    }
-
-    .userContainer {
-        height: fit-content;
-        max-width: 40vw;
-        border: 0.1rem solid transparent;
-        border-right: none;
-        position: relative;
-        flex-direction: column;
-        align-items: center;
-
-        @media (min-width: 30rem) {
-            flex-direction: row;
-            align-items: start;
-            width: 25rem;
-        }
-
-        &:before {
-            content: "";
-            transition: all 0.2s linear;
-            inset: 0;
-            z-index: 0;
-            border-radius: 0.5rem;
-            border: 0.1rem solid transparent;
-            position: absolute;
-
-            @media (min-width: 30rem) {
-                mask-image: linear-gradient(to right, #000, transparent);
-            }
-        }
-
-        &:hover {
-            &:before {
-                background: #2041a0;
-                border-color: #8095d4;
-            }
-
-            .avatar {
-                border-color: #fae14b;
-                opacity: 1;
-            }
-
-            h3 {
-                opacity: 1;
-            }
-        }
-
-        .avatar {
-            border-radius: .3rem;
-            border: .2rem solid #ced6e9;
-            box-shadow: .1rem .1rem .3rem #16316b;
-            transition: all 0.2s linear;
-            position: relative;
-            z-index: 1;
-            opacity: 0.6;
-        }
-
-        h3 {
-            position: relative;
-            z-index: 1;
-            opacity: 0.6;
-        }
     }
 
     main {
@@ -134,6 +79,93 @@
                 width: 0.2rem;
                 height: 100%;
                 background-image: linear-gradient(to bottom, transparent 15%, #89a1e3, transparent 85%);
+            }
+        }
+    }
+
+        .userContainer {
+        height: fit-content;
+        max-width: 40vw;
+        border: 0.1rem solid transparent;
+        border-right: none;
+        position: relative;
+        flex-direction: column;
+        align-items: center;
+
+        @media (min-width: 30rem) {
+            flex-direction: row;
+            align-items: start;
+            width: 25rem;
+        }
+
+        &:not([data-logging-in="true"]):before {
+            content: "";
+            transition: all 0.2s linear;
+            inset: 0;
+            z-index: 0;
+            border-radius: 0.75rem;
+            border: 0.1rem solid transparent;
+            position: absolute;
+
+            @media (min-width: 30rem) {
+                mask-image: linear-gradient(to right, #000, transparent);
+            }
+        }
+
+        p {
+            color: #102f96;
+            font-size: 0.9rem;
+        }
+
+        h3 {
+            position: relative;
+            z-index: 1;
+
+            &:not([data-logging-in="true"]) {
+                opacity: 0.6;
+            }
+        }
+
+        .avatar {
+            border-radius: .3rem;
+            border: .2rem solid #ced6e9;
+            box-shadow: .1rem .1rem .3rem #16316b;
+            transition: all 0.2s linear;
+            position: relative;
+            z-index: 1;
+
+            &:not([data-logging-in="true"]) {
+                opacity: 0.6;
+                transition: none;
+            }
+        }
+
+        .userNameContainer {
+            text-align: center;
+            align-items: center;
+
+            @media (min-width: 30rem) {
+                text-align: left;
+                align-items: start;
+            }
+        }
+
+        &:hover {
+            &:before {
+                background: #2041a0;
+                border-color: #8095d4;
+            }
+
+            .avatar {
+                opacity: 1;
+
+                &:not([data-logging-in="true"]) {
+                    border-color: #fae14b;
+                }
+            }
+
+            h3 {
+                opacity: 1;
             }
         }
     }

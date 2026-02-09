@@ -9,19 +9,25 @@ interface LoginProps {
 
 const Login = ({ user }: LoginProps) => {
     const {dispatch} = useContext();
-    const [isLoading, setIsLoading] = useState(true); 
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     useEffect(() => {
         const welcomeDelay = setTimeout(() => {
             setIsLoading(false);
-        }, 3000);
+        }, 1000);
 
         return () => clearTimeout(welcomeDelay);
     }, []);
 
 
     const onUserClickHandler = () => {
-        dispatch({ type: "SET_IS_LOGIN_DISMISSED", payload: true });
+        setIsLoggingIn(true);
+        const loggingInDelay = setTimeout(() => {
+            dispatch({ type: "SET_IS_LOGIN_DISMISSED", payload: true });
+        }, 500);
+
+        return () => clearTimeout(loggingInDelay);
     };
 
     return (
@@ -29,20 +35,28 @@ const Login = ({ user }: LoginProps) => {
             <div className="grow h-1/7"></div>
             <Activity mode={(isLoading) ? "visible" : "hidden"}>
                 <main className="flex h-6/7 px-8">
-                    <h1>Welcome</h1>
+                    <h1 className="text-9xl">Welcome</h1>
                 </main>
             </Activity>
             <Activity mode={(!isLoading) ? "visible" : "hidden"}>
                 <main className="flex h-6/7 px-8">
                     <div className={`${styles.details} flex flex-col justify-center items-end`}>
-                        <img className="mb-6" src="/logo__windows_xp.png" height="150" width="150" />
-                        <h3 className="text-right">To begin, click your user name</h3>
+                        {!isLoggingIn && (
+                            <>
+                                <img className="mb-6" src="/logo__windows_xp.png" height="150" width="150" />
+                                <h3 className="text-right">To begin, click your user name</h3>
+                            </>
+                        )}
+                        {isLoggingIn && <h1 className={styles.loginMsg}>Welcome</h1>}
                     </div>
                     <span className={`${styles.seperator} m-9`}></span>
                     <div className="flex flex-col justify-center">
-                        <button className={`${styles.userContainer} flex p-3 gap-5`} onClick={onUserClickHandler}>
-                            <img className={`${styles.avatar} m-1.5`} width="50" height="50" src="/avatar__skateboard.png" />
-                            <h3>{user}</h3>
+                        <button className={`${styles.userContainer} flex p-3 gap-5`} data-logging-in={isLoggingIn} onClick={onUserClickHandler}>
+                            <img className={`${styles.avatar} m-1.5`} width="50" height="50" data-logging-in={isLoggingIn} src="/avatar__skateboard.png" />
+                            <div className={`${styles.userNameContainer} flex flex-col`}>
+                                <h3  data-logging-in={isLoggingIn}>{user}</h3>
+                                {isLoggingIn && <p>Loading your personal settings...</p>}
+                            </div>
                         </button>
                     </div>
                 </main>

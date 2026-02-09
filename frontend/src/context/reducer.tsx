@@ -16,7 +16,7 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isAllProgramsOpen: action.payload };
     case "SET_IS_RECENT_DOCUMENTS_OPEN":
         return { ...state, isRecentDocumentsOpen: action.payload };
-        case "SET_IS_LOGIN_DISMISSED":
+    case "SET_IS_LOGIN_DISMISSED":
         return { ...state, isLoginDismissed: action.payload };
     default:
         return state;
