@@ -27,6 +27,7 @@ const Login = ({ user }: LoginProps) => {
         const loggingInDelay = setTimeout(() => {
             playSound("startup", true);
             dispatch({ type: "SET_IS_LOGIN_DISMISSED", payload: true });
+            sessionStorage.setItem("loginDismissed", "true");
         }, 500);
 
         return () => clearTimeout(loggingInDelay);

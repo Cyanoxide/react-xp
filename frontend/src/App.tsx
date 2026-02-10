@@ -46,7 +46,7 @@ function App() {
 
     return (
         <>
-            <Activity mode={(!isBiosComplete) ? "visible" : "hidden"}>
+            <Activity mode={(!isLoginDismissed && !isBiosComplete) ? "visible" : "hidden"}>
                 <Bios />
             </Activity>
             <Activity mode={(!isLoginDismissed && isBiosComplete) ? "visible" : "hidden"}>
