@@ -1,0 +1,32 @@
+.bios {
+    * {
+        animation: fade-in-out 3s linear;
+
+        .meta {
+            justify-content: center;
+            max-width: 90rem;
+
+            @media (min-width: 35rem) {
+                justify-content: space-between;
+            }
+        }
+    }
+}
+
+@keyframes fade-in-out {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

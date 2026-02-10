@@ -16,7 +16,7 @@ const Login = ({ user }: LoginProps) => {
     useEffect(() => {
         const welcomeDelay = setTimeout(() => {
             setIsLoading(false);
-        }, 1000);
+        }, 3000);
 
         return () => clearTimeout(welcomeDelay);
     }, []);
@@ -64,13 +64,19 @@ const Login = ({ user }: LoginProps) => {
                 </main>
             </Activity>
 
-            <div className={`${styles.footer} p-9 flex grow h-1/7`}>
-                <button className={`${styles.shutDown} flex items-center cursor-not-allowed mb-4`}>
-                    <img className="mr-3" width="22" height="22" src="/icon__shut_down--large.png" />
-                    <h3>Turn off Computer</h3>
-                </button>
-                <div className="max-w-90">
-                    <p>After you log on, you can add or change accounts. Just go to Control Panel and click User Accounts.</p>
+            <div className={`flex justify-center grow h-1/7`}>
+                <div className={`${styles.footer} w-full p-9 flex`}>
+                    {(!isLoading && !isLoggingIn) && (
+                        <>
+                            <button className={`${styles.shutDown} flex items-center cursor-not-allowed mb-4`}>
+                                <img className="mr-3" width="22" height="22" src="/icon__shut_down--large.png" />
+                                <h3>Turn off Computer</h3>
+                            </button>
+                            <div className="max-w-90">
+                                <p>After you log on, you can add or change accounts. Just go to Control Panel and click User Accounts.</p>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>    

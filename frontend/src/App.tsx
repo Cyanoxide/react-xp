@@ -1,4 +1,5 @@
 import { Activity, useEffect, useState } from "react";
+import Bios from "./components/Bios/Bios";
 import Desktop from "./components/Desktop/Desktop";
 import Login from "./components/Login/Login";
 import TaskBar from "./components/TaskBar/TaskBar";
@@ -11,6 +12,15 @@ function App() {
     const [isWindowsInitiated, setIsWindowsInitiated] = useState(false);
     const [isTaskbarInitiated, setIsTaskbarInitiated] = useState(false);
     const [isDesktopInitiated, setIsDesktopInitiated] = useState(false);
+    const [isBiosComplete, setIsBiosComplete] = useState(false);
+
+    useEffect(() => {
+        const biosDelay = setTimeout(() => {
+            setIsBiosComplete(true);
+        }, 3000);
+
+        return () => clearTimeout(biosDelay);
+    }, []);
 
     useEffect(() => {
         if (!isLoginDismissed) return;
@@ -36,6 +46,12 @@ function App() {
 
     return (
         <>
+            <Activity mode={(!isBiosComplete) ? "visible" : "hidden"}>
+                <Bios />
+            </Activity>
+            <Activity mode={(!isLoginDismissed && isBiosComplete) ? "visible" : "hidden"}>
+                <Login user="User" />
+            </Activity>
             <Wallpaper />
             <Activity mode={(isDesktopInitiated) ? "visible" : "hidden"}>
                 <Desktop />
@@ -45,9 +61,6 @@ function App() {
             </Activity>
             <Activity mode={(isWindowsInitiated) ? "visible" : "hidden"}>
                 <WindowManagement />
-            </Activity>
-            <Activity mode={(!isLoginDismissed) ? "visible" : "hidden"}>
-                <Login user="User" />
             </Activity>
         </>
     );
