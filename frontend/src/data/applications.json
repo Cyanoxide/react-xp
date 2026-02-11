@@ -218,7 +218,7 @@
         "title": "ReadMe.txt",
         "iconLarge": "/icon__notepad--large.png",
         "component": "Notepad",
-        "content": "Welcome to my React XP project.\n\nI wanted to recreate Windows XP using React and Typescript.\nIt's still a work in progress so many features are not implemented yet, but I plan to continue adding new features as I can.\n\nSo far, I've added File Explorer, Internet Explorer, Notepad and the Run window, as well as core funtionalities like movable desktop icons and windows.\n\nNext on my list, I'm planning to add a boot sequence and login screen.",
+        "content": "Welcome to my React XP project.\n\nI wanted to recreate Windows XP using React and Typescript.\nIt's still a work in progress so many features are not implemented yet, but I plan to continue adding new features as I can.\n\nSo far, I've added File Explorer, Internet Explorer, Notepad and the Run window, as well as core funtionalities like movable desktop icons and windows.\n\nCurrently, I'm working on the boot sequence and login screen which you may have seen when you first landed on the page.",
         "height": 250,
         "width": 330,
         "top": 25,

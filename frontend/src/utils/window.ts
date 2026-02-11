@@ -4,7 +4,7 @@ export const getRegionPosition = (position: number, size: number, edgePadding: n
     return "center";
 };
 
-export const getWindowClickRegion = (event: React.PointerEvent<HTMLElement>, element: Element, edgePadding: number) => {
+export const getWindowClickRegion = (event: PointerEvent, element: Element, edgePadding: number) => {
     const { left, top, width, height } = element.getBoundingClientRect();
 
     const x = event.clientX - left;

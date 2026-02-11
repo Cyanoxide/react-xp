@@ -36,7 +36,7 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
     const allProgramsClickHandler = () => {
         dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: true });
 
-        const onSecondClick = (event: MouseEvent) => {
+        const onSecondClick = (event: PointerEvent) => {
             const target = (event.target as Node);
 
             if (!allPrograms?.contains(target)) {
@@ -53,7 +53,7 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
     };
 
     return (
-        <div ref={startMenuRef} className={`${styles.startMenu} bg-[#3e75d8] absolute left-0 bottom-12`}>
+        <div ref={startMenuRef} className={`${styles.startMenu} bg-[#3e75d8] absolute z-10 left-0 bottom-12`}>
             <header className="flex items-center p-3">
                 <img src="/avatar__skateboard.png" className="mr-3" width="50" height="50" />
                 <h1>User</h1>
@@ -74,7 +74,7 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
                     </div>
                     <div>
                         <div ref={allProgramsRef} className={`${styles.allPrograms} p-2 relative`}>
-                            <button className="flex items-center justify-center gap-2 p-1" onMouseOver={allProgramsClickHandler} data-open={isAllProgramsOpen}>
+                            <button className="flex items-center justify-center gap-2 p-1" onPointerOver={allProgramsClickHandler} data-open={isAllProgramsOpen}>
                                 <h5 className="font-bold">All Programs</h5>
                                 <img src="/icon__green_arrow--large.png" className="mr-3" width="20" height="20" />
                             </button>
