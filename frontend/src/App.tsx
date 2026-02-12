@@ -1,5 +1,4 @@
 import { Activity, useEffect, useState } from "react";
-import Bios from "./components/Bios/Bios";
 import Desktop from "./components/Desktop/Desktop";
 import Login from "./components/Login/Login";
 import ShutDownModal from "./components/ShutDownModal/ShutDownModal";
@@ -9,18 +8,9 @@ import WindowManagement from "./components/WindowManagement/WindowManagement";
 import { useContext } from "./context/context";
 
 function App() {
-    const {windowsInitiationState, isShutDownModalOpen, dispatch} = useContext();
+    const {windowsInitiationState, isShutDownModalOpen} = useContext();
     const [initiationStage, setInitiationStage] = useState(0);
 
-    useEffect(() => {
-        if (windowsInitiationState !== "bios") return;
-
-        const biosDelay = setTimeout(() => {
-            dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "welcome" });
-        }, 3000);
-
-        return () => clearTimeout(biosDelay);
-    }, [dispatch, windowsInitiationState]);
 
     useEffect(() => {
         const delayMap = [500, 500, 500];
@@ -35,10 +25,7 @@ function App() {
 
     return (
         <>
-            <Activity mode={(windowsInitiationState === "bios") ? "visible" : "hidden"}>
-                <Bios />
-            </Activity>
-            <Activity mode={(["welcome", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
+            <Activity mode={(["bios", "welcome", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
                 <Login user="User" />
             </Activity>
             <Wallpaper />
