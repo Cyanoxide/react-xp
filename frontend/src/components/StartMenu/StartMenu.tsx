@@ -52,6 +52,12 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
         dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: true });
     };
 
+    const onShutDownModalButtonHandler = () => {
+        dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: true });
+        dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
+        dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
+    };
+
     return (
         <div ref={startMenuRef} className={`${styles.startMenu} bg-[#3e75d8] absolute z-10 left-0 bottom-12`}>
             <header className="flex items-center p-3">
@@ -108,13 +114,13 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
             <footer>
                 <ul className="flex justify-end gap-2 p-2">
                     <li>
-                        <button className="flex items-center p-2 cursor-not-allowed">
+                        <button className="flex items-center p-2 cursor-not-allowed" onClick={onShutDownModalButtonHandler}>
                             <img src="/icon__log_out--large.png" className="mr-2" width="22" height="22" />
                             <h6>Log Off</h6>
                         </button>
                     </li>
                     <li>
-                        <button className="flex items-center p-2 cursor-not-allowed">
+                        <button className="flex items-center p-2 cursor-not-allowed" onClick={onShutDownModalButtonHandler}>
                             <img src="/icon__shut_down--large.png" className="mr-2" width="22" height="22" />
                             <h6>Turn Off Computer</h6>
                         </button>
