@@ -56,6 +56,7 @@ export interface State {
     isRecentDocumentsOpen: boolean;
     isShutDownModalOpen: boolean;
     windowsInitiationState: windowsInitiationState;
+    initiationStage: number;
 }
 
 export type Action =
@@ -67,6 +68,9 @@ export type Action =
     | { type: "SET_IS_RECENT_DOCUMENTS_OPEN"; payload: boolean }
     | { type: "SET_IS_SHUTDOWN_MODAL_OPEN"; payload: boolean }
     | { type: "SET_WINDOWS_INITIATION_STATE"; payload: windowsInitiationState; }
+    | { type: "SET_INITIATION_STAGE"; payload: number; }
+
+    
 
 export interface ContextType extends State {
     dispatch: React.Dispatch<Action>;

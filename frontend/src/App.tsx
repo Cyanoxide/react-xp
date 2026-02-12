@@ -1,4 +1,4 @@
-import { Activity, useEffect, useState } from "react";
+import { Activity, useEffect } from "react";
 import Desktop from "./components/Desktop/Desktop";
 import Login from "./components/Login/Login";
 import TaskBar from "./components/TaskBar/TaskBar";
@@ -7,20 +7,19 @@ import WindowManagement from "./components/WindowManagement/WindowManagement";
 import { useContext } from "./context/context";
 
 function App() {
-    const {windowsInitiationState} = useContext();
-    const [initiationStage, setInitiationStage] = useState(0);
-
+    const {windowsInitiationState, initiationStage, dispatch} = useContext();
 
     useEffect(() => {
         const delayMap = [500, 500, 500];
         if (windowsInitiationState !== "loggedIn" || initiationStage >= delayMap.length) return;
         
         const delay = setTimeout(() => {
-            setInitiationStage((prev) => prev + 1);
+            dispatch({ type: "SET_INITIATION_STAGE", payload: initiationStage + 1});
+
         }, delayMap[initiationStage]);
 
         return () => clearTimeout(delay);
-    }, [initiationStage, windowsInitiationState]);
+    }, [initiationStage, windowsInitiationState, dispatch]);
 
     return (
         <>

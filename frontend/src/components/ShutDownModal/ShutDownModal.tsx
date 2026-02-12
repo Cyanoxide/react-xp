@@ -17,6 +17,7 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
     const logOutHandler = () => {
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
         dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "login"});
+        dispatch({ type: "SET_INITIATION_STAGE", payload: 0});
     };
 
     const modalElement = document.getElementById("modal");
@@ -35,11 +36,11 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
                                 <p>Stand By</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold">
+                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed">
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
                                 <p>Shut Down</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold">
+                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed">
                                 <img src="/icon__restart--large.png" className="mb-3" height="33" width="33" />
                                 <p>Restart</p>
                             </button>

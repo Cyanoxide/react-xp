@@ -20,6 +20,8 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isShutDownModalOpen: action.payload };
     case "SET_WINDOWS_INITIATION_STATE":
         return { ...state, windowsInitiationState: action.payload };
+    case "SET_INITIATION_STAGE":
+        return { ...state, initiationStage: action.payload };
     default:
         return state;
     }
@@ -40,4 +42,5 @@ export const initialState: State = {
     isRecentDocumentsOpen: false,
     isShutDownModalOpen: false,
     windowsInitiationState: "bios",
+    initiationStage: 0,
 };
