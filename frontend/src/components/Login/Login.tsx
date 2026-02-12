@@ -58,7 +58,7 @@ const Login = ({ user }: LoginProps) => {
                             <img className={`${styles.avatar} m-1.5`} width="50" height="50" data-logging-in={isLoggingIn} src="/avatar__skateboard.png" />
                             <div className={`${styles.userNameContainer} flex flex-col`}>
                                 <h3  data-logging-in={isLoggingIn}>{user}</h3>
-                                {isLoggingIn && <p>Loading your personal settings...</p>}
+                                {isLoggingIn && <p className="font-bold">Loading your personal settings...</p>}
                             </div>
                         </button>
                     </div>
