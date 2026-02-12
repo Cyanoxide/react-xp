@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useContext } from "../../context/context";
 import Button from "../Button/Button";
 import styles from "./ShutDownModal.module.scss";
@@ -18,7 +19,9 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
         dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "login"});
     };
 
-    return (
+    const modalElement = document.getElementById("modal");
+
+    return createPortal(
         <div className={`${styles.container} flex h-full w-full absolute z-10 inset-0`}>
             <div className={`${styles.shutDownModal} m-auto flex flex-col`}>
                 <div className="flex justify-between items-center h-1/5 pl-5 pr-4">
@@ -60,7 +63,7 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                 </div>
             </div>
         </div>
-    );
+        , modalElement as HTMLElement);
 };
 
 export default ShutDownModal;

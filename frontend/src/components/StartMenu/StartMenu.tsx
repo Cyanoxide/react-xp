@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useContext } from "../../context/context";
 import subMenus from "../../data/subMenus.json";
+import ShutDownModal from "../ShutDownModal/ShutDownModal";
 import StartMenuItem from "../StartMenuItem/StartMenuItem";
 import StartMenuSubMenu from "../StartMenuSubMenu/StartMenuSubMenu";
 import styles from "./StartMenu.module.scss";
@@ -10,11 +11,12 @@ interface StartMenuProps {
 }
 
 const StartMenu = ({ startButton }: StartMenuProps) => {
-    const { isStartVisible, isAllProgramsOpen, isRecentDocumentsOpen, dispatch } = useContext();
+    const { isStartVisible, isAllProgramsOpen, isRecentDocumentsOpen, isShutDownModalOpen, dispatch } = useContext();
     const startMenuRef = useRef<HTMLDivElement | null>(null);
     const startMenu = startMenuRef.current;
     const allProgramsRef = useRef<HTMLDivElement | null>(null);
     const allPrograms = allProgramsRef.current;
+    const [isModalLogout, setIsModalLogout] = useState(false);
 
     useEffect(() => {
         if (!isStartVisible || !startMenuRef.current || !startButton) return;
@@ -52,7 +54,9 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
         dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: true });
     };
 
-    const onShutDownModalButtonHandler = () => {
+    const onShutDownModalButtonHandler = (isLogout = false) => {
+        setIsModalLogout(isLogout);
+
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: true });
         dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
         dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
@@ -114,18 +118,19 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
             <footer>
                 <ul className="flex justify-end gap-2 p-2">
                     <li>
-                        <button className="flex items-center p-2 cursor-not-allowed" onClick={onShutDownModalButtonHandler}>
+                        <button className="flex items-center p-2 cursor-not-allowed" onClick={() => onShutDownModalButtonHandler(true)}>
                             <img src="/icon__log_out--large.png" className="mr-2" width="22" height="22" />
                             <h6>Log Off</h6>
                         </button>
                     </li>
                     <li>
-                        <button className="flex items-center p-2 cursor-not-allowed" onClick={onShutDownModalButtonHandler}>
+                        <button className="flex items-center p-2 cursor-not-allowed" onClick={() => onShutDownModalButtonHandler()}>
                             <img src="/icon__shut_down--large.png" className="mr-2" width="22" height="22" />
                             <h6>Turn Off Computer</h6>
                         </button>
                     </li>
                 </ul>
+                {isShutDownModalOpen && <ShutDownModal isLogout={isModalLogout} />}
             </footer>
         </div>
     );

@@ -1,14 +1,13 @@
 import { Activity, useEffect, useState } from "react";
 import Desktop from "./components/Desktop/Desktop";
 import Login from "./components/Login/Login";
-import ShutDownModal from "./components/ShutDownModal/ShutDownModal";
 import TaskBar from "./components/TaskBar/TaskBar";
 import Wallpaper from "./components/Wallpaper/Wallpaper";
 import WindowManagement from "./components/WindowManagement/WindowManagement";
 import { useContext } from "./context/context";
 
 function App() {
-    const {windowsInitiationState, isShutDownModalOpen} = useContext();
+    const {windowsInitiationState} = useContext();
     const [initiationStage, setInitiationStage] = useState(0);
 
 
@@ -38,12 +37,7 @@ function App() {
             <Activity mode={(initiationStage > 2) ? "visible" : "hidden"}>
                 <WindowManagement />
             </Activity>
-            <Activity mode={(isShutDownModalOpen) ? "visible" : "hidden"}>
-                <ShutDownModal/>
-            </Activity>
-            {/* <Activity mode={(isShutDownModalOpen) ? "visible" : "hidden"}>
-                <ShutDownModal isLogout={true} />
-            </Activity> */}
+            <div id="modal"></div>
         </>
     );
 }
