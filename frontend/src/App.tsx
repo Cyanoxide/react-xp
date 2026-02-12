@@ -2,66 +2,61 @@ import { Activity, useEffect, useState } from "react";
 import Bios from "./components/Bios/Bios";
 import Desktop from "./components/Desktop/Desktop";
 import Login from "./components/Login/Login";
+import ShutDownModal from "./components/ShutDownModal/ShutDownModal";
 import TaskBar from "./components/TaskBar/TaskBar";
 import Wallpaper from "./components/Wallpaper/Wallpaper";
 import WindowManagement from "./components/WindowManagement/WindowManagement";
 import { useContext } from "./context/context";
 
 function App() {
-    const {isLoginDismissed} = useContext();
-    const [isWindowsInitiated, setIsWindowsInitiated] = useState(false);
-    const [isTaskbarInitiated, setIsTaskbarInitiated] = useState(false);
-    const [isDesktopInitiated, setIsDesktopInitiated] = useState(false);
-    const [isBiosComplete, setIsBiosComplete] = useState(false);
+    const {windowsInitiationState, isShutDownModalOpen, dispatch} = useContext();
+    const [initiationStage, setInitiationStage] = useState(0);
 
     useEffect(() => {
+        if (windowsInitiationState !== "bios") return;
+
         const biosDelay = setTimeout(() => {
-            setIsBiosComplete(true);
+            dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "welcome" });
         }, 3000);
 
         return () => clearTimeout(biosDelay);
-    }, []);
+    }, [dispatch, windowsInitiationState]);
 
     useEffect(() => {
-        if (!isLoginDismissed) return;
+        const delayMap = [500, 500, 500];
+        if (windowsInitiationState !== "loggedIn" || initiationStage >= delayMap.length) return;
+        
+        const delay = setTimeout(() => {
+            setInitiationStage((prev) => prev + 1);
+        }, delayMap[initiationStage]);
 
-        const desktopDelay = setTimeout(() => {
-            setIsDesktopInitiated(true);
-        }, 500);
-
-        const taskbarDelay = setTimeout(() => {
-            setIsTaskbarInitiated(true);
-        }, 1000);
-
-        const windowDelay = setTimeout(() => {
-            setIsWindowsInitiated(true);
-        }, 1500);
-
-        return () => {
-            clearTimeout(taskbarDelay);
-            clearTimeout(desktopDelay);
-            clearTimeout(windowDelay);
-        };
-    }, [isLoginDismissed]);
+        return () => clearTimeout(delay);
+    }, [initiationStage, windowsInitiationState]);
 
     return (
         <>
-            <Activity mode={(!isLoginDismissed && !isBiosComplete) ? "visible" : "hidden"}>
+            <Activity mode={(windowsInitiationState === "bios") ? "visible" : "hidden"}>
                 <Bios />
             </Activity>
-            <Activity mode={(!isLoginDismissed && isBiosComplete) ? "visible" : "hidden"}>
+            <Activity mode={(["welcome", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
                 <Login user="User" />
             </Activity>
             <Wallpaper />
-            <Activity mode={(isDesktopInitiated) ? "visible" : "hidden"}>
+            <Activity mode={(initiationStage > 0) ? "visible" : "hidden"}>
                 <Desktop />
             </Activity>
-            <Activity mode={(isTaskbarInitiated) ? "visible" : "hidden"}>
+            <Activity mode={(initiationStage > 1) ? "visible" : "hidden"}>
                 <TaskBar />
             </Activity>
-            <Activity mode={(isWindowsInitiated) ? "visible" : "hidden"}>
+            <Activity mode={(initiationStage > 2) ? "visible" : "hidden"}>
                 <WindowManagement />
             </Activity>
+            <Activity mode={(isShutDownModalOpen) ? "visible" : "hidden"}>
+                <ShutDownModal/>
+            </Activity>
+            {/* <Activity mode={(isShutDownModalOpen) ? "visible" : "hidden"}>
+                <ShutDownModal isLogout={true} />
+            </Activity> */}
         </>
     );
 }

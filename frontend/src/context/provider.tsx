@@ -9,11 +9,13 @@ export const Provider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        const loginDismissedJSON = sessionStorage.getItem("loginDismissed");
-        if (loginDismissedJSON) {
+        const loggedInJSON = sessionStorage.getItem("loggedIn");
+        if (loggedInJSON) {
             try {
-                const loginDismissed = JSON.parse(loginDismissedJSON);
-                dispatch({ type: "SET_IS_LOGIN_DISMISSED", payload: loginDismissed });
+                const loggedIn = JSON.parse(loggedInJSON);
+                if(!loggedIn) return;
+                
+                dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "loggedIn"});
             } catch (error) {
                 console.error("Failed to parse windowColor from localStorage", error);
             }

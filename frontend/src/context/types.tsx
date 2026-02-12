@@ -45,6 +45,8 @@ export type File = AbsoluteObject & {
     id: string;
 }
 
+export type windowsInitiationState = "bios" | "welcome" | "login" | "loggingIn" | "loggedIn";
+
 export interface State {
     wallpaper: string;
     currentTime: Date;
@@ -53,7 +55,7 @@ export interface State {
     isAllProgramsOpen: boolean;
     isRecentDocumentsOpen: boolean;
     isShutDownModalOpen: boolean;
-    isLoginDismissed: boolean;
+    windowsInitiationState: windowsInitiationState;
 }
 
 export type Action =
@@ -64,8 +66,7 @@ export type Action =
     | { type: "SET_IS_ALL_PROGRAMS_OPEN"; payload: boolean }
     | { type: "SET_IS_RECENT_DOCUMENTS_OPEN"; payload: boolean }
     | { type: "SET_IS_SHUTDOWN_MODAL_OPEN"; payload: boolean }
-    | { type: "SET_IS_LOGIN_DISMISSED"; payload: boolean }
-
+    | { type: "SET_WINDOWS_INITIATION_STATE"; payload: windowsInitiationState; }
 
 export interface ContextType extends State {
     dispatch: React.Dispatch<Action>;

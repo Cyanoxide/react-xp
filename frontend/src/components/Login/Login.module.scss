@@ -98,7 +98,7 @@
             width: 25rem;
         }
 
-        &:not([data-logging-in="true"]):before {
+        &:not([data-init-state="loggingIn"]):before {
             content: "";
             transition: all 0.2s linear;
             inset: 0;
@@ -121,7 +121,7 @@
             position: relative;
             z-index: 1;
 
-            &:not([data-logging-in="true"]) {
+            &:not([data-init-state="loggingIn"]) {
                 opacity: 0.6;
             }
         }
@@ -134,7 +134,7 @@
             position: relative;
             z-index: 1;
 
-            &:not([data-logging-in="true"]) {
+            &:not([data-init-state="loggingIn"]) {
                 opacity: 0.6;
                 transition: none;
             }
@@ -159,7 +159,7 @@
             .avatar {
                 opacity: 1;
 
-                &:not([data-logging-in="true"]) {
+                &:not([data-init-state="loggingIn"]) {
                     border-color: #fae14b;
                 }
             }

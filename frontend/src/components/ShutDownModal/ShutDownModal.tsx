@@ -15,7 +15,7 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
 
     const logOutHandler = () => {
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
-        dispatch({ type: "SET_IS_LOGIN_DISMISSED", payload: false});
+        dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "login"});
     };
 
     return (
