@@ -95,9 +95,13 @@
 
             h3 {
                 text-align: center;
+                left: 50%;
+                transform: translateX(-50%);
 
                 @media (min-width: 30rem) {
                     text-align: left;
+                    left: unset;
+                    transform: none;
                 }
             }
         }
@@ -212,5 +216,41 @@
                 text-decoration: underline;
             }
         }
+    }
+}
+
+.consoleMsg {
+    color: #333;
+    font-weight: 600;
+    overflow: hidden;
+    border-right: .15em solid #888;
+    white-space: nowrap;
+    margin: 0 auto;
+    line-height: 1.2rem;
+    letter-spacing: .15rem;
+    animation:
+        typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+    0% {
+        width: 0
+    }
+
+    100% {
+        width: 100%
+    }
+}
+
+@keyframes blink-caret {
+
+    0%,
+    100% {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: #888;
     }
 }

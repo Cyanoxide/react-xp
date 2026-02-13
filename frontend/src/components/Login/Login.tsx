@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useContext } from "../../context/context";
 import playSound from "../../utils/sounds";
 import Bios from "../Bios/Bios";
@@ -10,7 +10,7 @@ interface LoginProps {
 
 const Login = ({ user }: LoginProps) => {
     const {currentWindows, windowsInitiationState, isInitialBoot, transitionLabel, dispatch} = useContext();
-
+    const [shutdownMsg, setShutdownMsg] = useState<React.ReactNode | null>(null);
 
     useEffect(() => {
         if (windowsInitiationState === "bios") {
@@ -30,6 +30,25 @@ const Login = ({ user }: LoginProps) => {
         }
     }, [windowsInitiationState, dispatch]);
 
+    useEffect(() => {
+        if (windowsInitiationState !== "shutDown") return;
+
+        const timeouts = [
+            [5000, "Well, what did you expect?"],
+            [13000, null],
+            [16000, "Just refresh the window or something."]
+        ];
+
+        const timers = timeouts.map(([delay, message]) =>
+            setTimeout(() => {
+                setShutdownMsg((message) ? <h3 className={styles.consoleMsg}>{message}</h3> : null);
+            }, delay as number)
+        );
+
+        return () => timers.forEach(clearTimeout);
+    }, [windowsInitiationState]);
+
+
     const onUserClickHandler = () => {
         dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "loggingIn" });
         const loggingInDelay = setTimeout(() => {
@@ -43,6 +62,7 @@ const Login = ({ user }: LoginProps) => {
 
     return (
         <>
+            {windowsInitiationState == "shutDown" && <div className="absolute inset-0 z-100 bg-black flex items-center justify-center"><span>{shutdownMsg}</span></div>}
             {windowsInitiationState == "bios" && <Bios />}
             {windowsInitiationState !== "bios" && <div className={`${styles.login} flex flex-col justify-center relative w-full h-full`}>
                 <div className="grow h-1/7"></div>
@@ -55,14 +75,14 @@ const Login = ({ user }: LoginProps) => {
 
                 {(windowsInitiationState === "transition") && (
                     <main className="flex h-6/7 px-8">
-                        <div className={`${styles.transition} flex flex-col`}>
-                            <img className="mb-6" src="/logo__windows_xp.png" height="125" width="125" />
-                            <h3 className="">{transitionLabel}</h3>
+                        <div className={`${styles.transition} flex flex-col items-end relative`}>
+                            <img className="mb-6" src="/logo__windows_xp.png" height="100" width="100" />
+                            <h3 className="mr-8 absolute w-max -bottom-8">{transitionLabel}</h3>
                         </div>
                     </main>
                 )}
 
-                {(!["welcome", "transition"].includes(windowsInitiationState)) && (
+                {(!["shutDown", "welcome", "transition"].includes(windowsInitiationState)) && (
                     <main className="flex h-6/7 px-8">
                         <div className={`${styles.details} flex flex-col justify-center items-end`}>
                             {(windowsInitiationState !== "loggingIn") && (

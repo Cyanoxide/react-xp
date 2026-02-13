@@ -25,7 +25,7 @@ function App() {
 
     return (
         <>
-            <Activity mode={(["bios", "welcome", "transition", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
+            <Activity mode={(["shutDown", "bios", "welcome", "transition", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
                 <Login user="User" />
             </Activity>
             <Wallpaper />

@@ -45,7 +45,7 @@ export type File = AbsoluteObject & {
     id: string;
 }
 
-export type windowsInitiationState = "bios" | "welcome" | "transition" | "login" | "loggingIn" | "loggedIn";
+export type windowsInitiationState = "shutDown" | "bios" | "welcome" | "transition" | "login" | "loggingIn" | "loggedIn";
 
 export interface State {
     wallpaper: string;

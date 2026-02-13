@@ -33,6 +33,29 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
         }, delayAmount);
     };
 
+    const shutDownHandler = (isRestart = false) => {
+        dispatch({ type: "SET_CURRENT_WINDOWS", payload: []});
+        playSound("shutdown", true);
+
+        dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
+        dispatch({ type: "SET_TRANSITION_LABEL", payload: "Logging off..."});
+        dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "transition"});
+
+        const logoutDelay = setTimeout(() => {
+            dispatch({ type: "SET_TRANSITION_LABEL", payload: "Windows is shutting down…"});
+            clearTimeout(logoutDelay);
+        }, 1000);
+
+        const shutdownDelay = setTimeout(() => {
+            dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "shutDown"});
+            sessionStorage.removeItem("loggedIn");
+            
+            clearTimeout(shutdownDelay);
+            
+            if(isRestart) window.location.reload();
+        }, 2000);
+    };
+
     const modalElement = document.getElementById("modal");
 
     return createPortal(
@@ -49,11 +72,11 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
                                 <p>Stand By</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed">
+                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed" onClick={() => shutDownHandler()}>
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
                                 <p>Shut Down</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed">
+                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed" onClick={() => shutDownHandler(true)}>
                                 <img src="/icon__restart--large.png" className="mb-3" height="33" width="33" />
                                 <p>Restart</p>
                             </button>
