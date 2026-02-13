@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "../../context/context";
 import playSound from "../../utils/sounds";
 import Bios from "../Bios/Bios";
+import ShutDownModal from "../ShutDownModal/ShutDownModal";
 import styles from "./Login.module.scss";
 
 interface LoginProps {
@@ -9,7 +10,7 @@ interface LoginProps {
 }
 
 const Login = ({ user }: LoginProps) => {
-    const {currentWindows, windowsInitiationState, isInitialBoot, transitionLabel, dispatch} = useContext();
+    const {currentWindows, windowsInitiationState, isInitialBoot, transitionLabel, isShutDownModalOpen, dispatch} = useContext();
     const [shutdownMsg, setShutdownMsg] = useState<React.ReactNode | null>(null);
 
     useEffect(() => {
@@ -58,6 +59,10 @@ const Login = ({ user }: LoginProps) => {
         }, 500);
 
         return () => clearTimeout(loggingInDelay);
+    };
+
+    const onShutDownModalButtonHandler = () => {
+        dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: true });
     };
 
     return (
@@ -111,7 +116,7 @@ const Login = ({ user }: LoginProps) => {
                     <div className={`${styles.footer} w-full p-9 flex`}>
                         {["login", "loggingIn"].includes(windowsInitiationState) && (
                             <>
-                                <button className={`${styles.shutDown} flex items-center cursor-not-allowed mb-4`}>
+                                <button className={`${styles.shutDown} flex items-center mb-4`} onClick={() => onShutDownModalButtonHandler()}>
                                     <img className="mr-3" width="22" height="22" src="/icon__shut_down--large.png" />
                                     <h3>Turn off Computer</h3>
                                 </button>
@@ -123,6 +128,7 @@ const Login = ({ user }: LoginProps) => {
                     </div>
                 </div>
             </div> }
+            {isShutDownModalOpen && <ShutDownModal />}
         </>   
     );
 };

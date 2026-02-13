@@ -9,7 +9,7 @@ interface ShutDownModalProps {
 }
 
 const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
-    const {dispatch} = useContext();
+    const {windowsInitiationState, dispatch} = useContext();
     
     const closeModel = () => {
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
@@ -38,7 +38,7 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
         playSound("shutdown", true);
 
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
-        dispatch({ type: "SET_TRANSITION_LABEL", payload: "Logging off..."});
+        if(windowsInitiationState === "loggedIn") dispatch({ type: "SET_TRANSITION_LABEL", payload: "Logging off..."});
         dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "transition"});
 
         const logoutDelay = setTimeout(() => {
@@ -72,11 +72,11 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
                                 <p>Stand By</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed" onClick={() => shutDownHandler()}>
+                            <button className="flex flex-col items-center justify-center font-bold" onClick={() => shutDownHandler()}>
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
                                 <p>Shut Down</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold cursor-not-allowed" onClick={() => shutDownHandler(true)}>
+                            <button className="flex flex-col items-center justify-center font-bold" onClick={() => shutDownHandler(true)}>
                                 <img src="/icon__restart--large.png" className="mb-3" height="33" width="33" />
                                 <p>Restart</p>
                             </button>
