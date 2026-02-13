@@ -34,3 +34,31 @@ button {
     cursor: not-allowed;
   }
 }
+
+.crt-effect::after {
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: repeating-linear-gradient(0deg, #111 0px, #111 1px, transparent 2px, transparent 5px);
+  background-size: 100% 2px;
+  animation: lines 3s ease-out infinite;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 11;
+}
+
+.crt-effect::before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: radial-gradient(50% 50%, #fbf8e1 1%, #f4ebdfab 40%, #32313154 100%), radial-gradient(50% 50%, #fbf8e1ee 1%, #fbf8e100 60%), url("/assets/bg.png");
+  background-blend-mode: soft-light, hard-light;
+  background-size: cover;
+  background-position: center;
+}
