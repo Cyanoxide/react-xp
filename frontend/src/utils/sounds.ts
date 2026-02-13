@@ -1,4 +1,4 @@
-type sounds = "startup";
+type sounds = "startup" | "shutdown";
 
 export const loadSound = (sound: sounds) => {
     if (typeof window == "undefined") return;
@@ -7,6 +7,7 @@ export const loadSound = (sound: sounds) => {
 
     const sounds = {
         "startup": "audio__startup.wav",
+        "shutdown": "audio__shutdown.wav",
     };
 
     return new Audio(`${src}${sounds[sound]}`);

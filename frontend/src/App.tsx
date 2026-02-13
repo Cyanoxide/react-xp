@@ -7,11 +7,13 @@ import WindowManagement from "./components/WindowManagement/WindowManagement";
 import { useContext } from "./context/context";
 
 function App() {
-    const {windowsInitiationState, initiationStage, dispatch} = useContext();
+    const {windowsInitiationState, isInitialBoot, initiationStage, dispatch} = useContext();
 
     useEffect(() => {
         const delayMap = [500, 500, 500];
         if (windowsInitiationState !== "loggedIn" || initiationStage >= delayMap.length) return;
+        
+        if(isInitialBoot) dispatch({ type: "SET_IS_INITIAL_BOOT", payload: false });
         
         const delay = setTimeout(() => {
             dispatch({ type: "SET_INITIATION_STAGE", payload: initiationStage + 1});
@@ -19,11 +21,11 @@ function App() {
         }, delayMap[initiationStage]);
 
         return () => clearTimeout(delay);
-    }, [initiationStage, windowsInitiationState, dispatch]);
+    }, [isInitialBoot, initiationStage, windowsInitiationState, dispatch]);
 
     return (
         <>
-            <Activity mode={(["bios", "welcome", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
+            <Activity mode={(["bios", "welcome", "transition", "login", "loggingIn"].includes(windowsInitiationState)) ? "visible" : "hidden"}>
                 <Login user="User" />
             </Activity>
             <Wallpaper />

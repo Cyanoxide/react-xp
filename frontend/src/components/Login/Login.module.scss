@@ -81,9 +81,29 @@
                 background-image: linear-gradient(to bottom, transparent 15%, #89a1e3, transparent 85%);
             }
         }
+
+        .transition {
+            @media (min-width: 30rem) {
+                margin-left: 20%
+            }
+
+            img {
+                @media (min-width: 30rem) {
+                    margin-left: 2rem;
+                }
+            }
+
+            h3 {
+                text-align: center;
+
+                @media (min-width: 30rem) {
+                    text-align: left;
+                }
+            }
+        }
     }
 
-        .userContainer {
+    .userContainer {
         height: fit-content;
         max-width: 40vw;
         border: 0.1rem solid transparent;
@@ -113,8 +133,12 @@
         }
 
         p {
-            color: #102f96;
             font-size: 0.9rem;
+            z-index: 1;
+
+            &:not([data-init-state="loggingIn"]) {
+                opacity: 0.6;
+            }
         }
 
         h3 {
@@ -164,7 +188,8 @@
                 }
             }
 
-            h3 {
+            h3,
+            p {
                 opacity: 1;
             }
         }

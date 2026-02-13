@@ -1,4 +1,3 @@
-import { Activity } from "react";
 import { useEffect } from "react";
 import { useContext } from "../../context/context";
 import playSound from "../../utils/sounds";
@@ -10,7 +9,8 @@ interface LoginProps {
 }
 
 const Login = ({ user }: LoginProps) => {
-    const {windowsInitiationState, dispatch} = useContext();
+    const {currentWindows, windowsInitiationState, isInitialBoot, transitionLabel, dispatch} = useContext();
+
 
     useEffect(() => {
         if (windowsInitiationState === "bios") {
@@ -46,12 +46,23 @@ const Login = ({ user }: LoginProps) => {
             {windowsInitiationState == "bios" && <Bios />}
             {windowsInitiationState !== "bios" && <div className={`${styles.login} flex flex-col justify-center relative w-full h-full`}>
                 <div className="grow h-1/7"></div>
-                <Activity mode={(windowsInitiationState === "welcome") ? "visible" : "hidden"}>
+
+                {(windowsInitiationState === "welcome") && (
                     <main className="flex h-6/7 px-8">
                         <h1 className="text-9xl">Welcome</h1>
                     </main>
-                </Activity>
-                <Activity mode={(windowsInitiationState !== "welcome") ? "visible" : "hidden"}>
+                )}
+
+                {(windowsInitiationState === "transition") && (
+                    <main className="flex h-6/7 px-8">
+                        <div className={`${styles.transition} flex flex-col`}>
+                            <img className="mb-6" src="/logo__windows_xp.png" height="125" width="125" />
+                            <h3 className="">{transitionLabel}</h3>
+                        </div>
+                    </main>
+                )}
+
+                {(!["welcome", "transition"].includes(windowsInitiationState)) && (
                     <main className="flex h-6/7 px-8">
                         <div className={`${styles.details} flex flex-col justify-center items-end`}>
                             {(windowsInitiationState !== "loggingIn") && (
@@ -68,12 +79,13 @@ const Login = ({ user }: LoginProps) => {
                                 <img className={`${styles.avatar} m-1.5`} width="50" height="50" data-init-state={windowsInitiationState} src="/avatar__skateboard.png" />
                                 <div className={`${styles.userNameContainer} flex flex-col`}>
                                     <h3  data-init-state={windowsInitiationState}>{user}</h3>
-                                    {(windowsInitiationState === "loggingIn") && <p className="font-bold">Loading your personal settings...</p>}
+                                    {!isInitialBoot && currentWindows.length > 0 && <p className="font-bold">{currentWindows.length} program{currentWindows.length > 1 ? "s" : ""} running.</p>}
+                                    {currentWindows.length === 0 && windowsInitiationState === "loggingIn" && <p className="font-bold text-[#102f96]">Loading your personal settings...</p>}
                                 </div>
                             </button>
                         </div>
                     </main>
-                </Activity>
+                )}
 
                 <div className={`flex justify-center grow h-1/7`}>
                     <div className={`${styles.footer} w-full p-9 flex`}>

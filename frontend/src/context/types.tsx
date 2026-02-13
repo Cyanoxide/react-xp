@@ -45,7 +45,7 @@ export type File = AbsoluteObject & {
     id: string;
 }
 
-export type windowsInitiationState = "bios" | "welcome" | "login" | "loggingIn" | "loggedIn";
+export type windowsInitiationState = "bios" | "welcome" | "transition" | "login" | "loggingIn" | "loggedIn";
 
 export interface State {
     wallpaper: string;
@@ -57,6 +57,8 @@ export interface State {
     isShutDownModalOpen: boolean;
     windowsInitiationState: windowsInitiationState;
     initiationStage: number;
+    isInitialBoot: boolean;
+    transitionLabel: string;
 }
 
 export type Action =
@@ -69,8 +71,9 @@ export type Action =
     | { type: "SET_IS_SHUTDOWN_MODAL_OPEN"; payload: boolean }
     | { type: "SET_WINDOWS_INITIATION_STATE"; payload: windowsInitiationState; }
     | { type: "SET_INITIATION_STAGE"; payload: number; }
+    | { type: "SET_IS_INITIAL_BOOT"; payload: boolean; }
+    | { type: "SET_TRANSITION_LABEL"; payload: string; }
 
-    
 
 export interface ContextType extends State {
     dispatch: React.Dispatch<Action>;

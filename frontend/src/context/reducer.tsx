@@ -22,10 +22,14 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, windowsInitiationState: action.payload };
     case "SET_INITIATION_STAGE":
         return { ...state, initiationStage: action.payload };
+    case "SET_IS_INITIAL_BOOT":
+        return { ...state, isInitialBoot: action.payload };
+    case "SET_TRANSITION_LABEL":
+        return { ...state, transitionLabel: action.payload };
     default:
         return state;
     }
-};
+};;
 
 export const initialState: State = {
     wallpaper: defaultWallpaper,
@@ -43,4 +47,6 @@ export const initialState: State = {
     isShutDownModalOpen: false,
     windowsInitiationState: "bios",
     initiationStage: 0,
+    isInitialBoot: true,
+    transitionLabel: "",
 };

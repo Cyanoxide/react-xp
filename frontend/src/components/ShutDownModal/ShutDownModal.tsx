@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { useContext } from "../../context/context";
+import playSound from "../../utils/sounds";
 import Button from "../Button/Button";
 import styles from "./ShutDownModal.module.scss";
 
@@ -14,10 +15,22 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
     };
 
-    const logOutHandler = () => {
+    const logOutHandler = (isSwitchUsers = false) => {
+        if (!isSwitchUsers) {
+            dispatch({ type: "SET_CURRENT_WINDOWS", payload: []});
+            playSound("shutdown", true);
+        }
+
         dispatch({ type: "SET_IS_SHUTDOWN_MODAL_OPEN", payload: false});
-        dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "login"});
-        dispatch({ type: "SET_INITIATION_STAGE", payload: 0});
+        dispatch({ type: "SET_TRANSITION_LABEL", payload: "Logging off..."});
+        dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "transition"});
+
+        const delayAmount = (isSwitchUsers ? 0 : 1000);
+        const delay = setTimeout(() => {
+            dispatch({ type: "SET_WINDOWS_INITIATION_STATE", payload: "login"});
+            dispatch({ type: "SET_INITIATION_STAGE", payload: 0});
+            clearTimeout(delay);
+        }, delayAmount);
     };
 
     const modalElement = document.getElementById("modal");
@@ -48,11 +61,11 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                     )}
                     {isLogout && (
                         <>
-                            <button className="flex flex-col items-center justify-center font-bold" onClick={logOutHandler}>
+                            <button className="flex flex-col items-center justify-center font-bold" onClick={() => logOutHandler(true)}>
                                 <img src="/icon__switch_users--large.png" className="mb-3" height="33" width="33" />
                                 <p>Switch Users</p>
                             </button>
-                            <button className="flex flex-col items-center justify-center font-bold" onClick={logOutHandler}>
+                            <button className="flex flex-col items-center justify-center font-bold" onClick={() => logOutHandler()}>
                                 <img src="/icon__log_out--large.png" className="mb-3" height="33" width="33" />
                                 <p>Log Off</p>
                             </button>
