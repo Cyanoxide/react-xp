@@ -15,39 +15,33 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
     const startMenuRef = useRef<HTMLDivElement | null>(null);
     const startMenu = startMenuRef.current;
     const allProgramsRef = useRef<HTMLDivElement | null>(null);
-    const allPrograms = allProgramsRef.current;
     const [isModalLogout, setIsModalLogout] = useState(false);
 
     useEffect(() => {
         if (!isStartVisible || !startMenuRef.current || !startButton) return;
 
-        const onClick = (event: MouseEvent) => {
+        const onClickOutside = (event: PointerEvent) => {
             const target = event.target as Node;
-            if (!startMenuRef.current) return;
 
-            if (!startMenuRef.current.contains(target) && !startButton.contains(target)) {
+            const clickedInsideStart = startMenuRef.current?.contains(target);
+            const clickedInsidePrograms = allProgramsRef.current?.contains(target);
+            const clickedStartButton = startButton.contains(target);
+
+            if (!clickedInsideStart && !clickedInsidePrograms && !clickedStartButton) {
                 dispatch({ type: "SET_IS_START_VISIBLE", payload: false });
+                dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
                 dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
             }
         };
 
-        document.addEventListener("click", onClick);
-        return () => document.removeEventListener("click", onClick);
+        document.addEventListener("pointerdown", onClickOutside);
+        return () => document.removeEventListener("pointerdown", onClickOutside);
     }, [isStartVisible, startMenu, startButton, dispatch]);
 
-    const allProgramsClickHandler = () => {
-        dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: true });
-
-        const onSecondClick = (event: PointerEvent) => {
-            const target = (event.target as Node);
-
-            if (!allPrograms?.contains(target)) {
-                document.removeEventListener("click", onSecondClick);
-                dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
-            }
-        };
-
-        document.addEventListener("click", onSecondClick);
+    const allProgramsHandler = () => {
+        if (!isAllProgramsOpen) {
+            dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: true });
+        }
     };
 
     const onRecentDocumentsHandler = () => {
@@ -83,8 +77,8 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
                         </ul>
                     </div>
                     <div>
-                        <div ref={allProgramsRef} className={`${styles.allPrograms} p-2 relative`}>
-                            <button className="flex items-center justify-center gap-2 p-1" onPointerOver={allProgramsClickHandler} data-open={isAllProgramsOpen}>
+                        <div ref={allProgramsRef} className="p-2 relative">
+                            <button className="flex items-center justify-center gap-2 p-1" onPointerOver={allProgramsHandler} data-open={isAllProgramsOpen}>
                                 <h5 className="font-bold">All Programs</h5>
                                 <img src="/icon__green_arrow--large.png" className="mr-3" width="20" height="20" />
                             </button>

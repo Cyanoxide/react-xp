@@ -38,7 +38,6 @@ function App() {
             <Activity mode={(initiationStage > 2) ? "visible" : "hidden"}>
                 <WindowManagement />
             </Activity>
-            <div id="modal"></div>
         </>
     );
 }

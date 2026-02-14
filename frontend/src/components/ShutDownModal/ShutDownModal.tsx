@@ -66,7 +66,7 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                     <img src="/favicon.png" width="28" height="28" />
                 </div>
                 <main className="flex justify-center gap-16 h-3/5 text-center">
-                    {!isLogout && (
+                    {(!isLogout || windowsInitiationState !== "loggedIn") && (
                         <>
                             <button className="flex flex-col items-center justify-center font-bold" disabled>
                                 <img src="/icon__shut_down--large.png" className="mb-3" height="33" width="33" />
@@ -82,7 +82,7 @@ const ShutDownModal = ({ isLogout = true }: ShutDownModalProps) => {
                             </button>
                         </>
                     )}
-                    {isLogout && (
+                    {isLogout && windowsInitiationState === "loggedIn" && (
                         <>
                             <button className="flex flex-col items-center justify-center font-bold" onClick={() => logOutHandler(true)}>
                                 <img src="/icon__switch_users--large.png" className="mb-3" height="33" width="33" />

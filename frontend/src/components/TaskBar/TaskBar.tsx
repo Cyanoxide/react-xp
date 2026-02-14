@@ -50,6 +50,9 @@ const TaskBar = () => {
     const startButtonClickHandler = (event: React.MouseEvent) => {
         event?.stopPropagation();
         dispatch({ type: "SET_IS_START_VISIBLE", payload: (isStartVisible) ? false : true });
+        
+        dispatch({ type: "SET_IS_RECENT_DOCUMENTS_OPEN", payload: false });
+        dispatch({ type: "SET_IS_ALL_PROGRAMS_OPEN", payload: false });
 
         const { currentWindow, updatedCurrentWindows } = getCurrentWindow(currentWindows);
         if (currentWindow) currentWindow.active = false;

@@ -35,6 +35,16 @@ button {
   }
 }
 
+.crt-effect {
+  filter: blur(0.02rem);
+}
+
+@media (max-width: 767px) and (pointer: coarse) {
+  .crt-effect {
+    filter: none;
+  }
+}
+
 .crt-effect::after {
   content: '';
   position: absolute;
