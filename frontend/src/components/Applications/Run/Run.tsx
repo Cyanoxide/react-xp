@@ -3,6 +3,7 @@ import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
 import { openApplication } from "../../../utils/general";
 import { generateUniqueId } from "../../../utils/general";
+import Button from "../../Button/Button";
 import styles from "./Run.module.scss";
 import type { Application } from "../../../context/types";
 import type { currentWindow } from "../../../context/types";
@@ -73,9 +74,9 @@ const Run = () => {
                 </div>
             </div>
             <div className="flex justify-end gap-2 mt-8 mb-5">
-                <button type="submit" disabled={isOkayDisabled}>Ok</button>
-                <button onClick={closeWindow}>Cancel</button>
-                <button disabled>Browse</button>
+                <Button type="submit" disabled={isOkayDisabled}>Ok</Button>
+                <Button onClick={closeWindow}>Cancel</Button>
+                <Button disabled>Browse</Button>
             </div>
         </form>
     );

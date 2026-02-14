@@ -1,10 +1,11 @@
 .window {
-    padding: 0.6rem;
+    padding: 1.2rem;
     transition: all 0.3s ease, padding 0.15s ease-in;
     min-width: fit-content;
     z-index: 0;
+    box-sizing: content-box;
 
-    @media (min-width: 400px) {
+    @media (min-width: 50rem) {
         padding: 0.3rem;
     }
 
@@ -20,6 +21,7 @@
             background: linear-gradient(180deg, #2e61e4 0%, #5292f7 6%, #255ae1 25%, #2f6bf6 80%, #1133a0 100%);
             box-shadow: inset 1px 0px 3px #162abe, inset -1px 0px 3px #162ab0;
             text-shadow: 0.1rem 0.1rem 0.1rem #162abe;
+            cursor: default;
 
             button {
                 filter: none;

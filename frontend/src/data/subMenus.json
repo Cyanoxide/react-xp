@@ -1,6 +1,6 @@
 {
     "allPrograms": {
-        "appId": "allPrograms",
+        "id": "allPrograms",
         "featured": [
             {
                 "appId": "programDefaults"

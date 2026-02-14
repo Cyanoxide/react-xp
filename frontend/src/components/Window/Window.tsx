@@ -19,15 +19,20 @@ const Window = ({ ...props }: WindowProps) => {
     const { id, appId, children, active = false, hidden = false } = props;
     const { title, icon, iconLarge, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100, resizable = true } = { ...applications[appId] };
     const { currentWindows, dispatch } = useContext();
-    const isBiggerThanViewport = (width < window.innerWidth);
-    const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? top : 0, left: (isBiggerThanViewport) ? left : 0, right, bottom });
 
-    const offset = (leftPos + width) - window.innerWidth;
-    const [[windowWidth, windowHeight], setWindowSize] = useState([Math.min(width, width - offset), height]);
-    const [isMaximized, setIsMaximized] = useState(false);
-    const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
+    const dragWindowPadding = (window.innerWidth < 500) ? 12 : 3;
+    const isBiggerThanViewport = (width + dragWindowPadding * 2 > window.innerWidth);
+
     const activeWindowRef = useRef<HTMLDivElement | null>(null);
     const activeWindow = activeWindowRef.current;
+    const WINDOW_PADDING = activeWindow ? getWindowPadding(activeWindow) : 0;
+
+    const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? 0 : top, left: (isBiggerThanViewport) ? 0 : left, right: (isBiggerThanViewport) ? undefined : right , bottom });
+
+    const offset = (leftPos + width) - window.innerWidth;
+    const [[windowWidth, windowHeight], setWindowSize] = useState([(isBiggerThanViewport) ? window.innerWidth - dragWindowPadding * 2 : width, height]);
+    const [isMaximized, setIsMaximized] = useState(false);
+    const [unmaximizedValues, setUnmaximizedValues] = useState({ left: "", top: "", width: "", height: "" });
     const titleBarRef = useRef<HTMLDivElement | null>(null);
     const titleBar = titleBarRef.current;
 
@@ -109,6 +114,31 @@ const Window = ({ ...props }: WindowProps) => {
         window.addEventListener("pointerup", onPointerUp);
     };
 
+    const onWindowPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+        const activeWindow = activeWindowRef.current;
+        if (!activeWindow || !resizable) return;
+
+        if (activeWindow !== event.target) {
+            activeWindow.style.removeProperty("cursor");
+            return;
+        }
+
+        const region = getWindowClickRegion(event as unknown as PointerEvent, activeWindow, WINDOW_PADDING);
+
+        const vertical =
+        region.includes("top") ? "n" :
+            region.includes("bottom") ? "s" : "";
+
+        const horizontal =
+        region.includes("left") ? "w" :
+            region.includes("right") ? "e" : "";
+
+        const direction = vertical + horizontal;
+
+        activeWindow.style.cursor =
+        direction ? `${direction}-resize` : "";
+    };
+
     const onWindowPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         const updatedCurrentWindows = updateCurrentActiveWindow(id, currentWindows);
         dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
@@ -124,10 +154,9 @@ const Window = ({ ...props }: WindowProps) => {
         activeWindow.style.left = `${activeWindowRect.left}px`;
         activeWindow.style.removeProperty("right");
 
-        const WINDOW_PADDING = getWindowPadding(activeWindow);
         const MIN_WINDOW_WIDTH = getMinimumWindowSize(activeWindow);
         const MIN_WINDOW_HEIGHT = activeTitleBarHeight + (WINDOW_PADDING * 1.5);
-        const activeWindowRegion = getWindowClickRegion(event, activeWindow, WINDOW_PADDING);
+        const activeWindowRegion = getWindowClickRegion(event as unknown as PointerEvent, activeWindow, WINDOW_PADDING);
         document.body.style.userSelect = "none";
         if (activeWindow) activeWindow.style.transition = "none";
 
@@ -160,7 +189,6 @@ const Window = ({ ...props }: WindowProps) => {
                 width = Math.max((activeWindowRect.right - event.clientX), MIN_WINDOW_WIDTH);
                 x = activeWindowRect.right - width;
             }
-
 
             setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
             setWindowSize([width, height]);
@@ -211,7 +239,7 @@ const Window = ({ ...props }: WindowProps) => {
 
     return (
         <>
-            <div ref={activeWindowRef} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ top: (!bottomPos) ? topPos : undefined, right: rightPos, bottom: bottomPos, left: (!rightPos) ? leftPos : undefined, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown}>
+            <div ref={activeWindowRef} data-window-id={id} data-active={active} data-hidden={hidden} data-label="window" className={`${styles.window} absolute`} style={{ top: (!bottomPos) ? topPos : undefined, right: rightPos, bottom: bottomPos, left: (!rightPos) ? leftPos : undefined, height: windowHeight + "px", width: windowWidth + "px" }} onPointerDown={onWindowPointerDown} onPointerMove={onWindowPointerMove}>
                 <div className="w-full h-full pointer-events-none">
                     <div ref={titleBarRef} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={onTitleBarPointerDown} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
                         <div className="flex items-center">
