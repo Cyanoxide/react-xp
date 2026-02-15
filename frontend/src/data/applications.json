@@ -110,7 +110,8 @@
         "height": 160,
         "bottom": 35,
         "left": 5,
-        "resizable": false
+        "resizable": false,
+        "showOnTaskbar": false
     },
     "winCatalog": {
         "title": "Windows Catalog",
@@ -223,5 +224,14 @@
         "width": 330,
         "top": 25,
         "right": 25
+    },
+    "displayProperties": {
+        "title": "Display Properties",
+        "showOnTaskbar": false,
+        "resizable": false,
+        "component": "Settings",
+        "height": 400,
+        "width": 325
+
     }
 }

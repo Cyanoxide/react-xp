@@ -69,7 +69,7 @@ const Run = () => {
             <div className="flex my-5">
                 <span className={`${styles.inputLabel} mr-2`}>Open:</span>
                 <div className={`${styles.inputField} flex mx-1 h-full`}>
-                    <input name="command" ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onChange={onChangeHandler} />
+                    <input name="command" autoFocus ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onChange={onChangeHandler} />
                     <span className={styles.dropDown}></span>
                 </div>
             </div>

@@ -71,7 +71,9 @@ const TaskBar = () => {
             <ul className={`${styles.windows} flex items-center justify-start w-full`}>
                 {currentWindows.map((currentWindow, index) => {
                     const appData = applications[currentWindow.appId];
-                    const { title, icon, iconLarge } = { ...appData };
+                    const { title, icon, iconLarge, showOnTaskbar = true } = { ...appData };
+                    if (!showOnTaskbar) return;
+
                     return (
                         <li key={index} onClick={windowTabClickHandler} data-label="taskBarWindowTab" data-active={currentWindow.active} data-window-id={currentWindow.id}>
                             <span className="w-full relative flex">

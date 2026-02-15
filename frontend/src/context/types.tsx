@@ -19,6 +19,7 @@ export interface currentWindow {
     history?: string[];
     forward?: string[];
     landingUrl?: string | null;
+    showOnTaskbar?: boolean;
 }
 export type currentWindows = currentWindow[];
 
@@ -39,6 +40,7 @@ export interface Application {
     disabled?: boolean;
     redirect?: string;
     resizable?: boolean;
+    showOnTaskbar?: boolean;
 }
 
 export type File = AbsoluteObject & {
