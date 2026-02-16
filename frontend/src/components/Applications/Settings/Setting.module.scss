@@ -1,0 +1,50 @@
+.settings {
+    background-color: #ebe9da;
+    color: #000;
+
+    main {
+        background-color: #f9f8f7;
+        border: 0.1rem solid #adb3b5;
+        box-shadow: 0.1rem 0.1rem 0.1rem #0001;
+    }
+
+    nav {
+        font-size: 0.9rem;
+
+        ul {
+            margin-top: -1.55rem;
+            margin-left: -0.1rem;
+        }
+
+        li {
+            border: 0.1rem solid #adb3b5;
+            border-radius: 0.3rem 0.3rem 0 0;
+            background-color: #f0f0ea;
+            background-image: linear-gradient(to top, #edece7, #fff);
+            
+            &[data-active="true"] {
+                border-bottom: none;
+                border-top: 0.1rem solid #dda564;
+                background-color: #f9f8f7;
+                background-image: none;
+                padding-top: 0.1rem;
+                padding-bottom: 0.2rem;
+                margin-top: -0.2rem;
+                position: relative;
+                padding-left: 0.4rem;
+                padding-right: 0.4rem;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: 100%;
+                    height: 0.2rem;
+                    background-color: #f6ca59;
+                    left: 0;
+                    top: 0;
+                }
+                
+            }
+        }
+    }
+}
