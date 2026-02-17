@@ -17,8 +17,7 @@ const Run = () => {
 
     const [isOkayDisabled, setIsOkayDisabled] = useState(true);
 
-    const onChangeHandler = () => {
-        if (!inputField) return;
+    const onInputHandler = () => {
         setIsOkayDisabled((inputField?.value.length === 0));
     };
 
@@ -69,7 +68,7 @@ const Run = () => {
             <div className="flex my-5">
                 <span className={`${styles.inputLabel} mr-2`}>Open:</span>
                 <div className={`${styles.inputField} flex mx-1 h-full`}>
-                    <input name="command" autoFocus ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onChange={onChangeHandler} />
+                    <input name="command" autoFocus ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onInput={onInputHandler} />
                     <span className={styles.dropDown}></span>
                 </div>
             </div>
