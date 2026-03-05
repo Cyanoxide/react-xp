@@ -19,7 +19,7 @@
 
         .titleBar {
             background: linear-gradient(180deg, #2e61e4 0%, #5292f7 6%, #255ae1 25%, #2f6bf6 80%, #1133a0 100%);
-            box-shadow: inset 1px 0px 3px #162abe, inset -1px 0px 3px #162ab0;
+            box-shadow: inset 0.1rem 0 0.3rem #162abe, inset -0.1rem 0 0.3rem #162ab0;
             text-shadow: 0.1rem 0.1rem 0.1rem #162abe;
             cursor: default;
 
@@ -62,14 +62,14 @@
         border-radius: 0.9rem 0.9rem 0.1rem 0.1rem;
         overflow: hidden;
         min-width: fit-content;
-        box-shadow: inset 0px 0px 1px 1px #0004;
+        box-shadow: inset 0 0 0.1rem 0.1rem #0004;
         transition: all 0.1s ease;
     }
 
     .titleBar {
         background: #a1b6e6;
         background: linear-gradient(180deg, #7b95dc 0%, #a1b6e6 6%, #7f95d9 25%, #89a6e3 80%, #7f92d9 100%);
-        box-shadow: inset 1px 0px 3px #7f92d9, inset -1px 0px 3px #7f92d9;
+        box-shadow: inset 0.1rem 0 0.3rem #7f92d9, inset -0.1rem 0 0.3rem #7f92d9;
         text-shadow: 0.1rem 0.1rem 0.1rem #7f92d9;
         margin: -0.3rem -0.1rem -0.1rem;
         border-radius: 0.8rem 0.8rem 0 0;
@@ -89,7 +89,7 @@
 
         button {
             position: relative;
-            text-indent: -9999px;
+            text-indent: -999rem;
             background: none;
             border: 0.1rem solid #d8e1ff;
             border-radius: 0.3rem;
@@ -98,7 +98,7 @@
             padding: 0;
             margin: 0.5rem 0.1rem 0.4rem;
             border-color: #fff;
-            box-shadow: inset 0 0 0 1px #2346b944, inset 2px 2px 3px #73a4ff, inset -2px -2px 1px #2348ba;
+            box-shadow: inset 0 0 0 0.1rem #2346b944, inset 0.2rem 0.2rem 0.3rem #73a4ff, inset -0.2rem -0.2rem 0.1rem #2348ba;
             background: radial-gradient(circle at 85% 85%, #2560e4 50%, #4678e6 70%, #73a4ff 100%);
             filter: saturate(0.7) opacity(0.6) brightness(1.3);
             transition: all 0.1s ease;
@@ -130,7 +130,7 @@
             }
 
             &[data-button="close"] {
-                box-shadow: inset 0 0 0 1px #ae452744, inset 2px 2px 5px #e4a491, inset -2px -2px 1px #ae4527;
+                box-shadow: inset 0 0 0 0.1rem #ae452744, inset 0.2rem 0.2rem 0.5rem #e4a491, inset -0.2rem -0.2rem 0.1rem #ae4527;
                 background-color: #d45b34;
                 background: url("/spritesheet__window_ui.png"), radial-gradient(circle at 85% 85%, #cd512e 50%, #d45b34 70%, #e4a491 100%);
 

@@ -2,7 +2,7 @@
     width: 36rem;
     max-width: 100%;
     border-radius: 0.75rem 0.75rem 0 0;
-    box-shadow: 2px 2px 5px #0006;
+    box-shadow: 0.2rem 0.2rem 0.5rem #0006;
 
     img {
         flex-shrink: 0;
@@ -11,7 +11,7 @@
     header {
         border-radius: 0.75rem 0.75rem 0 0;
         background: linear-gradient(180deg, #2d60c5 0%, #71b4ff 2%, #2d60c5 8%, #578de3 100%);
-        box-shadow: inset -1px 1px 2px #3c65ca, inset 1px 1px 2px #3c65ca;
+        box-shadow: inset -0.1rem 0.1rem 0.2rem #3c65ca, inset 0.1rem 0.1rem 0.2rem #3c65ca;
         border: 0.1rem solid #3c65ca;
         border-top-color: #2e50a3;
         border-radius: 0.75rem 0.75rem 0 0;
@@ -53,7 +53,7 @@
             width: -webkit-fill-available;
             width: -moz-available;
 
-            @media (min-width: 300px) {
+            @media (min-width: 30rem) {
                 width: 50%;
             }
         }
@@ -70,7 +70,7 @@
             h5 {
                 display: none;
 
-                @media (min-width: 300px) {
+                @media (min-width: 30rem) {
                     display: inline;
                 }
             }

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useContext } from "../../../context/context";
 import Button from "../../Button/Button";
 import styles from "./Setting.module.scss";
@@ -7,12 +7,14 @@ const Setting = () => {
     const { currentWindows, wallpaper, dispatch } = useContext();
 
     const tabMenuRef = useRef<HTMLElement | null>(null);
+    const zoomRangeRef = useRef<HTMLInputElement | null>(null);
     
     const [selectedWallpaper, setSelectedWallpaper] = useState(wallpaper);
     const [selectedTab, setSelectedTab] = useState<string | undefined>("desktop");
+    const [zoomValue, setZoomValue] = useState(10);
+
 
     if (!tabMenuRef) return;
-
     
     const tabClickHandler = (event: React.MouseEvent) => {
         if (!(event.target as HTMLElement).dataset.tabName || !tabMenuRef.current) return;
@@ -50,6 +52,17 @@ const Setting = () => {
             dispatch({ type: "SET_WALLPAPER", payload: selectedWallpaper});
             sessionStorage.setItem("wallpaper", selectedWallpaper);
         }
+
+        if (selectedTab === "settings") {
+            document.documentElement.style.fontSize = (zoomValue).toString() + "px";
+        }
+    };
+
+    const onZoomChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const zoomValue = parseInt(event.target.value);
+        if (!zoomValue) return;
+
+        setZoomValue(zoomValue);
     };
 
     const wallpapersMap = [
@@ -108,13 +121,29 @@ const Setting = () => {
                     </section>
                     <section className="hidden" data-content-tab="screensaver">Screensaver</section>
                     <section className="hidden" data-content-tab="appearance">Appearance</section>
-                    <section className="hidden" data-content-tab="settings">Settings</section>
+                    <section className="hidden h-full" data-content-tab="settings">
+                        <div className="flex flex-col justify-between h-full">
+                            <div className={`${styles.wallpaperPreview} flex h-full`}>
+                                <img className="m-auto" src={`/wallpaper__${selectedWallpaper}.jpg`} width="110" />
+                            </div>
+                            <div>
+                                <p>Display:</p>
+                                <p>(Default Monitor) on</p>
+                                <input ref={zoomRangeRef} type="range" min="9" defaultValue={zoomValue} max="11" onChange={onZoomChange} style={{direction: "rtl"}}/>
+    
+                                <div className="flex justify-end gap-2">
+                                    <Button disabled>Troubleshoot</Button>
+                                    <Button disabled>Advanced</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </main>
             <footer className="flex justify-end gap-2">
                 <Button onClick={onSubmit}>Ok</Button>
                 <Button>Cancel</Button>
-                <Button onClick={onApply} disabled={wallpaper === selectedWallpaper}>Apply</Button>
+                <Button onClick={onApply}>Apply</Button>
             </footer>
         </div>
     );

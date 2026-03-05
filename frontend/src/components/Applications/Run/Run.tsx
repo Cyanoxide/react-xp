@@ -60,19 +60,21 @@ const Run = () => {
     };
 
     return (
-        <form className={`${styles.run} py-5 px-4`} onSubmit={onSubmitHandler}>
-            <div className="flex">
-                <img className="mr-4" src="/icon__run--large.png" width="30" height="30" />
-                <p>Type the name of a program, folder, document, or Internet Resource, and Windows will open it for you.</p>
-            </div>
-            <div className="flex my-5">
-                <span className={`${styles.inputLabel} mr-2`}>Open:</span>
-                <div className={`${styles.inputField} flex mx-1 h-full`}>
-                    <input name="command" autoFocus ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onInput={onInputHandler} />
-                    <span className={styles.dropDown}></span>
+        <form className={`${styles.run} py-5 px-4 h-full flex flex-col justify-between`} onSubmit={onSubmitHandler}>
+            <div>
+                <div className="flex">
+                    <img className="mr-4" src="/icon__run--large.png" width="30" height="30" />
+                    <p>Type the name of a program, folder, document, or Internet Resource, and Windows will open it for you.</p>
+                </div>
+                <div className="flex my-5">
+                    <span className={`${styles.inputLabel} mr-2`}>Open:</span>
+                    <div className={`${styles.inputField} flex mx-1 h-full`}>
+                        <input name="command" autoFocus ref={inputFieldRef} className={`${styles.input} h-full w-full p-1`} type="text" onInput={onInputHandler} />
+                        <span className={styles.dropDown}></span>
+                    </div>
                 </div>
             </div>
-            <div className="flex justify-end gap-2 mt-8 mb-5">
+            <div className="flex justify-end gap-2 mt-2">
                 <Button type="submit" disabled={isOkayDisabled}>Ok</Button>
                 <Button onClick={closeWindow}>Cancel</Button>
                 <Button disabled>Browse</Button>

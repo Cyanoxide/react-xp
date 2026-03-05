@@ -21,10 +21,9 @@ export const Provider = ({ children }: { children: ReactNode }) => {
             }
         }
 
-        const wallpaperJSON = sessionStorage.getItem("wallpaper");
-        if (wallpaperJSON) {
+        const wallpaper = sessionStorage.getItem("wallpaper");
+        if (wallpaper) {
             try {
-                const wallpaper = JSON.parse(wallpaperJSON);
                 if(!wallpaper) return;
                 
                 dispatch({ type: "SET_WALLPAPER", payload: wallpaper});

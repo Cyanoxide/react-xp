@@ -3,7 +3,7 @@
     left: 100%;
     bottom: -0.1rem;
     background: #fff;
-    border: 1px solid #8cb8f9;
+    border: 0.1rem solid #8cb8f9;
     min-height: 2.55rem;
     padding-left: 0.3rem;
     box-shadow: 0.2rem 0.2rem 0.4rem #00000033;
@@ -15,7 +15,7 @@
         bottom: 0.5rem;
         width: 16.5rem;
 
-        @media (min-width: 600px) {
+        @media (min-width: 60rem) {
             left: 75%;
             width: 19rem;
         }
@@ -47,7 +47,7 @@
         align-items: center;
         width: 12.5rem;
 
-        @media (min-width: 600px) {
+        @media (min-width: 60rem) {
             width: 18rem;
         }
 
@@ -58,7 +58,7 @@
         .StartMenuSubMenu {
             width: 13rem;
 
-            @media (min-width: 600px) {
+            @media (min-width: 60rem) {
                 width: 14rem;
             }
         }

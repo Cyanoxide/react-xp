@@ -19,7 +19,8 @@
     background: linear-gradient(180deg, rgb(62, 142, 66) 0%, rgb(113, 185, 118) 9%, rgb(63, 153, 67) 25%, rgb(69, 169, 69) 50%, rgb(69, 169, 69) 80%, rgb(40, 125, 60) 100%);
     background-image: url("/startButton__spriteSheet.png");
     background-repeat: no-repeat;
-    text-indent: -9999px;
+    background-size: cover;
+    text-indent: -999rem;
     flex-shrink: 0;
 
     &:hover {
@@ -37,8 +38,8 @@
 .systemTray {
     background: #095BC9;
     background: linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(22, 174, 240, 1) 3%, rgba(22, 174, 240, 1) 9%, rgba(13, 141, 234, 1) 16%, rgba(13, 141, 234, 1) 92%, rgba(22, 138, 222, 1) 97%, rgba(9, 91, 201, 1) 100%);
-    border-left: 1px solid #0a2e52;
-    box-shadow: inset 1px 0px 1px #22c4f4;
+    border-left: 0.1rem solid #0a2e52;
+    box-shadow: inset 0.1rem 0 0.1rem #22c4f4;
     font-family: monospace;
     font-size: 0.9rem;
     padding-top: 0.2rem;
@@ -56,11 +57,11 @@
         display: flex;
         align-items: center;
         background: #3780f3;
-        border: 1px solid #1a51c688;
+        border: 0.1rem solid #1a51c688;
         height: 100%;
         padding: 0.2rem 1rem;
         border-radius: 0.3rem;
-        box-shadow: 1px 1px 1px #0004, inset 1px 1px 1px #fff3;
+        box-shadow: 0.1rem 0.1rem 0.1rem #0004, inset 0.1rem 0.1rem 0.1rem #fff3;
         flex-shrink: 1;
         word-wrap: none;
         width: 100%;
@@ -75,7 +76,7 @@
 
         &[data-active=true] {
             background: #2a4fb2;
-            box-shadow: 1px 1px 1px #fff3, inset 1px 1px 1px #0004;
+            box-shadow: 0.1rem 0.1rem 0.1rem #fff3, inset 0.1rem 0.1rem 0.1rem #0004;
 
             &:hover {
                 background: #426de1;

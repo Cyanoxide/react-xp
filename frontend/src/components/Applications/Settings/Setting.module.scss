@@ -49,14 +49,17 @@
 
     .wallpaperPreview {
         background-image: url("/preview_wallpaper.png");
-        background-size: 126px;
-        background-position: 81px 10px;
+        background-size: contain;
+        background-position: center center;
         background-repeat: no-repeat;
+        width: 12.5rem;
+        align-self: center;
 
         img {
             object-fit: cover;
-            height: 7.9rem;
-            margin-top: 2.1rem;
+            aspect-ratio: 5/3.6;
+            width: 11rem;
+            transform: translateY(-0.6rem);
         }
     }
 
@@ -69,7 +72,7 @@
         }
 
         li span {
-            border: 1px solid transparent;
+            border: 0.1rem solid transparent;
         }
 
         li[data-selected="true"] {
@@ -82,7 +85,7 @@
     }
 
     .inputField {
-        border: 1px solid #859cb6aa;
+        border: 0.1rem solid #859cb6aa;
         border-radius: 0.2rem;
         flex-grow: 1;
         margin-bottom: -0.2rem;
@@ -106,7 +109,7 @@
             content: "";
             position: absolute;
             background-image: url("/spritesheet__drop_down.png");
-            background-size: 28px 16px;
+            background-size: 2.8rem 1.6rem;
             background-repeat: no-repeat;
             background-position: left;
             width: 1.4rem;
