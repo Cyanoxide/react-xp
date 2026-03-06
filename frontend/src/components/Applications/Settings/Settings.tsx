@@ -10,6 +10,7 @@ const Setting = () => {
     const zoomRangeRef = useRef<HTMLInputElement | null>(null);
     
     const [selectedWallpaper, setSelectedWallpaper] = useState(wallpaper);
+    const [enableCRT, setEnableCRT] = useState(true);
     const [selectedTab, setSelectedTab] = useState<string | undefined>("desktop");
     const [zoomValue, setZoomValue] = useState(10);
 
@@ -54,6 +55,7 @@ const Setting = () => {
 
         if (selectedTab === "settings") {
             document.documentElement.style.fontSize = (zoomValue).toString() + "px";
+            dispatch({ type: "SET_IS_CRT_ENABLED", payload: enableCRT });
         }
     };
 
@@ -151,14 +153,14 @@ const Setting = () => {
                                     <div className={`${styles.inputGroup} border-gray-300 border rounded-md p-3 relative flex-1`}>
                                         <label htmlFor="image-quality" className="absolute px-1 top-0 left-2">Image Quality</label>
                                         <div className={`${styles.selectField} mt-2`}>
-                                            <select className="w-full pl-2 pt-1" onChange={(e) => dispatch({ type: "SET_IS_CRT_ENABLED", payload: !!Number(e.currentTarget.value) })}>
+                                            <select className="w-full pl-2 pt-1" onChange={(e) => setEnableCRT(!!Number(e.currentTarget.value))}>
                                                 <option value="1">CRT Scanlines</option>
                                                 <option value="0">No Scanlines</option>
                                             </select>
                                             <span className={styles.dropDown}></span>
                                         </div>
                                         <div className="w-full relative mt-4">
-                                            <img className={`${styles.imageQualityPreview} object-cover h-[1.33rem] absolute m-0 w-full`} src={`/spritesheet__image_quality.png`} width="110" style={{objectPosition: (isCRTEnabled) ? "0%" : "100%"}} />
+                                            <img className={`${styles.imageQualityPreview} object-cover h-[1.33rem] absolute m-0 w-full`} src={`/spritesheet__image_quality.png`} width="110" style={{objectPosition: (enableCRT) ? "0%" : "100%"}} />
                                         </div>
                                     </div>
                                 </div>
