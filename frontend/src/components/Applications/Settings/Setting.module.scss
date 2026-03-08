@@ -128,6 +128,10 @@
             @include theme-color("green") {
                 filter: hue-rotate(210deg);
             }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
         }
 
         img {
@@ -152,6 +156,10 @@
 
             @include theme-color("green") {
                 filter: hue-rotate(210deg);
+            }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
             }
 
             &:hover {

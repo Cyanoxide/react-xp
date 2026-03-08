@@ -14,6 +14,10 @@
         border: 0.1rem solid #b4bf96;
     }
 
+    @include theme-color("silver") {
+        border: 0.1rem solid #8788a1;
+    }
+
     &[data-sub-menu="allPrograms"] {
         left: 7%;
         bottom: 0.5rem;
@@ -47,6 +51,10 @@
 
         @include theme-color("green") {
             background: #95a075;
+        }
+
+        @include theme-color("silver") {
+            background: #8788a1;
         }
     }
 
@@ -87,6 +95,10 @@
                 color: #fff;
 
                 @include theme-color("green") {
+                    background: #95a075;
+                }
+
+                @include theme-color("silver") {
                     background: #95a075;
                 }
             }

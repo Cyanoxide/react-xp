@@ -19,6 +19,10 @@
             @include theme-color("green") {
                 background: #859062;
             }
+
+            @include theme-color("silver") {
+                background: #878787;
+            }
         }
 
         .titleBar {
@@ -33,6 +37,13 @@
                 text-shadow: 0.1rem 0.1rem 0.1rem #5e6948;
             }
 
+            @include theme-color("silver") {
+                background: linear-gradient(180deg, #76768c 0%, #f5f5f8 6%, #b7b8c7 25%, #fdfcfd 80%, #88889f 100%);
+                box-shadow: inset 0.1rem 0 0.3rem #7a7a92, inset -0.1rem 0 0.3rem #7a7a92;
+                text-shadow: none;
+                color: #0e1010;
+            }
+
 
             button {
                 filter: none;
@@ -42,6 +53,12 @@
 
                     @include theme-color("green") {
                         filter: brightness(1.1);
+                    }
+
+                    @include theme-color("silver") {
+                        &:not([data-button="close"]) {
+                            filter: brightness(1.1);
+                        }
                     }
                 }
             }
@@ -53,6 +70,10 @@
 
             @include theme-color("green") {
                 box-shadow: 0rem 0.05rem 0rem 0.1rem #c4cd9b;
+            }
+
+            @include theme-color("silver") {
+                box-shadow: 0rem 0.05rem 0rem 0.1rem #c6c6c6;
             }
         }
 
@@ -87,6 +108,10 @@
         @include theme-color("green") {
             background: #b1b4a0;
         }
+
+        @include theme-color("silver") {
+            background: #a4a4a4;
+        }
     }
 
     .titleBar {
@@ -110,6 +135,14 @@
             background: linear-gradient(180deg, #d6d6bf 0%, #eeecd7 6%, #d5d7be 25%, #e0e1c6 80%, #b8baa7 100%);
             box-shadow: inset 0.1rem 0 0.3rem #b1b4a0, inset -0.1rem 0 0.3rem #b1b4a0;
             text-shadow: 0.1rem 0.1rem 0.1rem #939683;
+        }
+
+        @include theme-color("silver") {
+            background: #dbdce5;
+            background: linear-gradient(180deg, #c4c2c7 0%, #fafbfd 6%, #dbdce5 25%, #fefefe 80%, #ababbc 100%);
+            box-shadow: inset 0.1rem 0 0.3rem #ababbc, inset -0.1rem 0 0.3rem #ababbc;
+            text-shadow: none;
+            color: #a2a1a1;
         }
 
         h3 {
@@ -140,11 +173,22 @@
                 }
             }
 
+            @include theme-color("silver") {
+                &:not([data-button="close"]) {
+                    box-shadow: inset 0 0 0 0.1rem rgba(55, 55, 55, 0.2), inset 0.2rem 0.2rem 0.3rem #fff, inset -0.2rem -0.2rem 0.1rem #b6b6c1;
+                    background: radial-gradient(circle at 85% 85%, #d1d1d6 50%, #aaa 70%, #c8c8c8 100%);
+                }
+            }
+
             &:hover {
                 filter: saturate(0.7) opacity(0.6) brightness(1.6);
 
                 @include theme-color("green") {
                     filter: saturate(0.7) opacity(0.6) brightness(1.4);
+                }
+
+                @include theme-color("silver") {
+                    filter: opacity(0.7) brightness(1.2);
                 }
             }
 
@@ -154,6 +198,12 @@
                 background-size: 7rem 1.7rem;
                 position: absolute;
                 inset: 0;
+            }
+
+            &:not([data-button="close"]):after {
+                @include theme-color("silver") {
+                    filter: brightness(0.4);
+                }
             }
 
             &[data-button="minimize"]:after {
@@ -191,7 +241,10 @@
 
         @include theme-color("green") {
             box-shadow: 0rem 0.05rem 0rem 0.1rem #e0e1c6;
+        }
 
+        @include theme-color("silver") {
+            box-shadow: 0rem 0.05rem 0rem 0.1rem #d5d5d5;
         }
     }
 }

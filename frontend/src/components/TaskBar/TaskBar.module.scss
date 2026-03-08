@@ -11,6 +11,11 @@
     @include theme-color("green") {
         background: linear-gradient(180deg, rgb(167, 181, 134) 0%, rgb(233, 242, 201) 7%, rgb(174, 185, 137) 18%, rgb(193, 205, 155) 93%, rgb(166, 179, 128) 100%);
     }
+
+    @include theme-color("silver") {
+        background: linear-gradient(180deg, #898594 0%, #f6f6f9 7%, #9a99af 18%, #dfdfe1 93%, #9c9baf 100%);
+    }
+
 }
 
 .startButton {
@@ -28,16 +33,20 @@
     flex-shrink: 0;
 
     @include theme-color("green") {
-        background-image: url("/startButton__spriteSheet--green.png?v=1");
+        background-image: url("/startButton__spriteSheet--green.png");
+    }
+
+    @include theme-color("silver") {
+        background-image: url("/startButton__spriteSheet--silver.png");
     }
 
     &:hover {
-        background-position-y: -3rem;
+        background-position-y: -3.03rem;
     }
 
     &:active,
     &[data-selected="true"] {
-        background-position-y: -6rem;
+        background-position-y: -6.06rem;
         outline: none;
         border: none;
     }
@@ -60,6 +69,13 @@
         border-left-color: #a29d68;
         box-shadow: inset 0.1rem 0 0.1rem #fdf6d0;
         background: linear-gradient(180deg, rgb(188, 179, 132) 0%, rgb(255, 254, 249) 9%, rgb(234, 227, 183) 16%, rgb(233, 226, 183) 92%, rgb(233, 226, 183) 97%, rgb(210, 193, 142) 100%);
+    }
+
+    @include theme-color("silver") {
+        color: #262629;
+        border-left-color: #8b8b8b;
+        box-shadow: inset 0.1rem 0 0.1rem #fff;
+        background: linear-gradient(180deg, #aaa 0%, #fff 3%, #d1d2de 92%, #c4c5d4 97%, #808298 100%);
     }
 }
 
@@ -91,11 +107,21 @@
             color: #626338;
         }
 
+        @include theme-color("silver") {
+            background-color: #cccdda;
+            border: 0.1rem solid rgba(165, 165, 165, 0.75);
+            color: #555;
+        }
+
         &:hover {
             background: #689ef8;
 
             @include theme-color("green") {
                 background: #e4eac7;
+            }
+
+            @include theme-color("silver") {
+                background: #e8e8e8;
             }
         }
 
@@ -108,11 +134,20 @@
                 color: #fff;
             }
 
+            @include theme-color("silver") {
+                background: #9599a5;
+                color: #fff;
+            }
+
             &:hover {
                 background: #426de1;
 
                 @include theme-color("green") {
                     background: #a6b18e;
+                }
+
+                @include theme-color("silver") {
+                    background: #aaacb4;
                 }
             }
         }

@@ -137,6 +137,10 @@
                 filter: hue-rotate(210deg);
             }
 
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
+
             &:hover {
                 background-position: -1.6rem;
             }
@@ -197,6 +201,10 @@
 
     @include theme-color("green") {
         background: #b7c698;
+    }
+
+    @include theme-color("silver") {
+        background: #b5b7c8;
     }
 }
 
@@ -260,6 +268,10 @@
                     background: #95a075;
                 }
 
+                @include theme-color("silver") {
+                    background: #b5b7c8;
+                }
+
                 img {
                     mix-blend-mode: soft-light;
                 }
@@ -272,6 +284,11 @@
 
                 @include theme-color("green") {
                     background-color: #95a075;
+                }
+
+                @include theme-color("silver") {
+                    background: #b5b7c8;
+                    color: #262626;
                 }
             }
         }
