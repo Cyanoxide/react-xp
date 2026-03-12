@@ -7,15 +7,15 @@
     align-items: center;
 
     &[data-link="true"] {
-        &:after {
+        div:after {
             content: "";
             width: 1.1rem;
             height: 1.1rem;
-            margin: 0.35rem auto;
             background-image: url("/icon__shortcut.png?v=1");
             position: absolute;
             left: 1.5rem;
-            top: 2rem;
+            bottom: 100%;
+            background-size: contain;
         }
     }
 
@@ -23,15 +23,18 @@
         padding: 0 1rem;
         margin: 0.35rem auto;
         user-select: none;
+        height: 3rem;
+        width: 5rem;
+        object-fit: contain;
     }
 
     h4 {
-        text-shadow: 1px 1px 1px #00000099;
+        text-shadow: 0.1rem 0.1rem 0.1rem #00000099;
         font-size: 1rem;
         font-size: 0.95rem;
         line-height: 1rem;
         padding-bottom: 0.2rem;
-        border: 1px solid transparent;
+        border: 0.1rem solid transparent;
     }
 
 
@@ -39,8 +42,16 @@
         &>span {
             background: #4069bf;
             mask-position: center;
-            mask-size: 31px 31px;
+            mask-size: 3rem 3rem;
             mask-repeat: no-repeat;
+
+            @include theme-color("green") {
+                background: #95a075;
+            }
+
+            @include theme-color("silver") {
+                background: #969696;
+            }
 
             img {
                 mix-blend-mode: soft-light;
@@ -49,8 +60,19 @@
 
         h4 {
             background-color: #4069bf;
-            border: 1px dotted #a79c87;
+            border: 0.1rem dotted #a79c87;
             text-shadow: none;
+
+            @include theme-color("green") {
+                background-color: #95a075;
+                border: 0.1rem dotted #645e6d;
+            }
+
+            @include theme-color("silver") {
+                background-color: #b5b7c8;
+                border: 0.1rem dotted #645e6d;
+                color: #000;
+            }
         }
     }
 }

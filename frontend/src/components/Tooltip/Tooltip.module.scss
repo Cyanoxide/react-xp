@@ -1,7 +1,7 @@
 .tooltip {
     background: #ffffe4;
     color: #000;
-    border: 1px solid currentColor;
+    border: 0.1rem solid currentColor;
     border-radius: 0.8rem;
     bottom: 2.6rem;
     right: -1rem;
@@ -18,8 +18,8 @@
     &:before {
         content: "";
         position: absolute;
-        border-right: 20px solid #000;
-        border-bottom: 20px solid transparent;
+        border-right: 2rem solid #000;
+        border-bottom: 2rem solid transparent;
         right: 2rem;
         bottom: -2rem;
     }
@@ -27,8 +27,8 @@
     &:after {
         content: "";
         position: absolute;
-        border-right: 18px solid #ffffe4;
-        border-bottom: 18px solid transparent;
+        border-right: 1.8rem solid #ffffe4;
+        border-bottom: 1.8rem solid transparent;
         right: 2.08rem;
         bottom: -1.78rem;
     }
@@ -45,7 +45,7 @@
     .tooltipClose {
         background: #fffff6;
         color: #a89d89;
-        border: 1px solid #cdc6b0;
+        border: 0.1rem solid #cdc6b0;
         position: absolute;
         top: 0.4rem;
         right: 0.4rem;
@@ -55,10 +55,10 @@
 
         &:hover {
             color: #fff;
-            box-shadow: inset 0 0 0 1px #ed960754, inset 2px 2px 5px #fcf1e0, inset -2px -2px 1px #f4a423, 1px 1px 1px #0003;
+            box-shadow: inset 0 0 0 0.1rem #ed960754, inset 0.2rem 0.2rem 0.5rem #fcf1e0, inset -0.2rem -0.2rem 0.1rem #f4a423, 0.1rem 0.1rem 0.1rem #0003;
             background-color: #f5c06a;
             background: url("/spritesheet__window_ui.png"), radial-gradient(circle at 85% 85%, #ffbe55 50%, #ff9e00 70%, #ff9e00 100%);
-            border: 1px solid #fff;
+            border: 0.1rem solid #fff;
         }
 
         &>span {

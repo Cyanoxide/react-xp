@@ -17,7 +17,7 @@ const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const Window = ({ ...props }: WindowProps) => {
     const { id, appId, children, active = false, hidden = false } = props;
-    const { title, icon, iconLarge, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100, resizable = true } = { ...applications[appId] };
+    const { title, icon, iconLarge, showOnTaskbar = true, width = 500, height = 350, top = 75, right = undefined, bottom = undefined, left = 100, resizable = true } = { ...applications[appId] };
     const { currentWindows, dispatch } = useContext();
 
     const dragWindowPadding = (window.innerWidth < 500) ? 12 : 3;
@@ -25,7 +25,6 @@ const Window = ({ ...props }: WindowProps) => {
 
     const activeWindowRef = useRef<HTMLDivElement | null>(null);
     const activeWindow = activeWindowRef.current;
-    const WINDOW_PADDING = activeWindow ? getWindowPadding(activeWindow) : 0;
 
     const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? 0 : top, left: (isBiggerThanViewport) ? 0 : left, right: (isBiggerThanViewport) ? undefined : right , bottom });
 
@@ -123,6 +122,7 @@ const Window = ({ ...props }: WindowProps) => {
             return;
         }
 
+        const WINDOW_PADDING = getWindowPadding(activeWindow);
         const region = getWindowClickRegion(event as unknown as PointerEvent, activeWindow, WINDOW_PADDING);
 
         const vertical =
@@ -154,6 +154,7 @@ const Window = ({ ...props }: WindowProps) => {
         activeWindow.style.left = `${activeWindowRect.left}px`;
         activeWindow.style.removeProperty("right");
 
+        const WINDOW_PADDING = getWindowPadding(activeWindow);
         const MIN_WINDOW_WIDTH = getMinimumWindowSize(activeWindow);
         const MIN_WINDOW_HEIGHT = activeTitleBarHeight + (WINDOW_PADDING * 1.5);
         const activeWindowRegion = getWindowClickRegion(event as unknown as PointerEvent, activeWindow, WINDOW_PADDING);
@@ -181,13 +182,13 @@ const Window = ({ ...props }: WindowProps) => {
             
             if (activeWindowRegion.includes("top")) {
                 height = Math.max((activeWindowRect.bottom - event.clientY), MIN_WINDOW_HEIGHT);
-                y = activeWindowRect.bottom - height;
+                y = activeWindowRect.bottom - (height + WINDOW_PADDING);;
                 x = activeWindowRect.left;
             }
             
             if (activeWindowRegion.includes("left")) {
                 width = Math.max((activeWindowRect.right - event.clientX), MIN_WINDOW_WIDTH);
-                x = activeWindowRect.right - width;
+                x = activeWindowRect.right - (width + WINDOW_PADDING);
             }
 
             setWindowPosition({ top: y, left: x, right: undefined, bottom: undefined });
@@ -243,8 +244,8 @@ const Window = ({ ...props }: WindowProps) => {
                 <div className="w-full h-full pointer-events-none">
                     <div ref={titleBarRef} className={`${styles.titleBar} flex justify-between pointer-events-auto`} data-label="titlebar" onPointerDown={onTitleBarPointerDown} onDoubleClick={() => toggleMaximizeWindow(activeWindow)}>
                         <div className="flex items-center">
-                            <img src={icon || iconLarge} width="14" height="14" className="mx-2 min-w-[14px]"></img>
-                            <h3>{title}</h3>
+                            {showOnTaskbar && (icon || iconLarge) && <img src={icon || iconLarge} width="14" height="14" className="mx-2 min-w-[1.4rem]"></img>}
+                            <h3 className={(showOnTaskbar && (icon || iconLarge)) ? "" : "ml-2"}>{title}</h3>
                         </div>
                         <div className="flex">
                             {resizable && (

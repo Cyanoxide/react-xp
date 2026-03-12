@@ -1,0 +1,5 @@
+@mixin theme-color($mode) {
+    :global(body[data-theme="#{$mode}"]) & {
+        @content;
+    }
+}

@@ -2,7 +2,7 @@
     width: 36rem;
     max-width: 100%;
     border-radius: 0.75rem 0.75rem 0 0;
-    box-shadow: 2px 2px 5px #0006;
+    box-shadow: 0.2rem 0.2rem 0.5rem #0006;
 
     img {
         flex-shrink: 0;
@@ -11,22 +11,55 @@
     header {
         border-radius: 0.75rem 0.75rem 0 0;
         background: linear-gradient(180deg, #2d60c5 0%, #71b4ff 2%, #2d60c5 8%, #578de3 100%);
-        box-shadow: inset -1px 1px 2px #3c65ca, inset 1px 1px 2px #3c65ca;
+        box-shadow: inset -0.1rem 0.1rem 0.2rem #3c65ca, inset 0.1rem 0.1rem 0.2rem #3c65ca;
         border: 0.1rem solid #3c65ca;
         border-top-color: #2e50a3;
         border-radius: 0.75rem 0.75rem 0 0;
 
+        @include theme-color("green") {
+            background: linear-gradient(180deg, #b0bf93 0%, #faffef 2%, #94a177 8%, #e0ecc4 100%);
+            box-shadow: inset -0.1rem 0.1rem 0.2rem #646b53, inset 0.1rem 0.1rem 0.2rem #646b53;
+            border: 0.1rem solid #88946c;
+            border-top-color: #828e68;
+        }
+
+        @include theme-color("silver") {
+            background: linear-gradient(180deg, #76768c 0%, #e9e9ee 2%, #b2b4c6 8%, #fff 100%);
+            box-shadow: inset -0.1rem 0.1rem 0.2rem #9b9fa3, inset 0.1rem 0.1rem 0.2rem #9b9fa3;
+            border: 0.1rem solid #adb1bb;
+            border-top-color: #9797a3;
+        }
+
         img {
             border-radius: 0.3rem;
-            border: 0.2rem solid #ced6e9;
             margin-top: 0.2rem;
+            border: 0.2rem solid #ced6e9;
             box-shadow: 0.1rem 0.1rem 0.3rem #16316b;
+
+            @include theme-color("green") {
+                border: 0.2rem solid #dee4cc;
+                box-shadow: 0.1rem 0.1rem 0.3rem #6e7859;
+            }
+
+            @include theme-color("silver") {
+                border: 0.2rem solid #ccd4e4;
+                box-shadow: 0.1rem 0.1rem 0.3rem #787878;
+            }
         }
 
         h1 {
             font-size: 1.6rem;
             font-weight: 600;
             text-shadow: 0.1rem 0.1rem 0.2rem #16316b;
+
+            @include theme-color("green") {
+                text-shadow: 0.1rem 0.1rem 0.2rem #525a3f;
+            }
+
+            @include theme-color("silver") {
+                color: #fff;
+                text-shadow: 0.1rem 0.1rem 0.2rem #4e4e4e;
+            }
         }
     }
 
@@ -53,8 +86,31 @@
             width: -webkit-fill-available;
             width: -moz-available;
 
-            @media (min-width: 300px) {
+            @include theme-color("green") {
+                border-left-color: #838f68;
+            }
+
+            @include theme-color("silver") {
+                border-left-color: #b5b4c1;
+            }
+
+            @media (min-width: 25rem) {
                 width: 50%;
+            }
+        }
+
+        &.systemMenu {
+            background: #d6e4f8;
+            color: #112366;
+
+            @include theme-color("green") {
+                background: #f1f2e5;
+                color: #565f3c;
+            }
+
+            @include theme-color("silver") {
+                background: #e8e6ed;
+                color: #112366;
             }
         }
 
@@ -62,7 +118,17 @@
             border-left: 0.1rem solid #abc6ed;
             border-right: 0.2rem solid #3c65ca;
 
-            @media (min-width: 30rem) {
+            @include theme-color("green") {
+                border-left: 0.1rem solid #e7dec8;
+                border-right: 0.2rem solid #838f68;
+            }
+
+            @include theme-color("silver") {
+                border-left: 0.1rem solid #c0c7cf;
+                border-right: 0.2rem solid #bbbbc4;
+            }
+
+            @media (min-width: 25rem) {
                 display: inline;
                 width: 50%;
             }
@@ -70,7 +136,7 @@
             h5 {
                 display: none;
 
-                @media (min-width: 300px) {
+                @media (min-width: 25rem) {
                     display: inline;
                 }
             }
@@ -84,11 +150,20 @@
         &>div>div {
             border-top: 0.1rem solid;
             border-image: linear-gradient(to right, transparent, #deded7, transparent) 1;
+
         }
 
         &>ul:not(:last-child) {
             border-bottom: 0.1rem solid;
             border-image: linear-gradient(to right, transparent, #9fc1f9, transparent) 1;
+
+            @include theme-color("green") {
+                border-image: linear-gradient(to right, transparent, #d6c381, transparent) 1;
+            }
+
+            @include theme-color("silver") {
+                border-image: linear-gradient(to right, transparent, #adb6c4, transparent) 1;
+            }
         }
     }
 
@@ -96,6 +171,20 @@
         background: linear-gradient(180deg, #4980d9 1%, #306fcc 100%);
         border-top: 0.15rem solid #416cd6;
         box-shadow: inset 0.2rem 0 0.8rem #3960c3, inset -0.2rem 0 0.8rem #3960c3;
+
+        @include theme-color("green") {
+            background: linear-gradient(180deg, #dbe2b9 1%, #b2bd8a 100%);
+            border-top: 0.15rem solid #a0a48a;
+            box-shadow: inset 0.2rem 0 0.8rem #8e9675, inset -0.2rem 0 0.8rem #8e9675;
+            color: #4a4a1d;
+        }
+
+        @include theme-color("silver") {
+            background: linear-gradient(180deg, #e6e6ec 1%, #adacc2 100%);
+            border-top: none;
+            box-shadow: inset 0.2rem 0 0.8rem #b0b5bb, inset -0.2rem 0 0.8rem #b0b5bb;
+            color: #343538;
+        }
     }
 
     button {
@@ -106,5 +195,13 @@
     button:hover {
         background: #4069bf;
         color: #fff;
+
+        @include theme-color("green") {
+            background: #95a075;
+        }
+
+        @include theme-color("silver") {
+            background: #bab7c6;
+        }
     }
 }

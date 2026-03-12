@@ -13,10 +13,14 @@
 
     .inputField {
         background: #fff;
-        border: 1px solid #859cb6aa;
+        border: 0.1rem solid #859cb6aa;
         flex-grow: 1;
         margin-bottom: -0.2rem;
         height: 1.8rem;
+
+        @include theme-color("green") {
+            border: 0.1rem solid rgba(174, 182, 133, 0.67);
+        }
 
         img {
             object-fit: contain;
@@ -37,6 +41,14 @@
             width: 1.45rem;
             height: 100%;
             background-size: cover;
+
+            @include theme-color("green") {
+                filter: hue-rotate(210deg);
+            }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
 
             &:hover {
                 background-position: -1.3rem;

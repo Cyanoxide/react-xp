@@ -15,19 +15,49 @@
         &>div {
             background: #162abe;
             box-shadow: none;
+
+            @include theme-color("green") {
+                background: #859062;
+            }
+
+            @include theme-color("silver") {
+                background: #878787;
+            }
         }
 
         .titleBar {
             background: linear-gradient(180deg, #2e61e4 0%, #5292f7 6%, #255ae1 25%, #2f6bf6 80%, #1133a0 100%);
-            box-shadow: inset 1px 0px 3px #162abe, inset -1px 0px 3px #162ab0;
+            box-shadow: inset 0.1rem 0 0.3rem #162abe, inset -0.1rem 0 0.3rem #162ab0;
             text-shadow: 0.1rem 0.1rem 0.1rem #162abe;
             cursor: default;
+
+            @include theme-color("green") {
+                background: linear-gradient(180deg, #a7b58d 0%, #e9f2c9 6%, #b0bb8a 25%, #c4cd9b 80%, #9daa74 100%);
+                box-shadow: inset 0.1rem 0 0.3rem #859062, inset -0.1rem 0 0.3rem #859062;
+                text-shadow: 0.1rem 0.1rem 0.1rem #5e6948;
+            }
+
+            @include theme-color("silver") {
+                background: linear-gradient(180deg, #76768c 0%, #f5f5f8 6%, #b7b8c7 25%, #fdfcfd 80%, #88889f 100%);
+                box-shadow: inset 0.1rem 0 0.3rem #7a7a92, inset -0.1rem 0 0.3rem #7a7a92;
+                text-shadow: none;
+                color: #0e1010;
+            }
+
 
             button {
                 filter: none;
 
                 &:hover {
                     filter: brightness(1.3);
+
+                    @include theme-color("green") {
+                        filter: brightness(1.1);
+                    }
+
+                    @include theme-color("silver") {
+                        filter: brightness(1.1);
+                    }
                 }
             }
         }
@@ -35,6 +65,14 @@
         .windowContent {
             box-shadow: 0rem 0.05rem 0rem 0.1rem #2b5be0;
             overflow: hidden;
+
+            @include theme-color("green") {
+                box-shadow: 0rem 0.05rem 0rem 0.1rem #c4cd9b;
+            }
+
+            @include theme-color("silver") {
+                box-shadow: 0rem 0.05rem 0rem 0.1rem #c6c6c6;
+            }
         }
 
 
@@ -62,14 +100,22 @@
         border-radius: 0.9rem 0.9rem 0.1rem 0.1rem;
         overflow: hidden;
         min-width: fit-content;
-        box-shadow: inset 0px 0px 1px 1px #0004;
+        box-shadow: inset 0 0 0.1rem 0.1rem #0004;
         transition: all 0.1s ease;
+
+        @include theme-color("green") {
+            background: #b1b4a0;
+        }
+
+        @include theme-color("silver") {
+            background: #a4a4a4;
+        }
     }
 
     .titleBar {
         background: #a1b6e6;
         background: linear-gradient(180deg, #7b95dc 0%, #a1b6e6 6%, #7f95d9 25%, #89a6e3 80%, #7f92d9 100%);
-        box-shadow: inset 1px 0px 3px #7f92d9, inset -1px 0px 3px #7f92d9;
+        box-shadow: inset 0.1rem 0 0.3rem #7f92d9, inset -0.1rem 0 0.3rem #7f92d9;
         text-shadow: 0.1rem 0.1rem 0.1rem #7f92d9;
         margin: -0.3rem -0.1rem -0.1rem;
         border-radius: 0.8rem 0.8rem 0 0;
@@ -82,6 +128,21 @@
         gap: 1rem;
         transition: all 0.1s ease;
 
+        @include theme-color("green") {
+            background: #eeecd7;
+            background: linear-gradient(180deg, #d6d6bf 0%, #eeecd7 6%, #d5d7be 25%, #e0e1c6 80%, #b8baa7 100%);
+            box-shadow: inset 0.1rem 0 0.3rem #b1b4a0, inset -0.1rem 0 0.3rem #b1b4a0;
+            text-shadow: 0.1rem 0.1rem 0.1rem #939683;
+        }
+
+        @include theme-color("silver") {
+            background: #dbdce5;
+            background: linear-gradient(180deg, #c4c2c7 0%, #fafbfd 6%, #dbdce5 25%, #fefefe 80%, #ababbc 100%);
+            box-shadow: inset 0.1rem 0 0.3rem #ababbc, inset -0.1rem 0 0.3rem #ababbc;
+            text-shadow: none;
+            color: #a2a1a1;
+        }
+
         h3 {
             text-overflow: ellipsis;
             overflow: hidden;
@@ -89,22 +150,50 @@
 
         button {
             position: relative;
-            text-indent: -9999px;
+            text-indent: -999rem;
             background: none;
-            border: 0.1rem solid #d8e1ff;
+            border: 0.1rem solid #fff;
             border-radius: 0.3rem;
             width: 1.9rem;
             height: 1.9rem;
             padding: 0;
             margin: 0.5rem 0.1rem 0.4rem;
-            border-color: #fff;
-            box-shadow: inset 0 0 0 1px #2346b944, inset 2px 2px 3px #73a4ff, inset -2px -2px 1px #2348ba;
+            box-shadow: inset 0 0 0 0.1rem #2346b944, inset 0.2rem 0.2rem 0.3rem #73a4ff, inset -0.2rem -0.2rem 0.1rem #2348ba;
             background: radial-gradient(circle at 85% 85%, #2560e4 50%, #4678e6 70%, #73a4ff 100%);
             filter: saturate(0.7) opacity(0.6) brightness(1.3);
             transition: all 0.1s ease;
 
+            @include theme-color("green") {
+                &:not([data-button="close"]) {
+                    box-shadow: inset 0 0 0 0.1rem rgba(79, 83, 61, 0.2), inset 0.2rem 0.2rem 0.3rem #bcc2a0, inset -0.2rem -0.2rem 0.1rem #808760;
+                    background: radial-gradient(circle at 85% 85%, #939d72 50%, #a6ae8c 70%, #bdc69e 100%);
+                }
+            }
+
+            @include theme-color("silver") {
+                box-shadow: none;
+
+                &:not([data-button="close"]) {
+                    background: linear-gradient(to bottom, #fcfcfd, #9fa0bd);
+                    border-color: #878da2;
+                }
+
+                &[data-button="close"] {
+                    background: linear-gradient(to bottom, #f3deb5, #cc5c5e 10%);
+                    border-color: #a84c50;
+                }
+            }
+
             &:hover {
                 filter: saturate(0.7) opacity(0.6) brightness(1.6);
+
+                @include theme-color("green") {
+                    filter: saturate(0.7) opacity(0.6) brightness(1.4);
+                }
+
+                @include theme-color("silver") {
+                    filter: opacity(0.7) brightness(1.1);
+                }
             }
 
             &:after {
@@ -113,6 +202,12 @@
                 background-size: 7rem 1.7rem;
                 position: absolute;
                 inset: 0;
+            }
+
+            &:not([data-button="close"]):after {
+                @include theme-color("silver") {
+                    filter: brightness(0.4) drop-shadow(-1px 1px 0px #fff);
+                }
             }
 
             &[data-button="minimize"]:after {
@@ -130,7 +225,7 @@
             }
 
             &[data-button="close"] {
-                box-shadow: inset 0 0 0 1px #ae452744, inset 2px 2px 5px #e4a491, inset -2px -2px 1px #ae4527;
+                box-shadow: inset 0 0 0 0.1rem #ae452744, inset 0.2rem 0.2rem 0.5rem #e4a491, inset -0.2rem -0.2rem 0.1rem #ae4527;
                 background-color: #d45b34;
                 background: url("/spritesheet__window_ui.png"), radial-gradient(circle at 85% 85%, #cd512e 50%, #d45b34 70%, #e4a491 100%);
 
@@ -138,6 +233,10 @@
                     background: url("/spritesheet__window_ui.png");
                     background-position-x: -5.35rem;
                     background-size: 7rem 1.7rem;
+
+                    @include theme-color("silver") {
+                        filter: opacity(1) drop-shadow(1px -1px 0px #943b38);
+                    }
                 }
             }
         }
@@ -147,5 +246,13 @@
         box-shadow: 0rem 0.05rem 0rem 0.1rem #a5afeb;
         transition: all 0.1s ease;
         position: relative;
+
+        @include theme-color("green") {
+            box-shadow: 0rem 0.05rem 0rem 0.1rem #e0e1c6;
+        }
+
+        @include theme-color("silver") {
+            box-shadow: 0rem 0.05rem 0rem 0.1rem #d5d5d5;
+        }
     }
 }

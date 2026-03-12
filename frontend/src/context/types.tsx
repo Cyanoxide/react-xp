@@ -19,6 +19,7 @@ export interface currentWindow {
     history?: string[];
     forward?: string[];
     landingUrl?: string | null;
+    showOnTaskbar?: boolean;
 }
 export type currentWindows = currentWindow[];
 
@@ -39,6 +40,7 @@ export interface Application {
     disabled?: boolean;
     redirect?: string;
     resizable?: boolean;
+    showOnTaskbar?: boolean;
 }
 
 export type File = AbsoluteObject & {
@@ -46,6 +48,7 @@ export type File = AbsoluteObject & {
 }
 
 export type windowsInitiationState = "shutDown" | "bios" | "welcome" | "transition" | "login" | "loggingIn" | "loggedIn";
+export type themeColor = "blue" | "green" | "silver";
 
 export interface State {
     wallpaper: string;
@@ -59,6 +62,8 @@ export interface State {
     initiationStage: number;
     isInitialBoot: boolean;
     transitionLabel: string;
+    isCRTEnabled: boolean;
+    themeColor: themeColor;
 }
 
 export type Action =
@@ -73,6 +78,8 @@ export type Action =
     | { type: "SET_INITIATION_STAGE"; payload: number; }
     | { type: "SET_IS_INITIAL_BOOT"; payload: boolean; }
     | { type: "SET_TRANSITION_LABEL"; payload: string; }
+    | { type: "SET_IS_CRT_ENABLED"; payload: boolean; }
+    | { type: "SET_THEME_COLOR"; payload: themeColor;}
 
 
 export interface ContextType extends State {

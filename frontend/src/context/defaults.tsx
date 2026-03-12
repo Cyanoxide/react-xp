@@ -1,1 +1,1 @@
-export const defaultWallpaper: string = "/wallpaper__default.jpg";
+export const defaultWallpaper: string = "bliss";

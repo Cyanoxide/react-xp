@@ -65,15 +65,16 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
             <main className="flex">
                 <section className="bg-white text-[#373738] flex flex-col justify-between">
                     <div>
-                        <ul className="flex flex-col p-3">
+                        <ul className="flex flex-col p-3 gap-1.5">
                             <li><StartMenuItem appId="internetExplorer" subTitle="Internet" /></li>
                             <li><StartMenuItem appId="outlook" subTitle="E-mail" /></li>
                         </ul>
-                        <ul className="flex flex-col p-3">
+                        <ul className="flex flex-col p-3 gap-1.5">
+                            <li><StartMenuItem appId="notepad" iconSize={30} /></li>
                             <li><StartMenuItem appId="winMessenger" iconSize={30} /></li>
                             <li><StartMenuItem appId="msn" iconSize={30} /></li>
                             <li><StartMenuItem appId="winMediaPlayer" iconSize={30} /></li>
-                            <li><StartMenuItem appId="notepad" iconSize={30} /></li>
+                            <li><StartMenuItem appId="displayProperties" iconSize={30} /></li>
                         </ul>
                     </div>
                     <div>
@@ -86,7 +87,7 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
                         </div>
                     </div>
                 </section>
-                <section className="bg-[#d6e4f8] text-[#112366]">
+                <section className={styles.systemMenu}>
                     <ul className="font-bold p-2">
                         <li><StartMenuItem appId="documents" /></li>
                         <li onMouseOver={onRecentDocumentsHandler} className="relative" data-open={isRecentDocumentsOpen}>

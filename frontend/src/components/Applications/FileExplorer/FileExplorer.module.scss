@@ -10,6 +10,10 @@
     right: 0;
     min-height: 3.6rem;
 
+    @include theme-color("silver") {
+        background-color: #f1f0f3;
+    }
+
     [data-label="views"] {
         img {
             margin-right: 0.1rem;
@@ -33,7 +37,7 @@
     }
 
     div:not(:last-child) {
-        border-right: 1px solid #dedaca;
+        border-right: 0.1rem solid #dedaca;
     }
 
     button {
@@ -98,16 +102,24 @@
     right: 0;
     min-height: 2.3rem;
 
+    @include theme-color("silver") {
+        background-color: #f1f0f3;
+    }
+
     .navLabel {
         color: #7f7c74;
     }
 
     .navBar {
         background: #fff;
-        border: 1px solid #859cb6aa;
+        border: 0.1rem solid #859cb6aa;
         flex-grow: 1;
         flex-shrink: 0;
         margin-bottom: -0.2rem;
+
+        @include theme-color("green") {
+            border-color: #99b685aa;
+        }
 
         img {
             object-fit: contain;
@@ -129,6 +141,14 @@
             height: 100%;
             background-size: cover;
 
+            @include theme-color("green") {
+                filter: hue-rotate(210deg);
+            }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
+
             &:hover {
                 background-position: -1.6rem;
             }
@@ -139,7 +159,7 @@
         border-left: 0.1rem solid transparent;
         border-right: 0.1rem solid transparent;
         padding: 0 0.4rem 0 0.2rem;
-        height: calc(100% + 1px);
+        height: calc(100% + 0.1rem);
 
         &:hover {
             filter: brightness(1.1);
@@ -186,6 +206,14 @@
     overflow-y: auto;
     z-index: 1;
     flex-shrink: 0;
+
+    @include theme-color("green") {
+        background: #b7c698;
+    }
+
+    @include theme-color("silver") {
+        background: #b5b7c8;
+    }
 }
 
 .contents {
@@ -199,7 +227,7 @@
 
     h3 {
         font-weight: 600;
-        border-bottom: 1px solid;
+        border-bottom: 0.1rem solid;
         border-image: linear-gradient(to right, #7daef9, transparent 23rem) 1;
         margin-left: -1rem;
         padding-left: 1rem;
@@ -244,6 +272,14 @@
                 mask-size: 3.5rem;
                 mask-repeat: no-repeat;
 
+                @include theme-color("green") {
+                    background: #95a075;
+                }
+
+                @include theme-color("silver") {
+                    background: #b5b7c8;
+                }
+
                 img {
                     mix-blend-mode: soft-light;
                 }
@@ -253,6 +289,15 @@
                 background-color: #4069bf;
                 text-shadow: none;
                 color: #fff;
+
+                @include theme-color("green") {
+                    background-color: #95a075;
+                }
+
+                @include theme-color("silver") {
+                    background: #b5b7c8;
+                    color: #262626;
+                }
             }
         }
     }

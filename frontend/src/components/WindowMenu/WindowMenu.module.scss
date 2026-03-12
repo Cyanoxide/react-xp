@@ -4,6 +4,11 @@
     color: #000;
     min-height: 2.3rem;
 
+    @include theme-color("silver") {
+        background-color: #f1f0f3;
+        border-bottom: 0.1rem solid #c1c6d6;
+    }
+
     img {
         border-left: 0.1rem solid #dedaca;
         object-fit: cover;

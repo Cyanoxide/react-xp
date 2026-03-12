@@ -1,0 +1,263 @@
+.settings {
+    background-color: #ebe9da;
+    color: #000;
+
+    @include theme-color("silver") {
+        background-color: #e0dfe3;
+    }
+
+    main {
+        background-color: #f9f8f7;
+        border: 0.1rem solid #adb3b5;
+        box-shadow: 0.1rem 0.1rem 0.1rem #0001;
+    }
+
+    nav {
+        font-size: 0.9rem;
+
+        ul {
+            margin-top: -1.55rem;
+        }
+
+        li {
+            border: 0.1rem solid #adb3b5;
+            border-radius: 0.3rem 0.3rem 0 0;
+            background-color: #f0f0ea;
+            background-image: linear-gradient(to top, #edece7, #fff);
+
+            &[data-active="true"] {
+                border-bottom: none;
+                border-top: 0.1rem solid #dda564;
+                background-color: #f9f8f7;
+                background-image: none;
+                padding-top: 0.1rem;
+                padding-bottom: 0.2rem;
+                margin-top: -0.2rem;
+                position: relative;
+                padding-left: 0.4rem;
+                padding-right: 0.4rem;
+
+                &:after {
+                    content: "";
+                    position: absolute;
+                    width: 100%;
+                    height: 0.2rem;
+                    background-color: #f6ca59;
+                    left: 0;
+                    top: 0;
+                }
+
+            }
+        }
+    }
+
+    .wallpaperPreview {
+        background-image: url("/preview_wallpaper.png");
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+        width: 12.5rem;
+        align-self: center;
+        height: inherit;
+        height: 40%;
+        margin-top: 1rem;
+
+        img {
+            object-fit: cover;
+            aspect-ratio: 5/3.6;
+            transform: translateY(-0.6rem);
+            max-width: 11rem;
+        }
+    }
+
+    .wallpaperList {
+        border: 0.1rem solid #a3b5c8;
+        background-color: #fff;
+
+        img {
+            object-fit: contain;
+        }
+
+        li span {
+            border: 0.1rem solid transparent;
+        }
+
+        li[data-selected="true"] {
+            span {
+                background: #4069bf;
+                border: 0.1rem dotted #b9a889;
+                color: #fff;
+            }
+        }
+    }
+
+    .inputField,
+    .selectField {
+        appearance: none;
+        border: 0.1rem solid #859cb6aa;
+        border-radius: 0.2rem;
+        flex-grow: 1;
+        height: 1.8rem;
+        background-color: #fff;
+        position: relative;
+
+        @include theme-color("green") {
+            border: 0.1rem solid rgba(174, 182, 133, 0.67);
+        }
+
+        &:not([data-disabled]):hover {
+            &:after {
+                background-position: right;
+            }
+        }
+
+        &[data-disabled] {
+            opacity: 0.7;
+            filter: saturate(0);
+            cursor: not-allowed;
+        }
+
+        &:after {
+            content: "";
+            position: absolute;
+            background-image: url("/spritesheet__drop_down.png");
+            background-size: 2.8rem 1.6rem;
+            background-repeat: no-repeat;
+            background-position: left;
+            width: 1.4rem;
+            height: 100%;
+            right: 0;
+            pointer-events: none;
+
+            @include theme-color("green") {
+                filter: hue-rotate(210deg);
+            }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
+        }
+
+        img {
+            object-fit: contain;
+        }
+
+        input {
+            border: none;
+
+            &:hover,
+            &:focus {
+                outline: none;
+            }
+        }
+
+        .dropDown {
+            text-indent: -999rem;
+            background-image: url("/spritesheet__drop_down.png");
+            width: 1.8rem;
+            height: 100%;
+            background-size: cover;
+
+            @include theme-color("green") {
+                filter: hue-rotate(210deg);
+            }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
+
+            &:hover {
+                background-position: -1.3rem;
+            }
+        }
+    }
+
+    .inputGroup {
+        font-size: 0.9rem;
+
+        input[type="text"],
+        select {
+            font-size: 1rem;
+        }
+
+        label {
+            transform: translateY(-54%);
+            background: #f9f8f7;
+            color: #224ece;
+
+            @include theme-color("green") {
+                color: #565f3c;
+            }
+        }
+
+        .rangeContainer {
+            border: dotted 0.1rem transparent;
+            padding: 0.25rem 0.5rem;
+
+            &:active {
+                border-color: #000;
+            }
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+
+            &::-webkit-slider-thumb,
+            &::-moz-range-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                height: 1.45rem;
+                border: none;
+                border-radius: 0;
+                background-color: transparent;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 32'%3E%3Cpath d='M1,4 Q1,1 4,1 H14 Q17,1 17,4 V24 L9,31 L1,24 Z' fill='%23f3f3ef' stroke='%23A0A0A0' stroke-width='1'/%3E%3Cpath d='M1,4 Q1,1 4,1 H14 Q17,1 17,4 V6 H1 Z' fill='%2374ca5f'/%3E%3Cpath d='M1,24 L9,31 L17,24 L9,28 Z' fill='%2374ca5f'/%3E%3C/svg%3E");
+                cursor: pointer;
+            }
+
+            &::-webkit-slider-runnable-track,
+            &::-moz-range-track {
+                width: 100%;
+                height: 0.4rem;
+                background-color: #f4f1e7;
+                box-shadow: inset 0.1rem 0.1rem #0003, 0.1rem 0.1rem #fff;
+                border-radius: 0.2rem;
+            }
+
+            &:active,
+            &:hover {
+                outline: none;
+
+                &::-webkit-slider-thumb,
+                &::-moz-range-thumb {
+                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 32'%3E%3Cpath d='M1,4 Q1,1 4,1 H14 Q17,1 17,4 V24 L9,31 L1,24 Z' fill='%23f3f3ef' stroke='%23A0A0A0' stroke-width='1'/%3E%3Cpath d='M1,4 Q1,1 4,1 H14 Q17,1 17,4 V6 H1 Z' fill='%23f1c36b'/%3E%3Cpath d='M1,24 L9,31 L17,24 L9,28 Z' fill='%23f1c36b'/%3E%3C/svg%3E");
+                }
+            }
+        }
+
+        .rangeNotches {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding-inline: 0.4rem;
+            margin-top: -0.4rem;
+            pointer-events: none;
+
+            span {
+                width: 0.1rem;
+                height: 0.2rem;
+                background-color: #b6b6aa;
+                display: block;
+            }
+        }
+
+        .imageQualityPreview {
+            border-top: 0.1rem solid #afa99e;
+            border-left: 0.1rem solid #afa99e;
+            border-bottom: 0.1rem solid #fff;
+            border-right: 0.1rem solid #fff;
+        }
+    }
+}

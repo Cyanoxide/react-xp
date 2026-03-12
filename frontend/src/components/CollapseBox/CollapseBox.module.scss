@@ -3,7 +3,17 @@
     border-radius: 0.4rem 0.4rem 0 0;
     overflow: hidden;
     color: #325cbf;
-    border: 1px solid #fff7;
+    border: 0.1rem solid #fff7;
+
+    @include theme-color("green") {
+        background: #f6f6ed;
+        color: #596535;
+    }
+
+    @include theme-color("silver") {
+        background: #f0f1f5;
+        color: #6b6a6b;
+    }
 
     &[data-open="false"] {
         .header span {
@@ -20,8 +30,24 @@
         background: linear-gradient(to right, #fff, #c9d4f4);
         font-size: 0.8rem;
 
+        @include theme-color("green") {
+            background: linear-gradient(to right, #fff, #e1e7bd);
+        }
+
+        @include theme-color("silver") {
+            background: linear-gradient(to right, #fff, #d6d7df);
+        }
+
         &:hover {
             color: #568cf7;
+
+            @include theme-color("green") {
+                color: #738342;
+            }
+
+            @include theme-color("silver") {
+                color: #5b5858;
+            }
 
             span {
                 background-position: -1.4rem;
@@ -33,6 +59,14 @@
             background-size: cover;
             height: 1.4rem;
             aspect-ratio: 1/1;
+
+            @include theme-color("green") {
+                filter: hue-rotate(210deg);
+            }
+
+            @include theme-color("silver") {
+                filter: saturate(0.4);
+            }
         }
     }
 
@@ -52,5 +86,13 @@
         text-decoration: underline;
         color: #568cf7;
         cursor: not-allowed;
+
+        @include theme-color("green") {
+            color: #738342;
+        }
+
+        @include theme-color("silver") {
+            color: #5b5858;
+        }
     }
 }

@@ -9,4 +9,20 @@
             outline: none;
         }
     }
+
+    ::selection {
+        background-color: #2f6bf6;
+        color: #fff;
+
+        @include theme-color("green") {
+            background-color: #9aa87f;
+        }
+
+        @include theme-color("silver") {
+            background-color: #b8beca;
+            color: #000;
+        }
+    }
+
+
 }

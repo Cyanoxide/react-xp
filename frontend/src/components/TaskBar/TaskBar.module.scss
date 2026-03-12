@@ -7,6 +7,15 @@
     background: #3168D5;
     background: linear-gradient(180deg, rgb(49, 104, 213) 0%, rgb(82, 163, 255) 7%, rgb(43, 112, 221) 18%, rgb(47, 120, 231) 93%, rgb(27, 82, 167) 100%);
     z-index: 2;
+
+    @include theme-color("green") {
+        background: linear-gradient(180deg, rgb(167, 181, 134) 0%, rgb(233, 242, 201) 7%, rgb(174, 185, 137) 18%, rgb(193, 205, 155) 93%, rgb(166, 179, 128) 100%);
+    }
+
+    @include theme-color("silver") {
+        background: linear-gradient(180deg, #898594 0%, #f6f6f9 7%, #9a99af 18%, #dfdfe1 93%, #9c9baf 100%);
+    }
+
 }
 
 .startButton {
@@ -19,16 +28,25 @@
     background: linear-gradient(180deg, rgb(62, 142, 66) 0%, rgb(113, 185, 118) 9%, rgb(63, 153, 67) 25%, rgb(69, 169, 69) 50%, rgb(69, 169, 69) 80%, rgb(40, 125, 60) 100%);
     background-image: url("/startButton__spriteSheet.png");
     background-repeat: no-repeat;
-    text-indent: -9999px;
+    background-size: cover;
+    text-indent: -999rem;
     flex-shrink: 0;
 
+    @include theme-color("green") {
+        background-image: url("/startButton__spriteSheet--green.png");
+    }
+
+    @include theme-color("silver") {
+        background-image: url("/startButton__spriteSheet--silver.png");
+    }
+
     &:hover {
-        background-position-y: -3rem;
+        background-position-y: -3.03rem;
     }
 
     &:active,
     &[data-selected="true"] {
-        background-position-y: -6rem;
+        background-position-y: -6.06rem;
         outline: none;
         border: none;
     }
@@ -37,14 +55,28 @@
 .systemTray {
     background: #095BC9;
     background: linear-gradient(180deg, rgba(0, 0, 0, 1) 0%, rgba(22, 174, 240, 1) 3%, rgba(22, 174, 240, 1) 9%, rgba(13, 141, 234, 1) 16%, rgba(13, 141, 234, 1) 92%, rgba(22, 138, 222, 1) 97%, rgba(9, 91, 201, 1) 100%);
-    border-left: 1px solid #0a2e52;
-    box-shadow: inset 1px 0px 1px #22c4f4;
+    border-left: 0.1rem solid #0a2e52;
+    box-shadow: inset 0.1rem 0 0.1rem #22c4f4;
     font-family: monospace;
     font-size: 0.9rem;
     padding-top: 0.2rem;
     padding-left: 0.75rem;
     padding-right: 0.75rem;
     gap: 0.5rem;
+
+    @include theme-color("green") {
+        color: #6b693b;
+        border-left-color: #a29d68;
+        box-shadow: inset 0.1rem 0 0.1rem #fdf6d0;
+        background: linear-gradient(180deg, rgb(188, 179, 132) 0%, rgb(255, 254, 249) 9%, rgb(234, 227, 183) 16%, rgb(233, 226, 183) 92%, rgb(233, 226, 183) 97%, rgb(210, 193, 142) 100%);
+    }
+
+    @include theme-color("silver") {
+        color: #262629;
+        border-left-color: #8b8b8b;
+        box-shadow: inset 0.1rem 0 0.1rem #fff;
+        background: linear-gradient(180deg, #aaa 0%, #fff 3%, #d1d2de 92%, #c4c5d4 97%, #808298 100%);
+    }
 }
 
 .windows {
@@ -56,11 +88,11 @@
         display: flex;
         align-items: center;
         background: #3780f3;
-        border: 1px solid #1a51c688;
+        border: 0.1rem solid #1a51c688;
         height: 100%;
         padding: 0.2rem 1rem;
         border-radius: 0.3rem;
-        box-shadow: 1px 1px 1px #0004, inset 1px 1px 1px #fff3;
+        box-shadow: 0.1rem 0.1rem 0.1rem #0004, inset 0.1rem 0.1rem 0.1rem #fff3;
         flex-shrink: 1;
         word-wrap: none;
         width: 100%;
@@ -69,16 +101,59 @@
         overflow: hidden;
         cursor: pointer;
 
+        @include theme-color("green") {
+            background-color: #c7ceaa;
+            border: 0.1rem solid rgba(156, 166, 118, 0.75);
+            color: #626338;
+        }
+
+        @include theme-color("silver") {
+            background: linear-gradient(to bottom, #fff, #cbccd9);
+            box-shadow: inset 0.1rem 0 0 #fff, inset -0.1rem 0 0 #fff;
+            border: 0.1rem solid #9f9f9f;
+            color: #555;
+        }
+
         &:hover {
             background: #689ef8;
+
+            @include theme-color("green") {
+                background: #e4eac7;
+            }
+
+            @include theme-color("silver") {
+                background: linear-gradient(to bottom, #cbccd9, #fff);
+                box-shadow: inset 0.1rem 0.1rem 0 #fff, inset -0.1rem -0.1rem 0 #fff9;
+            }
         }
 
         &[data-active=true] {
             background: #2a4fb2;
-            box-shadow: 1px 1px 1px #fff3, inset 1px 1px 1px #0004;
+            box-shadow: 0.1rem 0.1rem 0.1rem #fff3, inset 0.1rem 0.1rem 0.1rem #0004;
+
+            @include theme-color("green") {
+                background: #8f9780;
+                color: #fff;
+            }
+
+            @include theme-color("silver") {
+                color: #fff;
+                background: linear-gradient(to bottom, #666f79, #8a919a);
+                box-shadow: inset 0.1rem 0.1rem 0.1rem #505962, inset -0.1rem -0.1rem 0.1rem #505962;
+            }
 
             &:hover {
                 background: #426de1;
+
+                @include theme-color("green") {
+                    background: #a6b18e;
+                }
+
+                @include theme-color("silver") {
+                    color: #fff;
+                    background: linear-gradient(to bottom, #838b97, #a7aeb6);
+                    box-shadow: inset 0.1rem 0.1rem 0.1rem #717d87, inset -0.1rem -0.1rem 0.1rem #717d87;
+                }
             }
         }
 

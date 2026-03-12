@@ -26,20 +26,22 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isInitialBoot: action.payload };
     case "SET_TRANSITION_LABEL":
         return { ...state, transitionLabel: action.payload };
+    case "SET_IS_CRT_ENABLED": 
+        return { ...state, isCRTEnabled: action.payload };
+    case "SET_THEME_COLOR": 
+        return { ...state, themeColor: action.payload };
     default:
         return state;
     }
-};;
+};
 
 export const initialState: State = {
-    wallpaper: defaultWallpaper,
+    wallpaper: sessionStorage.getItem("wallpaper") || defaultWallpaper,
     currentTime: new Date(),
     currentWindows: [{
         id: generateUniqueId(),
         appId: "readme",
         active: true,
-        history: [],
-        forward: []
     }],
     isStartVisible: false,
     isAllProgramsOpen: false,
@@ -49,4 +51,6 @@ export const initialState: State = {
     initiationStage: 0,
     isInitialBoot: true,
     transitionLabel: "",
+    isCRTEnabled: true,
+    themeColor: "blue",
 };
