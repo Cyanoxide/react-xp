@@ -2,6 +2,8 @@
     background-color: #377d22;
     container-type: inline-size;
     width: 100%;
+    position: relative;
+    z-index: 0;
 
     .waste {
         margin-left: -1.25cqw;
@@ -31,14 +33,41 @@
         }
     }
 
-    .foundations>div:empty:after {
-        content: "";
-        display: block;
-        background-image: url("/spritemap__solitaire-cards.png?v=1");
-        background-size: 1300% 600%;
-        background-position: -22.55cqw -73.05cqw;
-        width: calc(14.28cqw - 3cqw);
-        aspect-ratio: 44 / 57;
-        margin: 1.5cqw;
+    .foundations>div {
+        position: relative;
+        width: 14.28cqw;
+
+        &:before {
+            content: "";
+            display: block;
+            position: absolute;
+            background-image: url("/spritemap__solitaire-cards.png?v=1");
+            background-size: 1300% 600%;
+            background-position: -22.55cqw -77.45cqw;
+            width: 11.28cqw;
+            height: 15.5cqw;
+            margin: 1.5cqw;
+            top: 0;
+            z-index: -1;
+        }
+    }
+
+    .deck,
+    .waste,
+    .foundations {
+        --stack-margin: 0;
+    }
+
+    .column {
+        --stack-margin: -17.5cqw;
+        width: 14.5cqw;
+
+        div:has([data-rank])+div:has([data-rank]) {
+            --stack-margin: -16.5cqw;
+        }
+    }
+
+    [data-foundation]>div:not(:first-child) {
+        margin-top: -18.5cqw;
     }
 }

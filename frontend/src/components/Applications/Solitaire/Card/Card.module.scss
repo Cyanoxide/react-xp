@@ -3,12 +3,10 @@
     aspect-ratio: 44 / 57;
     padding: 1.5cqw;
 
-
     &>div {
         height: 100%;
         background-image: url("/spritemap__solitaire-cards.png?v=1");
         background-size: 1300% 600%;
-
 
         --y-offset: 20%;
         --x-offset: 8.332%;
@@ -38,15 +36,9 @@
         &.faceDown {
             background-position-y: calc(4 * var(--y-offset));
         }
-
-        &[data-empty] {
-            background-position-y: calc(5 * var(--y-offset));
-            background-position-x: calc(2 * var(--x-offset));
-        }
-
     }
 
     &:not(:first-child) {
-        margin-top: -17.5cqw;
+        margin-top: var(--stack-margin);
     }
 }

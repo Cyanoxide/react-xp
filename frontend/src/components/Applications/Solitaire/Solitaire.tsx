@@ -6,22 +6,17 @@ import styles from "./Solitaire.module.scss";
 type Suit = "hearts" | "diamonds" | "clubs" | "spades";
 type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
-interface CardType {
+export interface CardType {
     id: string;
     suit: Suit;
     rank: Rank;
     isFaceUp: boolean;
 }
 
-interface BoardState {
+export interface BoardState {
   deck: CardType[];
   waste: CardType[];
-  suits: {
-    1: CardType[];
-    2: CardType[];
-    3: CardType[];
-    4: CardType[];
-  };
+  foundations: CardType[][];
   board: CardType[][];
   win: boolean;
 }
@@ -69,12 +64,12 @@ const Solitaire = () => {
         const initalBoardState = {
             deck: shuffledDeck.slice(28),
             waste: [],
-            suits: {
-                1: [],
-                2: [],
-                3: [],
-                4: [],
-            },
+            foundations: [
+                [],
+                [],
+                [],
+                [],
+            ],
             board: initialBoard,
             win: false
         };
@@ -84,7 +79,7 @@ const Solitaire = () => {
     if (!boardState.board) return;
 
     const handleDeckOnClick = () => {
-        setBoardState((prev) => {
+        setBoardState((prev: BoardState) => {
             if (prev.deck.length) {
                 return {
                     ...prev,
@@ -112,21 +107,22 @@ const Solitaire = () => {
                                 {boardState.deck.slice(0, 3).map((card) => <Card key={card.id} {...card}/>)}
                             </div>
                             <div className={`${styles.waste} flex`}>
-                                {boardState.waste.slice(-3).map((card) => <Card key={card.id} rank={card.rank} suit={card.suit} isFaceUp={true}/>)}
+                                {boardState.waste.slice(-3).map((card) => <Card key={card.id} rank={card.rank} suit={card.suit} isFaceUp={true} setBoardState={setBoardState}/>)}
                             </div>
                         </div>
                         <div className={`${styles.foundations} flex`}>
-                            <div><Card isFaceUp={true} rank={1} suit="spades"/></div>
-                            <div><Card /></div>
-                            <div><Card isFaceUp={true} rank={4} suit="clubs" /></div>
-                            <div><Card /></div>
+                            {boardState.foundations.map((item, index) => (
+                                <div key={index} data-foundation={index}>
+                                    {item.map((card) => <Card key={card.id} setBoardState={setBoardState} {...card}/>)}
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="flex">
-                        {boardState.board.map((item) => { 
+                        {boardState.board.map((item, index) => { 
                             return (
-                                <div>
-                                    {item.map((card) => <Card key={card.id} {...card}/>)}
+                                <div className={styles.column} data-column={index}>
+                                    {item.map((card) => <Card key={card.id} setBoardState={setBoardState} {...card}/>)}
                                 </div>
                             );
                         })}

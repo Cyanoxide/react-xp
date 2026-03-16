@@ -41,6 +41,10 @@ export const initialState: State = {
     currentWindows: [{
         id: generateUniqueId(),
         appId: "readme",
+    },
+    {
+        id: generateUniqueId(),
+        appId: "solitaire",
         active: true,
     }],
     isStartVisible: false,
