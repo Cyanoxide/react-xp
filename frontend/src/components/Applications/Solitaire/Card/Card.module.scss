@@ -2,11 +2,13 @@
     width: 14.28cqw;
     aspect-ratio: 44 / 57;
     padding: 1.5cqw;
+    pointer-events: none;
 
     &>div {
         height: 100%;
         background-image: url("/spritemap__solitaire-cards.png?v=1");
         background-size: 1300% 600%;
+        pointer-events: auto;
 
         --y-offset: 20%;
         --x-offset: 8.332%;

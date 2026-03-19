@@ -13,7 +13,6 @@ interface Card {
 }
 
 const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card) => {
-
     const onClickHandler = (event: React.MouseEvent<HTMLElement>) => {
         const clickTarget = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
         
@@ -37,28 +36,47 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
 
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         const card = event.currentTarget;
+        const cardWrapper = event.currentTarget.parentElement;
+
+        if (!card || !cardWrapper) return;
+
         const rank = Number(card.dataset.rank);
         const suit = card.dataset.suit as Suit;
 
-        if (!rank || !suit || !isFaceUp || card.nextElementSibling) return;
+        if (!rank || !suit || !isFaceUp) return;
         
         const rect = card.getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
         const offsetY = event.clientY - rect.top;
 
-        Object.assign(card.style, {
-            width: `${rect.width}px`,
-            height: `${rect.height}px`,
-            position: "fixed",
-            pointerEvents: "none",
-            zIndex: 1001,
-            left: `${event.clientX - offsetX}px`,
-            top: `${event.clientY - offsetY}px`
+        const stack = Array.from(card.parentElement!.parentElement!.children).slice(
+            Array.from(card.parentElement!.parentElement!.children).indexOf(card.parentElement!)
+        );
+
+        const parent = cardWrapper.parentElement!;
+        const stackToMove = (Array.from(parent.children) as HTMLElement[]).slice(
+            Array.from(parent.children).indexOf(cardWrapper)
+        );
+
+        stack.forEach((card, index) => {
+            const cardOffset =  index * 2.1;
+            Object.assign((card.childNodes[0] as HTMLElement).style, {
+                width: `${rect.width}px`,
+                height: `${rect.height}px`,
+                position: "fixed",
+                pointerEvents: "none",
+                zIndex: 1001,
+                left: `${event.clientX - offsetX}px`,
+                top: `${event.clientY - offsetY}px + ${cardOffset}cqw)`,
+            });
         });
 
         const handlePointerMove = (moveEvent: PointerEvent) => {
-            card.style.left = `${moveEvent.clientX - offsetX}px`;
-            card.style.top = `${moveEvent.clientY - offsetY}px`;
+            stack.forEach((card, index) => {
+                const cardOffset =  index * 2.1;
+                (card.childNodes[0] as HTMLElement).style.left = `${moveEvent.clientX - offsetX}px`;
+                (card.childNodes[0] as HTMLElement).style.top = `calc(${moveEvent.clientY - offsetY}px + ${cardOffset}cqw)`;
+            });
             document.body.style.userSelect = "none";
         };
 
@@ -77,7 +95,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
 
             const isKingPlacement = (dropTarget.dataset.column && dropTarget.childElementCount === 0 && rank === 13);
 
-            if (isFoundationPlacement) {
+            if (isFoundationPlacement  && !card.parentElement!.nextElementSibling) {
                 setBoardState?.((prev) => {
                     if (!prev?.board) return prev;
                     const newBoard = structuredClone(prev.board);
@@ -109,54 +127,85 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
             }
 
             if (isKingPlacement) {
-                setBoardState?.((prev) => {
-                    if (!prev?.board) return prev;
-                    const newBoard = structuredClone(prev.board);
+                setBoardState?.((previousState) => {
+                    if (!previousState?.board) return previousState;
+        
+                    const newBoard = structuredClone(previousState.board);
+                    const newFoundations = structuredClone(previousState.foundations);
 
-                    newBoard.forEach((col, i) => {
-                        newBoard[i] = col.filter(card => !(card.rank === rank && card.suit === suit));
-                    });
-                    const newWaste = prev.waste.filter(card => !(card.rank === rank && card.suit === suit));
-
-                    const newFoundations = prev.foundations.map(foundation => 
-                        foundation.filter(card => !(card.rank === rank && card.suit === suit))
-                    );
-
-                    const targetColNum = Number(dropTarget.dataset.column);
-
-                    if (Number.isNaN(targetColNum)) return prev;
-
-                    newBoard[targetColNum].push({
-                        id: `${suit}-${rank}`,
-                        suit: suit,
-                        rank: rank as Rank,
-                        isFaceUp: true,
+                    const cardsToMove = stackToMove.map((container) => {
+                        const cardElement = container.firstElementChild as HTMLElement;
+                        return {
+                            id: `${cardElement.dataset.suit}-${cardElement.dataset.rank}`,
+                            suit: cardElement.dataset.suit as Suit,
+                            rank: Number(cardElement.dataset.rank) as Rank,
+                            isFaceUp: true,
+                        };
                     });
 
-                    return { ...prev, board: newBoard, waste: newWaste, foundations: newFoundations };
+                    const idsToMove = cardsToMove.map((card) => card.id);
+
+                    newBoard.forEach((column, index) => {
+                        newBoard[index] = column.filter((card) => !idsToMove.includes(card.id));
+                    });
+
+                    const newWaste = previousState.waste.filter((card) => !idsToMove.includes(card.id));
+
+                    newFoundations.forEach((foundation, index) => {
+                        newFoundations[index] = foundation.filter((card) => !idsToMove.includes(card.id));
+                    });
+
+                    const targetColumnIndex = Number(dropTarget.dataset.column);
+
+                    if (Number.isNaN(targetColumnIndex)) return previousState;
+
+                    newBoard[targetColumnIndex].push(...cardsToMove);
+
+                    return { 
+                        ...previousState, 
+                        board: newBoard, 
+                        waste: newWaste, 
+                        foundations: newFoundations 
+                    };
                 });
 
                 document.body.style.userSelect = "";
             }
 
-            if (targetRank && targetSuit) {
+            if ((targetRank && targetSuit) && stackToMove.length > 0) {
+                const initialCard = stackToMove[0].childNodes[0] as HTMLElement;
+                const initialCardRank = Number(initialCard.dataset.rank);
+                const initialCardSuit = initialCard.dataset.suit as Suit;
+
                 const getColor = (suit: string) => (suit === "hearts" || suit === "diamonds" ? "red" : "black");
-                const isOppositeColor = getColor(suit) !== getColor(targetSuit);
-                const isSequential = (rank + 1) === targetRank;
+                const isOppositeColor = getColor(initialCardSuit) !== getColor(targetSuit);
+                const isSequential = (initialCardRank + 1) === targetRank;
 
                 if (isOppositeColor && isSequential) {
                     setBoardState?.((prev) => {
                         if (!prev?.board) return prev;
                         const newBoard = structuredClone(prev.board);
 
-                        newBoard.forEach((col, i) => {
-                            newBoard[i] = col.filter(card => !(card.rank === rank && card.suit === suit));
+                        const cardsToMoveData = stackToMove.map(container => {
+                            const card = container.childNodes[0] as HTMLElement;
+                            return {
+                                id: `${card.dataset.suit}-${card.dataset.rank}`,
+                                suit: card.dataset.suit as Suit,
+                                rank: Number(card.dataset.rank) as Rank,
+                                isFaceUp: true
+                            };
                         });
 
-                        const newWaste = prev.waste.filter(card => !(card.rank === rank && card.suit === suit));
+                        const idsToMove = cardsToMoveData.map(c => c.id);
 
-                        const newFoundations = prev.foundations.map(foundation => 
-                            foundation.filter(card => !(card.rank === rank && card.suit === suit))
+                        newBoard.forEach((col, i) => {
+                            newBoard[i] = col.filter(card => !idsToMove.includes(card.id));
+                        });
+
+                        const newWaste = prev.waste.filter(card => !idsToMove.includes(card.id));
+
+                        const newFoundations = prev.foundations.map(found => 
+                            found.filter(card => !idsToMove.includes(card.id))
                         );
 
                         const targetCol = newBoard.find((column) => {
@@ -166,19 +215,16 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
 
                         if (!targetCol) return prev;
 
-                        targetCol.push({
-                            id: `${suit}-${rank}`,
-                            suit: suit,
-                            rank: rank as Rank,
-                            isFaceUp: true,
-                        });
+                        targetCol.push(...cardsToMoveData);
 
                         return { ...prev, board: newBoard, waste: newWaste, foundations: newFoundations };
                     });
                 }
             }
-            
-            card.style.cssText = "";
+
+            stack.forEach((card) => {
+                (card.childNodes[0] as HTMLElement).style.cssText = "";
+            });
         };
 
         window.addEventListener("pointermove", handlePointerMove);

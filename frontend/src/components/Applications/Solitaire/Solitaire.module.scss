@@ -26,7 +26,7 @@
         &:empty {
             background-image: url("/spritemap__solitaire-cards.png?v=1");
             background-size: 1297% 600%;
-            background-position: 0 -77.5cqw;
+            background-position-y: calc(5 * 20%);
             margin: 1.5cqw;
             margin-right: 2.7cqw;
             width: 11.3cqw;
@@ -43,7 +43,8 @@
             position: absolute;
             background-image: url("/spritemap__solitaire-cards.png?v=1");
             background-size: 1300% 600%;
-            background-position: -22.55cqw -77.45cqw;
+            background-position-x: calc(2 * 8.332%);
+            background-position-y: calc(5 * 20%);
             width: 11.28cqw;
             height: 15.5cqw;
             margin: 1.5cqw;
