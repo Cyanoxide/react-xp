@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styles from "./Card.module.scss";
 import type {BoardState} from "../Solitaire";
 import type { Dispatch, SetStateAction } from "react";
@@ -13,6 +14,45 @@ interface Card {
 }
 
 const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card) => {
+    const lastClickTimeRef = useRef<number>(0);
+    
+    const onDoubleClickHandler = (event: React.MouseEvent<HTMLElement>) => {
+        const card = event.currentTarget;
+        const rank = Number(card.dataset.rank);
+        const suit = card.dataset.suit;
+
+        if (!card || card.parentElement!.nextElementSibling) return;
+
+        
+        setBoardState(prev => {
+            const newBoard = structuredClone(prev.board);
+            const newFoundations = structuredClone(prev.foundations);
+            const inFoundations = newFoundations.find(foundation => (foundation[foundation.length - 1] && foundation[foundation.length - 1].rank === rank && foundation[foundation.length - 1].suit === suit));
+            if (inFoundations) return prev;
+
+            const validFoundationPlacement = newFoundations.find(foundation => (foundation[foundation.length - 1] && foundation[foundation.length - 1].rank === rank - 1 && foundation[foundation.length - 1].suit === suit) || (!foundation[foundation.length - 1] && rank === 1));
+
+            if (validFoundationPlacement) {
+                validFoundationPlacement.push({
+                    id: `${suit}-${rank}`,
+                    suit: suit as Suit,
+                    rank: rank as Rank,
+                    isFaceUp: true,
+                });
+
+                newBoard.forEach((col, i) => {
+                    newBoard[i] = col.filter(card => !(card.rank === rank && card.suit === suit));
+                });
+                const newWaste = prev.waste.filter(card => !(card.rank === rank && card.suit === suit));
+
+
+                return {...prev, foundations: newFoundations, board: newBoard, waste: newWaste};
+            }
+
+            return prev;
+        });
+    };
+
     const onClickHandler = (event: React.MouseEvent<HTMLElement>) => {
         const clickTarget = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
         
@@ -37,13 +77,23 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         const card = event.currentTarget;
         const cardWrapper = event.currentTarget.parentElement;
-
         if (!card || !cardWrapper) return;
 
         const rank = Number(card.dataset.rank);
         const suit = card.dataset.suit as Suit;
 
         if (!rank || !suit || !isFaceUp) return;
+
+        const currentTime = Date.now();
+        const timeSinceLastClick = currentTime - lastClickTimeRef.current;
+
+        if (timeSinceLastClick < 300) {
+            onDoubleClickHandler(event);
+            lastClickTimeRef.current = 0;
+            return;
+        }
+
+        lastClickTimeRef.current = currentTime;
         
         const rect = card.getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
@@ -58,8 +108,10 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
             Array.from(parent.children).indexOf(cardWrapper)
         );
 
+        const cardOffsetValue = 2;
+
         stack.forEach((card, index) => {
-            const cardOffset =  index * 2.1;
+            const cardOffset =  index * cardOffsetValue;
             Object.assign((card.childNodes[0] as HTMLElement).style, {
                 width: `${rect.width}px`,
                 height: `${rect.height}px`,
@@ -67,13 +119,13 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                 pointerEvents: "none",
                 zIndex: 1001,
                 left: `${event.clientX - offsetX}px`,
-                top: `${event.clientY - offsetY}px + ${cardOffset}cqw)`,
+                top: `calc(${event.clientY - offsetY}px + ${cardOffset}cqw)`,
             });
         });
 
         const handlePointerMove = (moveEvent: PointerEvent) => {
             stack.forEach((card, index) => {
-                const cardOffset =  index * 2.1;
+                const cardOffset =  index * cardOffsetValue;
                 (card.childNodes[0] as HTMLElement).style.left = `${moveEvent.clientX - offsetX}px`;
                 (card.childNodes[0] as HTMLElement).style.top = `calc(${moveEvent.clientY - offsetY}px + ${cardOffset}cqw)`;
             });
@@ -231,7 +283,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
         window.addEventListener("pointerup", handlePointerUp);
     };
 
-    let card = (<div data-suit={suit} data-rank={rank} onPointerDown={(e) => onPointerDown(e)}></div>);
+    let card = (<div data-suit={suit} data-rank={rank} onPointerDown={(e) => onPointerDown(e)} onDoubleClick={(e) => onDoubleClickHandler(e)}></div>);
 
     if (!isFaceUp) card = (<div className={styles.faceDown} data-face-down onClick={onClickHandler}></div>);
     if (!suit && !rank && !isFaceUp) card = (<div data-empty></div>);

@@ -55,8 +55,6 @@ const initialBoard: CardType[][] = Array.from({ length: 7 }, (_, i) => {
     }));
 });
 
-console.log(initialBoard);
-
 const Solitaire = () => {
     const [boardState, setBoardState] = useState<BoardState>({} as BoardState);
 
@@ -121,7 +119,7 @@ const Solitaire = () => {
                     <div className="flex">
                         {boardState.board.map((item, index) => { 
                             return (
-                                <div className={styles.column} data-column={index}>
+                                <div key={index} className={styles.column} data-column={index}>
                                     {item.map((card) => <Card key={card.id} setBoardState={setBoardState} {...card}/>)}
                                 </div>
                             );
