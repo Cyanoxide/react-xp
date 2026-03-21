@@ -36,7 +36,7 @@ button {
 }
 
 .crt-effect {
-  filter: blur(0.02rem);
+  backdrop-filter: blur(0.02rem);
 }
 
 @media (max-width: 767px) and (pointer: coarse) {

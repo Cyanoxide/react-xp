@@ -16,6 +16,7 @@ export interface CardType {
 export interface BoardState {
   deck: CardType[];
   waste: CardType[];
+  wasteCount: number;
   foundations: CardType[][];
   board: CardType[][];
   win: boolean;
@@ -62,6 +63,7 @@ const Solitaire = () => {
         const initalBoardState = {
             deck: shuffledDeck.slice(28),
             waste: [],
+            wasteCount: 3,
             foundations: [
                 [],
                 [],
@@ -82,7 +84,8 @@ const Solitaire = () => {
                 return {
                     ...prev,
                     deck: prev.deck.slice(0, -1),
-                    waste: [...prev.waste, prev.deck[prev.deck.length - 1]]
+                    waste: [...prev.waste, prev.deck[prev.deck.length - 1]],
+                    wasteCount: 3,
                 };
             } 
     
@@ -105,7 +108,7 @@ const Solitaire = () => {
                                 {boardState.deck.slice(0, 3).map((card) => <Card key={card.id} {...card}/>)}
                             </div>
                             <div className={`${styles.waste} flex`}>
-                                {boardState.waste.slice(-3).map((card) => <Card key={card.id} rank={card.rank} suit={card.suit} isFaceUp={true} setBoardState={setBoardState}/>)}
+                                {boardState.waste.slice(-Math.abs(boardState.wasteCount)).map((card) => <Card key={card.id} rank={card.rank} suit={card.suit} isFaceUp={true} setBoardState={setBoardState}/>)}
                             </div>
                         </div>
                         <div className={`${styles.foundations} flex`}>

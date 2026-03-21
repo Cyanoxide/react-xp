@@ -44,9 +44,11 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                     newBoard[i] = col.filter(card => !(card.rank === rank && card.suit === suit));
                 });
                 const newWaste = prev.waste.filter(card => !(card.rank === rank && card.suit === suit));
+                const newWasteCount = (newWaste[newWaste.length -1] !== prev.waste[prev.waste.length -1]) ? prev.wasteCount - 1 : prev.wasteCount;
+                    
 
 
-                return {...prev, foundations: newFoundations, board: newBoard, waste: newWaste};
+                return {...prev, foundations: newFoundations, board: newBoard, waste: newWaste, wasteCount: newWasteCount};
             }
 
             return prev;
@@ -156,6 +158,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                         newBoard[i] = col.filter(card => !(card.rank === rank && card.suit === suit));
                     });
                     const newWaste = prev.waste.filter(card => !(card.rank === rank && card.suit === suit));
+                    const newWasteCount = (newWaste[newWaste.length -1] !== prev.waste[prev.waste.length -1]) ? prev.wasteCount - 1 : prev.wasteCount;
                     
                     const newFoundations = prev.foundations.map(foundation => 
                         foundation.filter(card => !(card.rank === rank && card.suit === suit))
@@ -172,18 +175,18 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                         isFaceUp: true,
                     });
 
-                    return { ...prev, board: newBoard, waste: newWaste, foundations: newFoundations };
+                    return { ...prev, board: newBoard, waste: newWaste, wasteCount: newWasteCount, foundations: newFoundations };
                 });
 
                 document.body.style.userSelect = "";
             }
 
             if (isKingPlacement) {
-                setBoardState?.((previousState) => {
-                    if (!previousState?.board) return previousState;
+                setBoardState?.((prev) => {
+                    if (!prev?.board) return prev;
         
-                    const newBoard = structuredClone(previousState.board);
-                    const newFoundations = structuredClone(previousState.foundations);
+                    const newBoard = structuredClone(prev.board);
+                    const newFoundations = structuredClone(prev.foundations);
 
                     const cardsToMove = stackToMove.map((container) => {
                         const cardElement = container.firstElementChild as HTMLElement;
@@ -201,23 +204,25 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                         newBoard[index] = column.filter((card) => !idsToMove.includes(card.id));
                     });
 
-                    const newWaste = previousState.waste.filter((card) => !idsToMove.includes(card.id));
-
+                    const newWaste = prev.waste.filter((card) => !idsToMove.includes(card.id));
+                    const newWasteCount = (newWaste[newWaste.length -1] !== prev.waste[prev.waste.length -1]) ? prev.wasteCount - 1 : prev.wasteCount;
+                    
                     newFoundations.forEach((foundation, index) => {
                         newFoundations[index] = foundation.filter((card) => !idsToMove.includes(card.id));
                     });
 
                     const targetColumnIndex = Number(dropTarget.dataset.column);
 
-                    if (Number.isNaN(targetColumnIndex)) return previousState;
+                    if (Number.isNaN(targetColumnIndex)) return prev;
 
                     newBoard[targetColumnIndex].push(...cardsToMove);
 
                     return { 
-                        ...previousState, 
+                        ...prev, 
                         board: newBoard, 
                         waste: newWaste, 
-                        foundations: newFoundations 
+                        wasteCount: newWasteCount,
+                        foundations: newFoundations, 
                     };
                 });
 
@@ -255,7 +260,8 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                         });
 
                         const newWaste = prev.waste.filter(card => !idsToMove.includes(card.id));
-
+                        const newWasteCount = (newWaste[newWaste.length -1] !== prev.waste[prev.waste.length -1]) ? prev.wasteCount - 1 : prev.wasteCount;
+                    
                         const newFoundations = prev.foundations.map(found => 
                             found.filter(card => !idsToMove.includes(card.id))
                         );
@@ -269,7 +275,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
 
                         targetCol.push(...cardsToMoveData);
 
-                        return { ...prev, board: newBoard, waste: newWaste, foundations: newFoundations };
+                        return { ...prev, board: newBoard, waste: newWaste, wasteCount: newWasteCount, foundations: newFoundations };
                     });
                 }
             }
