@@ -51,6 +51,21 @@
             top: 0;
             z-index: -1;
         }
+
+        [data-animate="true"] {
+            pointer-events: none;
+            top: auto;
+            left: auto;
+
+            animation:
+                solitaire-x-path 6s linear infinite,
+                solitaire-y-bounce 0.6s ease-in infinite alternate;
+        }
+
+        [data-animate="true"]>.card {
+            transform-origin: bottom;
+            animation: solitaire-impact-squash 0.6s ease-in infinite alternate;
+        }
     }
 
     .deck,
@@ -70,5 +85,37 @@
 
     [data-foundation]>div:not(:first-child) {
         margin-top: -18.5cqw;
+    }
+}
+
+@keyframes solitaire-x-path {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-120vw);
+    }
+}
+
+@keyframes solitaire-y-bounce {
+    from {
+        translate: 0 0;
+    }
+
+    to {
+        translate: 0 calc(100vh - 120px);
+    }
+}
+
+@keyframes solitaire-impact-squash {
+
+    0%,
+    80% {
+        transform: scale(1, 1);
+    }
+
+    100% {
+        transform: scale(1.1, 0.9);
     }
 }

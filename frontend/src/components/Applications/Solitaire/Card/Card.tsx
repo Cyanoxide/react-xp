@@ -10,10 +10,11 @@ interface Card {
     suit?: Suit;
     rank?: Rank;
     isFaceUp?: boolean;
+    animate?: boolean;
     setBoardState?: Dispatch<SetStateAction<BoardState>>;
 }
 
-const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card) => {
+const Card = ({ suit, rank, isFaceUp = false, animate = false,  setBoardState = () => {} }: Card) => {
     const lastClickTimeRef = useRef<number>(0);
     
     const onDoubleClickHandler = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,6 +39,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                     suit: suit as Suit,
                     rank: rank as Rank,
                     isFaceUp: true,
+                    animate: false,
                 });
 
                 newBoard.forEach((col, i) => {
@@ -173,6 +175,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                         suit: suit,
                         rank: rank as Rank,
                         isFaceUp: true,
+                        animate: false,
                     });
 
                     return { ...prev, board: newBoard, waste: newWaste, wasteCount: newWasteCount, foundations: newFoundations };
@@ -195,6 +198,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                             suit: cardElement.dataset.suit as Suit,
                             rank: Number(cardElement.dataset.rank) as Rank,
                             isFaceUp: true,
+                            animate: false,
                         };
                     });
 
@@ -249,7 +253,8 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
                                 id: `${card.dataset.suit}-${card.dataset.rank}`,
                                 suit: card.dataset.suit as Suit,
                                 rank: Number(card.dataset.rank) as Rank,
-                                isFaceUp: true
+                                isFaceUp: true,
+                                animate: false,
                             };
                         });
 
@@ -295,7 +300,7 @@ const Card = ({ suit, rank, isFaceUp = false,  setBoardState = () => {} }: Card)
     if (!suit && !rank && !isFaceUp) card = (<div data-empty></div>);
 
     return (
-        <div className={styles.card}>{card}</div>
+        <div className={styles.card} data-animate={animate}>{card}</div>
     );
 };
 

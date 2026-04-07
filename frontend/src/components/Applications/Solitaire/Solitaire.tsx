@@ -11,6 +11,7 @@ export interface CardType {
     suit: Suit;
     rank: Rank;
     isFaceUp: boolean;
+    animate: boolean;
 }
 
 export interface BoardState {
@@ -41,6 +42,7 @@ const deck: CardType[] = suits.flatMap((suit) =>
         suit,
         rank: (i + 1) as Rank,
         isFaceUp: false,
+        animate: false,
     }))
 );
 
@@ -76,6 +78,36 @@ const Solitaire = () => {
         setBoardState(initalBoardState);
     }, []);
 
+    const triggerWinAnimation = async () => {
+        const currentFoundations = [...boardState.foundations];
+
+        for (let i = 0; i < currentFoundations.length; i++) {
+            while (currentFoundations[i].length > 0) {
+                const pile = currentFoundations[i];
+                const targetCard = pile[pile.length - 1];
+
+                targetCard["animate"] = true;
+
+                await new Promise((resolve) => setTimeout(resolve, 6000));
+
+                setBoardState((prevState) => {
+                    const newFoundations = [...prevState.foundations];
+                    newFoundations[i] = newFoundations[i].slice(0, -1);
+                    return { ...prevState, foundations: newFoundations };
+                });
+
+                currentFoundations[i] = currentFoundations[i].slice(0, -1);
+            }
+        }
+  
+        console.log("Animation sequence complete!");
+    };
+
+    useEffect(() => {
+        if (!boardState.win) return;
+        triggerWinAnimation();  
+    }, [boardState.win]);
+
     if (!boardState.board) return;
 
     const handleDeckOnClick = () => {
@@ -93,6 +125,15 @@ const Solitaire = () => {
                 ...prev,
                 deck: prev.waste.slice().reverse(),
                 waste: []
+            };
+        });
+    };
+
+    const debug = () => {
+        setBoardState((prev) =>  {
+            return {
+                ...prev,
+                win: true,
             };
         });
     };
@@ -128,6 +169,7 @@ const Solitaire = () => {
                             );
                         })}
                     </div>
+                    <button onClick={debug}>Button</button>
                 </main>
             </div>
         </>
