@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import WindowMenu from "../../WindowMenu/WindowMenu";
+import Button from "../../Button/Button";
 import Card from "./Card/Card";
 import WinAnimation from "./WinAnimation/WinAnimation";
 import styles from "./Solitaire.module.scss";
@@ -75,6 +76,7 @@ const createInitialBoardState = (): BoardState => {
 
 const Solitaire = () => {
     const [boardState, setBoardState] = useState<BoardState>({} as BoardState);
+    const [showDealPrompt, setShowDealPrompt] = useState(false);
 
     useEffect(() => {
         setBoardState(createInitialBoardState());
@@ -118,7 +120,18 @@ const Solitaire = () => {
     };
 
     const handleNewGame = () => {
+        setShowDealPrompt(false);
         setBoardState(createInitialBoardState());
+    };
+
+    // Animation finished or was skipped: leave the table empty and ask to deal again
+    const handleAnimationComplete = () => {
+        setBoardState((prev) => ({
+            ...prev,
+            foundations: [[], [], [], []],
+            win: false,
+        }));
+        setShowDealPrompt(true);
     };
 
     // DEBUG: puts the game straight into a won state to preview the win animation
@@ -174,7 +187,19 @@ const Solitaire = () => {
                     </div>
                     <button onClick={debugWin}>DEBUG: Win</button>
                 </main>
-                {boardState.win && <WinAnimation foundations={boardState.foundations} onCardLaunch={handleCardLaunch} onComplete={handleNewGame} />}
+                {boardState.win && <WinAnimation foundations={boardState.foundations} onCardLaunch={handleCardLaunch} onComplete={handleAnimationComplete} />}
+                {showDealPrompt && (
+                    <div className={styles.dealPrompt}>
+                        <div className={styles.dealPromptTitleBar}>Solitaire</div>
+                        <div className={`${styles.dealPromptBody} flex flex-col items-center`}>
+                            <p>Do you want to deal again?</p>
+                            <div className="flex gap-3">
+                                <Button onClick={handleNewGame}>Yes</Button>
+                                <Button onClick={() => setShowDealPrompt(false)}>No</Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

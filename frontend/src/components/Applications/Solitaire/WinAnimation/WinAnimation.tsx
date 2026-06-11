@@ -15,11 +15,11 @@ const SUIT_ROW: Record<Suit, number> = { spades: 0, hearts: 1, clubs: 2, diamond
 
 // Physics, in pixels per 60Hz step (all tunable)
 const STEP_MS = 1000 / 60;
-const GRAVITY = 0.6;
-const BOUNCE = 0.85;
-const MIN_LAUNCH_VX = 3;
-const MAX_LAUNCH_VX = 9;
-const MAX_LAUNCH_VY = 5;
+const GRAVITY = 0.35;
+const BOUNCE = 0.82;
+const MIN_LAUNCH_VX = 2;
+const MAX_LAUNCH_VX = 5.5;
+const MAX_LAUNCH_VY = 4;
 const STAMP_EVERY_N = 1;
 // 1 = cards may launch both left and right (as in the original); -1 = left only
 const ALLOW_RIGHTWARD = 1;
@@ -72,11 +72,27 @@ const WinAnimation = ({ foundations, onCardLaunch, onComplete }: WinAnimationPro
 
         const sizeCanvas = () => {
             const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
             const dpr = window.devicePixelRatio || 1;
+
+            // Preserve the painted trails across resizes
+            let snapshot: HTMLCanvasElement | null = null;
+            const previous = { ...bounds };
+            if (canvas.width > 0 && canvas.height > 0) {
+                snapshot = document.createElement("canvas");
+                snapshot.width = canvas.width;
+                snapshot.height = canvas.height;
+                snapshot.getContext("2d")?.drawImage(canvas, 0, 0);
+            }
+
             bounds = { width: rect.width, height: rect.height };
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
             context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            if (snapshot && previous.width > 0) {
+                context.drawImage(snapshot, 0, 0, previous.width, previous.height);
+            }
         };
         sizeCanvas();
 
