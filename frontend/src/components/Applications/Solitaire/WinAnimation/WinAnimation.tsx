@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import type { CardType, Suit } from "../Solitaire";
 
 interface WinAnimationProps {
@@ -18,11 +17,12 @@ const SUIT_ROW: Record<Suit, number> = { spades: 0, hearts: 1, clubs: 2, diamond
 const STEP_MS = 1000 / 60;
 const GRAVITY = 0.6;
 const BOUNCE = 0.85;
-const MIN_LAUNCH_VX = 4;
-const MAX_LAUNCH_VX = 12;
-const MAX_LAUNCH_VY = 6;
+const MIN_LAUNCH_VX = 3;
+const MAX_LAUNCH_VX = 9;
+const MAX_LAUNCH_VY = 5;
 const STAMP_EVERY_N = 1;
-const TASKBAR_HEIGHT = 30;
+// 1 = cards may launch both left and right (as in the original); -1 = left only
+const ALLOW_RIGHTWARD = 1;
 
 interface ActiveCard {
     suit: Suit;
@@ -55,6 +55,7 @@ const WinAnimation = ({ foundations, onCardLaunch, onComplete }: WinAnimationPro
         let stepCount = 0;
         let active: ActiveCard | null = null;
         let lastRect = { x: 100, y: 100, width: 71, height: 96 };
+        let bounds = { width: 0, height: 0 };
 
         // Launch order: cycle the piles taking the top card of each in turn
         const piles = foundations.map((pile) => [...pile]);
@@ -70,31 +71,38 @@ const WinAnimation = ({ foundations, onCardLaunch, onComplete }: WinAnimationPro
         sprite.src = SPRITE_SRC;
 
         const sizeCanvas = () => {
+            const rect = canvas.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
+            bounds = { width: rect.width, height: rect.height };
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
             context.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
         sizeCanvas();
-
-        const floorY = (cardHeight: number) => window.innerHeight - TASKBAR_HEIGHT - cardHeight;
 
         const launchNext = (): boolean => {
             const next = queue.shift();
             if (!next) return false;
 
+            const canvasRect = canvas.getBoundingClientRect();
             const slot = document.querySelector(`[data-foundation="${next.pileIndex}"] > div:last-child > div`);
             const rect = slot?.getBoundingClientRect();
             if (rect && rect.width > 0) {
-                lastRect = { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+                lastRect = {
+                    x: rect.left - canvasRect.left,
+                    y: rect.top - canvasRect.top,
+                    width: rect.width,
+                    height: rect.height,
+                };
             }
 
+            const direction = (ALLOW_RIGHTWARD && Math.random() < 0.5) ? 1 : -1;
             active = {
                 suit: next.card.suit,
                 rank: next.card.rank,
                 x: lastRect.x,
                 y: lastRect.y,
-                vx: (MIN_LAUNCH_VX + Math.random() * (MAX_LAUNCH_VX - MIN_LAUNCH_VX)) * ((Math.random() < 0.5) ? -1 : 1),
+                vx: (MIN_LAUNCH_VX + Math.random() * (MAX_LAUNCH_VX - MIN_LAUNCH_VX)) * direction,
                 vy: Math.random() * -MAX_LAUNCH_VY,
                 width: lastRect.width,
                 height: lastRect.height,
@@ -135,7 +143,7 @@ const WinAnimation = ({ foundations, onCardLaunch, onComplete }: WinAnimationPro
             active.x += active.vx;
             active.y += active.vy;
 
-            const floor = floorY(active.height);
+            const floor = bounds.height - active.height;
             if (active.y >= floor) {
                 active.y = floor;
                 active.vy = -active.vy * BOUNCE;
@@ -144,7 +152,7 @@ const WinAnimation = ({ foundations, onCardLaunch, onComplete }: WinAnimationPro
             stepCount++;
             if (stepCount % STAMP_EVERY_N === 0) stamp(active);
 
-            if (active.x + active.width < 0 || active.x > window.innerWidth) {
+            if (active.x + active.width < 0 || active.x > bounds.width) {
                 active = null;
             }
         };
@@ -172,23 +180,23 @@ const WinAnimation = ({ foundations, onCardLaunch, onComplete }: WinAnimationPro
 
         const handleSkip = () => finish();
         window.addEventListener("keydown", handleSkip);
-        window.addEventListener("resize", sizeCanvas);
+        const resizeObserver = new ResizeObserver(sizeCanvas);
+        resizeObserver.observe(canvas);
 
         return () => {
             finished = true;
             cancelAnimationFrame(rafId);
             window.removeEventListener("keydown", handleSkip);
-            window.removeEventListener("resize", sizeCanvas);
+            resizeObserver.disconnect();
         };
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return createPortal(
+    return (
         <canvas
             ref={canvasRef}
-            style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", zIndex: 10 }}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2 }}
             onPointerDown={() => onCompleteRef.current()}
-        />,
-        document.body
+        />
     );
 };
 

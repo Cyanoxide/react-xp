@@ -174,8 +174,8 @@ const Solitaire = () => {
                     </div>
                     <button onClick={debugWin}>DEBUG: Win</button>
                 </main>
+                {boardState.win && <WinAnimation foundations={boardState.foundations} onCardLaunch={handleCardLaunch} onComplete={handleNewGame} />}
             </div>
-            {boardState.win && <WinAnimation foundations={boardState.foundations} onCardLaunch={handleCardLaunch} onComplete={handleNewGame} />}
         </>
     );
 };
