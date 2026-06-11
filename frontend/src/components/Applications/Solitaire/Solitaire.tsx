@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import Card from "./Card/Card";
+import WinAnimation from "./WinAnimation/WinAnimation";
 import styles from "./Solitaire.module.scss";
 
-type Suit = "hearts" | "diamonds" | "clubs" | "spades";
+export type Suit = "hearts" | "diamonds" | "clubs" | "spades";
 type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
 export interface CardType {
@@ -11,7 +12,6 @@ export interface CardType {
     suit: Suit;
     rank: Rank;
     isFaceUp: boolean;
-    animate: boolean;
 }
 
 export interface BoardState {
@@ -25,13 +25,13 @@ export interface BoardState {
 
 const shuffle = (array: CardType[]) => {
     const shuffled = [...array];
-  
+
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-    
+
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-  
+
     return shuffled;
 };
 
@@ -42,71 +42,50 @@ const deck: CardType[] = suits.flatMap((suit) =>
         suit,
         rank: (i + 1) as Rank,
         isFaceUp: false,
-        animate: false,
     }))
 );
 
-const shuffledDeck = shuffle(deck);
+const createInitialBoardState = (): BoardState => {
+    const shuffledDeck = shuffle(deck);
 
-const initialBoard: CardType[][] = Array.from({ length: 7 }, (_, i) => {
-    const start = (i * (i + 1)) / 2;
-    const end = start + (i + 1);
-    
-    return shuffledDeck.slice(start, end).map((card, index) => ({
-        ...card,
-        isFaceUp: index === i
-    }));
-});
+    const board: CardType[][] = Array.from({ length: 7 }, (_, i) => {
+        const start = (i * (i + 1)) / 2;
+        const end = start + (i + 1);
+
+        return shuffledDeck.slice(start, end).map((card, index) => ({
+            ...card,
+            isFaceUp: index === i
+        }));
+    });
+
+    return {
+        deck: shuffledDeck.slice(28),
+        waste: [],
+        wasteCount: 3,
+        foundations: [
+            [],
+            [],
+            [],
+            [],
+        ],
+        board,
+        win: false
+    };
+};
 
 const Solitaire = () => {
     const [boardState, setBoardState] = useState<BoardState>({} as BoardState);
 
     useEffect(() => {
-        const initalBoardState = {
-            deck: shuffledDeck.slice(28),
-            waste: [],
-            wasteCount: 3,
-            foundations: [
-                [],
-                [],
-                [],
-                [],
-            ],
-            board: initialBoard,
-            win: false
-        };
-        setBoardState(initalBoardState);
+        setBoardState(createInitialBoardState());
     }, []);
 
-    const triggerWinAnimation = async () => {
-        const currentFoundations = [...boardState.foundations];
-
-        for (let i = 0; i < currentFoundations.length; i++) {
-            while (currentFoundations[i].length > 0) {
-                const pile = currentFoundations[i];
-                const targetCard = pile[pile.length - 1];
-
-                targetCard["animate"] = true;
-
-                await new Promise((resolve) => setTimeout(resolve, 6000));
-
-                setBoardState((prevState) => {
-                    const newFoundations = [...prevState.foundations];
-                    newFoundations[i] = newFoundations[i].slice(0, -1);
-                    return { ...prevState, foundations: newFoundations };
-                });
-
-                currentFoundations[i] = currentFoundations[i].slice(0, -1);
-            }
-        }
-  
-        console.log("Animation sequence complete!");
-    };
-
     useEffect(() => {
-        if (!boardState.win) return;
-        triggerWinAnimation();  
-    }, [boardState.win]);
+        if (!boardState.foundations || boardState.win) return;
+        if (boardState.foundations.every((foundation) => foundation.length === 13)) {
+            setBoardState((prev) => ({ ...prev, win: true }));
+        }
+    }, [boardState.foundations, boardState.win]);
 
     if (!boardState.board) return;
 
@@ -119,8 +98,8 @@ const Solitaire = () => {
                     waste: [...prev.waste, prev.deck[prev.deck.length - 1]],
                     wasteCount: 3,
                 };
-            } 
-    
+            }
+
             return {
                 ...prev,
                 deck: prev.waste.slice().reverse(),
@@ -129,12 +108,36 @@ const Solitaire = () => {
         });
     };
 
-    const debug = () => {
-        setBoardState((prev) =>  {
-            return {
-                ...prev,
-                win: true,
-            };
+    const handleCardLaunch = (pileIndex: number) => {
+        setBoardState((prev) => ({
+            ...prev,
+            foundations: prev.foundations.map((foundation, index) =>
+                (index === pileIndex) ? foundation.slice(0, -1) : foundation
+            ),
+        }));
+    };
+
+    const handleNewGame = () => {
+        setBoardState(createInitialBoardState());
+    };
+
+    // DEBUG: puts the game straight into a won state to preview the win animation
+    const debugWin = () => {
+        const winSuits = ["spades", "hearts", "clubs", "diamonds"] as const;
+        setBoardState({
+            deck: [],
+            waste: [],
+            wasteCount: 3,
+            foundations: winSuits.map((suit) =>
+                Array.from({ length: 13 }, (_, i) => ({
+                    id: `${suit}-${i + 1}`,
+                    suit,
+                    rank: (i + 1) as Rank,
+                    isFaceUp: true,
+                }))
+            ),
+            board: Array.from({ length: 7 }, () => []),
+            win: true,
         });
     };
 
@@ -161,7 +164,7 @@ const Solitaire = () => {
                         </div>
                     </div>
                     <div className="flex">
-                        {boardState.board.map((item, index) => { 
+                        {boardState.board.map((item, index) => {
                             return (
                                 <div key={index} className={styles.column} data-column={index}>
                                     {item.map((card) => <Card key={card.id} setBoardState={setBoardState} {...card}/>)}
@@ -169,9 +172,10 @@ const Solitaire = () => {
                             );
                         })}
                     </div>
-                    <button onClick={debug}>Button</button>
+                    <button onClick={debugWin}>DEBUG: Win</button>
                 </main>
             </div>
+            {boardState.win && <WinAnimation foundations={boardState.foundations} onCardLaunch={handleCardLaunch} onComplete={handleNewGame} />}
         </>
     );
 };
