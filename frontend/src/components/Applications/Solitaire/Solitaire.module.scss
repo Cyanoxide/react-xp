@@ -30,12 +30,18 @@
             margin: 1.5cqw;
             margin-right: 2.7cqw;
             width: 11.3cqw;
+            // keep the placeholder visible when the whole row has no cards
+            // (e.g. while the win animation empties the foundations)
+            height: 15.5cqw;
         }
     }
 
     .foundations>div {
         position: relative;
         width: 14.28cqw;
+        // the slot outline is absolutely positioned, so without this the row
+        // collapses once every pile is empty mid win-animation
+        min-height: 18.5cqw;
 
         &:before {
             content: "";
@@ -73,6 +79,7 @@
         margin-top: -18.5cqw;
     }
 
+    // Styled to match the active window chrome in Window.module.scss
     .dealPrompt {
         position: absolute;
         top: 50%;
@@ -80,21 +87,31 @@
         transform: translate(-50%, -50%);
         z-index: 3;
         min-width: 22rem;
-        background: #ece9d8;
-        border: 0.1rem solid #0831d9;
-        border-radius: 0.8rem 0.8rem 0 0;
-        box-shadow: 0.2rem 0.2rem 0.6rem rgba(0, 0, 0, 0.4);
+        background: #162abe;
+        padding: 0 0.3rem 0.3rem;
+        border-radius: 0.9rem 0.9rem 0.1rem 0.1rem;
+        overflow: hidden;
+        box-shadow: inset 0 0 0.1rem 0.1rem #0004, 0.2rem 0.3rem 0.8rem #0006;
 
         .dealPromptTitleBar {
+            display: flex;
+            align-items: center;
+            height: 2.9rem;
+            margin: 0 -0.3rem;
+            padding: 0 0.8rem;
             background: linear-gradient(180deg, #2e61e4 0%, #5292f7 6%, #255ae1 25%, #2f6bf6 80%, #1133a0 100%);
-            border-radius: 0.7rem 0.7rem 0 0;
+            box-shadow: inset 0.1rem 0 0.3rem #162abe, inset -0.1rem 0 0.3rem #162ab0;
+            border-radius: 0.8rem 0.8rem 0 0;
             color: #fff;
-            font-weight: bold;
+            font-family: Trebuchet MS;
+            font-weight: 600;
+            font-size: 1.1rem;
             text-shadow: 0.1rem 0.1rem 0.1rem #162abe;
-            padding: 0.4rem 0.8rem;
         }
 
         .dealPromptBody {
+            background: #ece9d8;
+            color: #000;
             padding: 1.4rem 1.6rem 1.2rem;
 
             p {
