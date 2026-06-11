@@ -134,26 +134,6 @@ const Solitaire = () => {
         setShowDealPrompt(true);
     };
 
-    // DEBUG: puts the game straight into a won state to preview the win animation
-    const debugWin = () => {
-        const winSuits = ["spades", "hearts", "clubs", "diamonds"] as const;
-        setBoardState({
-            deck: [],
-            waste: [],
-            wasteCount: 3,
-            foundations: winSuits.map((suit) =>
-                Array.from({ length: 13 }, (_, i) => ({
-                    id: `${suit}-${i + 1}`,
-                    suit,
-                    rank: (i + 1) as Rank,
-                    isFaceUp: true,
-                }))
-            ),
-            board: Array.from({ length: 7 }, () => []),
-            win: true,
-        });
-    };
-
     return (
         <>
             <WindowMenu menuItems={["Game", "Help"]}/>
@@ -185,7 +165,6 @@ const Solitaire = () => {
                             );
                         })}
                     </div>
-                    <button onClick={debugWin}>DEBUG: Win</button>
                 </main>
                 {boardState.win && <WinAnimation foundations={boardState.foundations} onCardLaunch={handleCardLaunch} onComplete={handleAnimationComplete} />}
                 {showDealPrompt && (
