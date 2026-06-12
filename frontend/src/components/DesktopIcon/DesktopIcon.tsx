@@ -9,20 +9,25 @@ import type { AbsoluteObject, Application } from "../../context/types";
 type DesktopIconProps = AbsoluteObject & {
     id: string | number;
     appId: string;
-    selectedId: string | number;
-    setSelectedId: (value: string | number) => void;
+    selectedIds: (string | number)[];
+    setSelectedIds: (value: (string | number)[]) => void;
 };
 
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedId, setSelectedId }: DesktopIconProps) => {
+const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedIds, setSelectedIds }: DesktopIconProps) => {
     const { currentWindows, dispatch } = useContext();
     const [position, setPosition] = useState<AbsoluteObject>({ top, right, bottom, left });
     const desktopIconRef = useRef<HTMLButtonElement | null>(null);
     const desktopIcon = desktopIconRef.current;
-    const isActive = id === selectedId;
+    const isActive = selectedIds.includes(id);
     const appData = applications[appId];
     const { title, icon, iconLarge, link } = { ...appData };
+
+    const select = () => {
+        // Keep a marquee multi-selection intact when grabbing one of its icons
+        if (!selectedIds.includes(id)) setSelectedIds([id]);
+    };
 
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         const desktopIconRect = desktopIcon?.getBoundingClientRect();
@@ -30,7 +35,7 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
 
         const xOffset = event.clientX - desktopIconRect.left;
         const yOffset = event.clientY - desktopIconRect.top;
-        setSelectedId(id);
+        select();
 
         const onPointerMove = (event: PointerEvent) => {
             setPosition({
@@ -38,7 +43,6 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
                 left: event.clientX - xOffset,
             });
             document.body.style.userSelect = "none";
-            setSelectedId(id);
         };
         const throttledPointerMove = throttle(onPointerMove, 50);
 
@@ -52,12 +56,12 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
     };
 
     const onClickHandler = () => {
-        setSelectedId(id);
+        select();
 
         const onSecondClick = (event: PointerEvent) => {
             const target = (event.target as HTMLElement);
-            if (event.target && target.closest("[data-selected") === desktopIcon) return;
-            setSelectedId("");
+            if (event.target && target.closest("[data-icon-id]")) return;
+            setSelectedIds([]);
             window.removeEventListener("pointerdown", onSecondClick);
         };
 
@@ -68,13 +72,13 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
         if (link) return window.open(link, "_blank", "noopener,noreferrer");
 
         openApplication(appId, currentWindows, dispatch);
-        setSelectedId("");
+        setSelectedIds([]);
     };
 
     const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
 
     return (
-        <button ref={desktopIconRef} className={styles.desktopIcon} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
+        <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
             <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="50" draggable={false} /></span>
             <div className="relative w-full flex justify-center"><h4 className="text-center">{title}</h4></div>
         </button>
