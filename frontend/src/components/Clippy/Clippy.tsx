@@ -57,7 +57,7 @@ const randomFrom = (pool: string[]) => pool[Math.floor(Math.random() * pool.leng
 
 const Clippy = () => {
     const { isClippyMinimised, dispatch } = useContext();
-    const [position, setPosition] = useState<AbsoluteObject>({ right: 60, bottom: 110 });
+    const [position, setPosition] = useState<AbsoluteObject>({ right: 60, bottom: 180 });
     const [framePosition, setFramePosition] = useState<number[]>([0, 0]);
     const [isBalloonOpen, setIsBalloonOpen] = useState(false);
     const [question, setQuestion] = useState("");
@@ -133,6 +133,17 @@ const Clippy = () => {
         return clearTimers;
     }, [isClippyMinimised]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    // Clicking anywhere else closes the balloon (dropping Clippy back behind windows)
+    useEffect(() => {
+        if (!isBalloonOpen) return;
+        const onOutsidePointerDown = (event: PointerEvent) => {
+            if (clippyRef.current?.contains(event.target as Node)) return;
+            setIsBalloonOpen(false);
+        };
+        window.addEventListener("pointerdown", onOutsidePointerDown);
+        return () => window.removeEventListener("pointerdown", onOutsidePointerDown);
+    }, [isBalloonOpen]);
+
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         const clippyRect = clippyRef.current?.getBoundingClientRect();
         if (!clippyRect) return;
@@ -205,7 +216,7 @@ const Clippy = () => {
     if (isClippyMinimised) return null;
 
     return (
-        <div ref={clippyRef} className={styles.clippy} onPointerDown={onPointerDown} onClick={onClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
+        <div ref={clippyRef} className={styles.clippy} data-elevated={isBalloonOpen} onPointerDown={onPointerDown} onClick={onClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
             <button className={styles.minimiseButton} title="Minimise Clippy" onClick={onMinimiseHandler} onPointerDown={(event) => event.stopPropagation()}>Minimise</button>
             {isBalloonOpen && (
                 <div className={styles.balloon} onClick={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>

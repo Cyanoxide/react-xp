@@ -1,7 +1,13 @@
 .clippy {
     position: absolute;
     cursor: grab;
+    // Sits at desktop level so windows overlap him...
     z-index: 0;
+
+    // ...but rises above everything while his balloon is in use
+    &[data-elevated="true"] {
+        z-index: 5;
+    }
 
     &:active {
         cursor: grabbing;
@@ -93,6 +99,7 @@
         input {
             flex: 1;
             min-width: 0;
+            height: 1.8rem;
             background: #fff;
             color: #000;
             border: 0.1rem solid #7f9db9;
@@ -105,9 +112,10 @@
             }
         }
 
-        // The submit button blends with the balloon background
+        // The submit button blends with the balloon and matches the input height
         button {
             background: #ffffe4;
+            height: 1.8rem;
         }
     }
 }
