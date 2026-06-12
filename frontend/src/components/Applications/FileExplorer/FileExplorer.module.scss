@@ -171,8 +171,6 @@
 }
 
 .mainContent {
-    overflow-y: auto;
-    height: 100%;
 
     &[data-bg-accent] {
         &:after {
@@ -203,7 +201,6 @@
     width: 18rem;
     background: #6978d1;
     font-size: 0.9rem;
-    overflow-y: auto;
     z-index: 1;
     flex-shrink: 0;
 
@@ -217,7 +214,7 @@
 }
 
 .contents {
-    &>div {
+    .iconGrid {
         color: #000;
         display: flex;
         flex-wrap: wrap;

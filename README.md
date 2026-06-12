@@ -43,7 +43,9 @@ Then open [http://localhost:5174](http://localhost:5174) in your browser.
 
 ## Special Thanks
 
+- [XP.css](https://github.com/botoxparty/XP.css) — Used specifically for scrollbar assets (arrows, track and thumb)
 - [clippyjs](https://github.com/pithings/clippy)
+
 
 ## Support & Contribution
 
