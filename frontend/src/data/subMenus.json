@@ -19,7 +19,7 @@
             },
             {
                 "appId": "games",
-                "subMenu": "accessories"
+                "subMenu": "games"
             },
             {
                 "appId": "startup",
@@ -54,6 +54,13 @@
             {
                 "appId": "test",
                 "subMenu": "placeholder1"
+            }
+        ]
+    },
+    "games": {
+        "contents": [
+            {
+                "appId": "solitaire"
             }
         ]
     },

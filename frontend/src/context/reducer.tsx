@@ -41,8 +41,8 @@ export const initialState: State = {
     currentWindows: [{
         id: generateUniqueId(),
         appId: "readme",
-        active: true,
-    }],
+    },
+    ],
     isStartVisible: false,
     isAllProgramsOpen: false,
     isRecentDocumentsOpen: false,
