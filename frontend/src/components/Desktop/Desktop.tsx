@@ -94,11 +94,13 @@ const Desktop = () => {
         const onPointerUp = () => {
             window.removeEventListener("pointermove", throttledPointerMove);
             window.removeEventListener("pointerup", onPointerUp);
+            window.removeEventListener("pointercancel", onPointerUp);
             document.body.style.userSelect = "";
             setSelectionRect(null);
         };
         window.addEventListener("pointermove", throttledPointerMove);
         window.addEventListener("pointerup", onPointerUp);
+        window.addEventListener("pointercancel", onPointerUp);
     };
 
     return (
