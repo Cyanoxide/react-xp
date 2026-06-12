@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import WindowMenu from "../../WindowMenu/WindowMenu";
 import Button from "../../Button/Button";
+import WindowMenu from "../../WindowMenu/WindowMenu";
 import Card from "./Card/Card";
-import WinAnimation from "./WinAnimation/WinAnimation";
 import styles from "./Solitaire.module.scss";
+import WinAnimation from "./WinAnimation/WinAnimation";
 
 export type Suit = "hearts" | "diamonds" | "clubs" | "spades";
 type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
