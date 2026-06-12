@@ -70,11 +70,11 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
                             <li><StartMenuItem appId="outlook" subTitle="E-mail" /></li>
                         </ul>
                         <ul className="flex flex-col p-3 gap-1.5">
-                            <li><StartMenuItem appId="notepad" iconSize={30} /></li>
                             <li><StartMenuItem appId="winMessenger" iconSize={30} /></li>
-                            <li><StartMenuItem appId="msn" iconSize={30} /></li>
                             <li><StartMenuItem appId="winMediaPlayer" iconSize={30} /></li>
+                            <li><StartMenuItem appId="notepad" iconSize={30} /></li>
                             <li><StartMenuItem appId="displayProperties" iconSize={30} /></li>
+                            <li><StartMenuItem appId="solitaire" iconSize={30} /></li>
                         </ul>
                     </div>
                     <div>
@@ -113,13 +113,13 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
             <footer>
                 <ul className="flex justify-end gap-2 p-2">
                     <li>
-                        <button className="flex items-center p-2 cursor-not-allowed" onClick={() => onShutDownModalButtonHandler(true)}>
+                        <button className="flex items-center p-2" onClick={() => onShutDownModalButtonHandler(true)}>
                             <img src="/icon__log_out--large.png" className="mr-2" width="22" height="22" />
                             <h6>Log Off</h6>
                         </button>
                     </li>
                     <li>
-                        <button className="flex items-center p-2 cursor-not-allowed" onClick={() => onShutDownModalButtonHandler()}>
+                        <button className="flex items-center p-2" onClick={() => onShutDownModalButtonHandler()}>
                             <img src="/icon__shut_down--large.png" className="mr-2" width="22" height="22" />
                             <h6>Turn Off Computer</h6>
                         </button>

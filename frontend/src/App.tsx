@@ -1,4 +1,5 @@
 import { Activity, useEffect } from "react";
+import Clippy from "./components/Clippy/Clippy";
 import Desktop from "./components/Desktop/Desktop";
 import Login from "./components/Login/Login";
 import TaskBar from "./components/TaskBar/TaskBar";
@@ -31,6 +32,7 @@ function App() {
             <Wallpaper />
             <Activity mode={(initiationStage > 0) ? "visible" : "hidden"}>
                 <Desktop />
+                <Clippy />
             </Activity>
             <Activity mode={(initiationStage > 1) ? "visible" : "hidden"}>
                 <TaskBar />

@@ -29,6 +29,13 @@
             }
         ],
         [
+            "solitaire",
+            {
+                "top": 275,
+                "left": 5
+            }
+        ],
+        [
             "recycleBin",
             {
                 "bottom": 5,

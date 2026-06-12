@@ -26,6 +26,8 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isInitialBoot: action.payload };
     case "SET_TRANSITION_LABEL":
         return { ...state, transitionLabel: action.payload };
+    case "SET_IS_CLIPPY_MINIMISED":
+        return { ...state, isClippyMinimised: action.payload };
     case "SET_IS_CRT_ENABLED": 
         return { ...state, isCRTEnabled: action.payload };
     case "SET_THEME_COLOR": 
@@ -41,8 +43,8 @@ export const initialState: State = {
     currentWindows: [{
         id: generateUniqueId(),
         appId: "readme",
-        active: true,
-    }],
+    },
+    ],
     isStartVisible: false,
     isAllProgramsOpen: false,
     isRecentDocumentsOpen: false,
@@ -53,4 +55,5 @@ export const initialState: State = {
     transitionLabel: "",
     isCRTEnabled: true,
     themeColor: "blue",
+    isClippyMinimised: typeof window !== "undefined" && sessionStorage.getItem("isClippyMinimised") === "true",
 };

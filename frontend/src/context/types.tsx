@@ -64,10 +64,12 @@ export interface State {
     transitionLabel: string;
     isCRTEnabled: boolean;
     themeColor: themeColor;
+    isClippyMinimised: boolean;
 }
 
 export type Action =
     | { type: "SET_WALLPAPER"; payload: string }
+    | { type: "SET_IS_CLIPPY_MINIMISED"; payload: boolean }
     | { type: "SET_CURRENT_TIME"; payload: Date }
     | { type: "SET_CURRENT_WINDOWS"; payload: currentWindow[] }
     | { type: "SET_IS_START_VISIBLE"; payload: boolean }

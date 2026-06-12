@@ -10,8 +10,13 @@ import type { Application } from "../../context/types";
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const TaskBar = () => {
-    const { currentTime, currentWindows, isStartVisible, dispatch } = useContext();
+    const { currentTime, currentWindows, isStartVisible, isClippyMinimised, dispatch } = useContext();
     const [systemTrayIconDismissed, setSystemTrayIconDismissed] = useState(false);
+
+    const restoreClippyHandler = () => {
+        dispatch({ type: "SET_IS_CLIPPY_MINIMISED", payload: false });
+        sessionStorage.setItem("isClippyMinimised", "false");
+    };
     const startButtonRef = useRef<HTMLButtonElement | null>(null);
     const startButton = startButtonRef.current;
 
@@ -86,6 +91,11 @@ const TaskBar = () => {
             </ul>
             <div className={`${styles.systemTray} flex justify-center items-center`}>
                 <ul className="flex">
+                    {isClippyMinimised && <li className="flex relative">
+                        <button onClick={restoreClippyHandler} title="Clippy">
+                            <img src="/icon__clippy.png" width="14" height="14" className="cursor-pointer mr-2 min-w-[1.4rem]"></img>
+                        </button>
+                    </li>}
                     <li className=" flex relative">
                         <button onClick={systemTrayIconClickHandler}>
                             <img src="/icon__info.png" width="14" height="14" className="cursor-pointer mr-2 min-w-[1.4rem]"></img>
