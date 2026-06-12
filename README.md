@@ -12,16 +12,18 @@ An authentic recreation of Windows XP, created using **React** and **Typescript*
 - Browsable **File Explorer** with back and forward functionality
 - **Internet Explorer** with Wayback Machine implementation for period accurate web browsing.
 - **Run** can open applications and Folders, either by internal appId, or title. URLs will also open in Internet Explorer.
+- **Solitaire**
+- **Clippy**, the desktop assistant — drag him around, ask him questions, I can't guarentee he will be much help though.
 - Login, Shutdown and boot up sequences
 
 ## Roadmap
 
-This is an ongoing project, with many more features I’d like to include in the future, here are some of them:
+This is an ongoing project, with many more features I’d like to include in the future, here are some potential features I make look into:
 
-- Theme and User customisation
-- Clippy
+- XP styled scroll bars
 - MSN Messenger
-- Solitaire
+- MS Paint
+- Minesweeper
 
 ## Demo
 
@@ -38,6 +40,10 @@ npm run dev
 ```
 
 Then open [http://localhost:5174](http://localhost:5174) in your browser.
+
+## Special Thanks
+
+- [clippyjs](https://github.com/pithings/clippy)
 
 ## Support & Contribution
 
