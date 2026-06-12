@@ -233,6 +233,12 @@
         "component": "Settings",
         "height": 400,
         "width": 325
-
+    },
+    "solitaire": {
+        "title": "Solitaire",
+        "iconLarge": "/icon__solitaire--large.png",
+        "component": "Solitaire",
+        "height": 400,
+        "width": 500
     }
 }
