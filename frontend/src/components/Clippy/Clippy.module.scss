@@ -1,0 +1,44 @@
+.clippy {
+    position: absolute;
+    cursor: grab;
+    z-index: 0;
+
+    &:active {
+        cursor: grabbing;
+    }
+
+    &:hover .minimiseButton {
+        opacity: 1;
+    }
+
+    .sprite {
+        background-image: url("/clippy__spritemap.png");
+        background-repeat: no-repeat;
+        image-rendering: pixelated;
+        pointer-events: none;
+    }
+
+    .minimiseButton {
+        position: absolute;
+        top: -0.6rem;
+        right: -0.6rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        line-height: 0.8rem;
+        background: #ece9d8;
+        color: #000;
+        border: 0.1rem solid #aca899;
+        border-radius: 0.3rem;
+        box-shadow: 0.1rem 0.1rem 0.2rem #0006;
+        font-size: 1.1rem;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.15s ease-in;
+        cursor: pointer;
+        z-index: 1;
+
+        &:hover {
+            background: #fff;
+        }
+    }
+}
