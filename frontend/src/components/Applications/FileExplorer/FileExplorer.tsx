@@ -3,6 +3,7 @@ import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
 import filesJSON from "../../../data/files.json";
 import { getCurrentWindow } from "../../../utils/general";
+import playSound from "../../../utils/sounds";
 import CollapseBox from "../../CollapseBox/CollapseBox";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import styles from "./FileExplorer.module.scss";
@@ -29,10 +30,12 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
-    const documents = (appId === "recycleBin") ? [...Files[appId], ...recycledItems] : Files[appId];
+    // The recycle bin lists whatever has been binned; other folders hide their binned items
+    const documents = (appId === "recycleBin") ? recycledItems : Files[appId].filter((item) => !recycledItems.includes((Array.isArray(item) ? item[0] : item) as string));
 
     const emptyRecycleBinHandler = () => {
         dispatch({ type: "SET_RECYCLED_ITEMS", payload: [] });
+        playSound("recycle", true);
     };
 
     const updateWindow = (appId: string | null = null) => {

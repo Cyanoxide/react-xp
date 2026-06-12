@@ -1,3 +1,4 @@
+import filesJSON from "../data/files.json";
 import { generateUniqueId } from "../utils/general";
 import { defaultWallpaper } from "./defaults";
 import type { State, Action } from "./types";
@@ -55,5 +56,5 @@ export const initialState: State = {
     transitionLabel: "",
     isCRTEnabled: true,
     themeColor: "blue",
-    recycledItems: [],
+    recycledItems: [...filesJSON.recycleBin],
 };
