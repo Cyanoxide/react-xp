@@ -1,3 +1,4 @@
+import filesJSON from "../data/files.json";
 import { generateUniqueId } from "../utils/general";
 import { defaultWallpaper } from "./defaults";
 import type { State, Action } from "./types";
@@ -26,6 +27,8 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isInitialBoot: action.payload };
     case "SET_TRANSITION_LABEL":
         return { ...state, transitionLabel: action.payload };
+    case "SET_RECYCLED_ITEMS":
+        return { ...state, recycledItems: action.payload };
     case "SET_IS_CLIPPY_MINIMISED":
         return { ...state, isClippyMinimised: action.payload };
     case "SET_IS_CRT_ENABLED": 
@@ -55,5 +58,6 @@ export const initialState: State = {
     transitionLabel: "",
     isCRTEnabled: true,
     themeColor: "blue",
+    recycledItems: [...filesJSON.recycleBin],
     isClippyMinimised: typeof window !== "undefined" && sessionStorage.getItem("isClippyMinimised") === "true",
 };

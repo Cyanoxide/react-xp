@@ -2,7 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
 import filesJSON from "../../../data/files.json";
-import { getCurrentWindow } from "../../../utils/general";
+import { getCurrentWindow, openApplication } from "../../../utils/general";
+import playSound from "../../../utils/sounds";
 import CollapseBox from "../../CollapseBox/CollapseBox";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import XPScrollbars from "../../XPScrollbars/XPScrollbars";
@@ -13,7 +14,7 @@ const Applications = applicationsJSON as unknown as Record<string, Application>;
 const Files = filesJSON as unknown as Record<string, string[] | File[]>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
-    const { currentWindows, dispatch } = useContext();
+    const { currentWindows, recycledItems, dispatch } = useContext();
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const [isBackDisabled, setIsBackDisabled] = useState(true);
     const [isForwardDisabled, setIsForwardDisabled] = useState(true);
@@ -30,7 +31,13 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
-    const documents = Files[appId];
+    // The recycle bin lists whatever has been binned; other folders hide their binned items
+    const documents = (appId === "recycleBin") ? recycledItems : Files[appId].filter((item) => !recycledItems.includes((Array.isArray(item) ? item[0] : item) as string));
+
+    const emptyRecycleBinHandler = () => {
+        dispatch({ type: "SET_RECYCLED_ITEMS", payload: [] });
+        playSound("recycle", true);
+    };
 
     const updateWindow = (appId: string | null = null) => {
         if (appId && Applications[appId].link) return window.open(Applications[appId].link, "_blank", "noopener,noreferrer");
@@ -70,7 +77,13 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const fileDBClickHandler = (_: unknown, appId: string | null = null) => {
         if (!appId || Applications[appId].disabled) return;
 
-        updateWindow(Applications[appId].redirect || appId);
+        const targetId = Applications[appId].redirect || appId;
+        if (Applications[targetId].link) return window.open(Applications[targetId].link, "_blank", "noopener,noreferrer");
+
+        // Only folders navigate the explorer in place; applications open in their own window
+        if (Applications[targetId].component !== "FileExplorer") return openApplication(targetId, currentWindows, dispatch);
+
+        updateWindow(targetId);
     };
 
     const fileClickHandler = (_: unknown, appId: string | null = null) => {
@@ -177,6 +190,18 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             <main className={`${styles.mainContent} flex-1 min-h-0 flex`} data-bg-accent={bgAccent}>
                 <aside className={`${styles.sidebar} h-full`}>
                     <XPScrollbars className="h-full">
+                        {appId === "recycleBin" && (
+                            <CollapseBox title="Recycle Bin Tasks">
+                                <ul className="flex flex-col gap-2 p-3">
+                                    <li>
+                                        <button className="flex items-center" onClick={emptyRecycleBinHandler} disabled={!recycledItems.length}>
+                                            <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
+                                            <p>Empty the Recycle Bin</p>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </CollapseBox>
+                        )}
                         <CollapseBox title="File & Folder Tasks">
                             <ul className="flex flex-col gap-2 p-3">
                                 <li className="flex items-center">

@@ -5,3 +5,21 @@
     top: 0;
     left: 0;
 }
+
+.selectionRect {
+    position: absolute;
+    border: 0.1rem solid #2f6bf6;
+    background: rgba(47, 107, 246, 0.3);
+    pointer-events: none;
+    z-index: 1;
+
+    @include theme-color("green") {
+        border-color: #9aa87f;
+        background: rgba(154, 168, 127, 0.3);
+    }
+
+    @include theme-color("silver") {
+        border-color: #838383;
+        background: rgba(131, 131, 131, 0.3);
+    }
+}

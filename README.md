@@ -20,7 +20,6 @@ An authentic recreation of Windows XP, created using **React** and **Typescript*
 
 This is an ongoing project, with many more features I’d like to include in the future, here are some potential features I make look into:
 
-- XP styled scroll bars
 - MSN Messenger
 - MS Paint
 - Minesweeper
@@ -45,7 +44,6 @@ Then open [http://localhost:5174](http://localhost:5174) in your browser.
 
 - [XP.css](https://github.com/botoxparty/XP.css) — Used specifically for scrollbar assets (arrows, track and thumb)
 - [clippyjs](https://github.com/pithings/clippy)
-
 
 ## Support & Contribution
 
