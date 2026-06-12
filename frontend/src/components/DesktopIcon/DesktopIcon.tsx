@@ -35,10 +35,11 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
 
         const startRects: Record<string | number, { top: number; left: number }> = {};
         dragIds.forEach((dragId) => {
-            const element = document.querySelector(`[data-icon-id="${dragId}"]`);
+            const element = document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement | null;
             if (!element) return;
             const rect = element.getBoundingClientRect();
             startRects[dragId] = { top: rect.top, left: rect.left };
+            element.style.zIndex = "1";
         });
 
         const startX = event.clientX;
@@ -56,6 +57,10 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
             window.removeEventListener("pointermove", throttledPointerMove);
             window.removeEventListener("pointerup", onPointerUp);
             document.body.style.userSelect = "";
+            dragIds.forEach((dragId) => {
+                const element = document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement | null;
+                if (element) element.style.zIndex = "";
+            });
             if (!hasMoved) return;
 
             // The dragged icon sits under the cursor, so test the cursor against the bin's rect directly
