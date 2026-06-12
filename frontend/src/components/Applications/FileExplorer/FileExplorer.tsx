@@ -174,7 +174,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </div>
                 </section>
             </div>
-            <main className={`${styles.mainContent} h-full flex`} data-bg-accent={bgAccent}>
+            <main className={`${styles.mainContent} flex-1 min-h-0 flex`} data-bg-accent={bgAccent}>
                 <aside className={`${styles.sidebar} h-full`}>
                     <XPScrollbars className="h-full">
                         <CollapseBox title="File & Folder Tasks">

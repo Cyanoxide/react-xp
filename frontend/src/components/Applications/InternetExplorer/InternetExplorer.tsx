@@ -184,7 +184,7 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                     </div>
                 </section>
             </div>
-            <main className={`${styles.mainContent} h-full flex`}>
+            <main className={`${styles.mainContent} flex-1 min-h-0 flex`}>
                 <XPScrollbars className="w-full h-full" contentClassName="h-full">
                     <iframe ref={iframeRef} src={getIframeSrc(inputField?.value || HOMEPAGE).url} width="100%" height="100%" />
                 </XPScrollbars>
