@@ -27,8 +27,24 @@ const IDLE_ANIMATIONS = [
     "Thinking", "Searching", "CheckingSomething", "GetTechy", "GetArtsy", "GetWizardy", "Writing", "Print",
 ];
 
-// Showier animations played when Clippy is clicked
-const REACTION_ANIMATIONS = ["Congratulate", "GetAttention", "Wave", "Explain", "Alert", "GestureUp", "GestureLeft", "GestureRight"];
+const THINKING_ANIMATIONS = ["Thinking", "Processing", "CheckingSomething", "Searching"];
+
+const RESPONSES = [
+    "It looks like you're asking a question. I don't know the answer. I'm just a paperclip.",
+    "Why don't you Google it?",
+    "Have you tried turning it off and on again?",
+    "Great question! Unfortunately I peaked in 2001.",
+    "404: helpful answer not found.",
+    "Hmm. Have you considered asking literally anyone else?",
+    "My expertise is limited to holding paper together.",
+    "That sounds like a problem for future you.",
+    "It looks like you're writing a letter. No? Then I can't help.",
+    "Ask me again after my coffee break. It started in 2007.",
+    "I'd love to help, but I'm legally just an office supply.",
+    "Computer says no.",
+    "I once helped someone write a letter. They turned me off. You'll understand my trust issues.",
+    "The answer is within you. It certainly isn't within me.",
+];
 
 const IDLE_DELAY_MIN = 4000;
 const IDLE_DELAY_MAX = 12000;
@@ -42,14 +58,21 @@ const Clippy = () => {
     const { isClippyMinimised, dispatch } = useContext();
     const [position, setPosition] = useState<AbsoluteObject>({ right: 60, bottom: 110 });
     const [framePosition, setFramePosition] = useState<number[]>([0, 0]);
+    const [isBalloonOpen, setIsBalloonOpen] = useState(false);
+    const [question, setQuestion] = useState("");
+    const [response, setResponse] = useState("What would you like to know?");
+    const [isThinking, setIsThinking] = useState(false);
     const clippyRef = useRef<HTMLDivElement | null>(null);
     const animationTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const idleTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const thinkingTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const wasDraggedRef = useRef(false);
+    const lastResponseRef = useRef("");
 
     const clearTimers = () => {
         clearTimeout(animationTimerRef.current);
         clearTimeout(idleTimerRef.current);
+        clearTimeout(thinkingTimerRef.current);
     };
 
     const scheduleIdle = () => {
@@ -64,7 +87,8 @@ const Clippy = () => {
         const animation = animations[name];
         if (!animation) return;
 
-        clearTimers();
+        clearTimeout(animationTimerRef.current);
+        clearTimeout(idleTimerRef.current);
         let frameIndex = 0;
         let steps = 0;
 
@@ -140,12 +164,39 @@ const Clippy = () => {
 
     const onClickHandler = () => {
         if (wasDraggedRef.current) return;
-        playAnimation(randomFrom(REACTION_ANIMATIONS));
+        setIsBalloonOpen((open) => {
+            if (!open) {
+                setResponse("What would you like to know?");
+                playAnimation("GetAttention");
+            }
+            return !open;
+        });
+    };
+
+    const onQuestionSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!question.trim() || isThinking) return;
+
+        setQuestion("");
+        setIsThinking(true);
+        playAnimation(randomFrom(THINKING_ANIMATIONS));
+
+        thinkingTimerRef.current = setTimeout(() => {
+            let reply = randomFrom(RESPONSES);
+            while (reply === lastResponseRef.current && RESPONSES.length > 1) {
+                reply = randomFrom(RESPONSES);
+            }
+            lastResponseRef.current = reply;
+            setResponse(reply);
+            setIsThinking(false);
+            playAnimation("Explain");
+        }, 1200 + Math.random() * 1200);
     };
 
     const onMinimiseHandler = (event: React.MouseEvent<HTMLElement>) => {
         event.stopPropagation();
         clearTimers();
+        setIsBalloonOpen(false);
         dispatch({ type: "SET_IS_CLIPPY_MINIMISED", payload: true });
         sessionStorage.setItem("isClippyMinimised", "true");
     };
@@ -154,7 +205,20 @@ const Clippy = () => {
 
     return (
         <div ref={clippyRef} className={styles.clippy} onPointerDown={onPointerDown} onClick={onClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
-            <button className={styles.minimiseButton} title="Minimise Clippy" onClick={onMinimiseHandler} onPointerDown={(event) => event.stopPropagation()}>_</button>
+            <button className={styles.minimiseButton} title="Minimise Clippy" onClick={onMinimiseHandler} onPointerDown={(event) => event.stopPropagation()}>Minimise</button>
+            {isBalloonOpen && (
+                <div className={styles.balloon} onClick={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
+                    <p>{(isThinking) ? "..." : response}</p>
+                    <form onSubmit={onQuestionSubmit}>
+                        <input
+                            type="text"
+                            value={question}
+                            placeholder="Ask me anything"
+                            onChange={(event) => setQuestion(event.target.value)}
+                        />
+                    </form>
+                </div>
+            )}
             <div
                 className={styles.sprite}
                 style={{
