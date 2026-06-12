@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useContext } from "../../../context/context";
 import applicationsJSON from "../../../data/applications.json";
 import filesJSON from "../../../data/files.json";
-import { getCurrentWindow } from "../../../utils/general";
+import { getCurrentWindow, openApplication } from "../../../utils/general";
 import playSound from "../../../utils/sounds";
 import CollapseBox from "../../CollapseBox/CollapseBox";
 import WindowMenu from "../../WindowMenu/WindowMenu";
@@ -76,7 +76,13 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const fileDBClickHandler = (_: unknown, appId: string | null = null) => {
         if (!appId || Applications[appId].disabled) return;
 
-        updateWindow(Applications[appId].redirect || appId);
+        const targetId = Applications[appId].redirect || appId;
+        if (Applications[targetId].link) return window.open(Applications[targetId].link, "_blank", "noopener,noreferrer");
+
+        // Only folders navigate the explorer in place; applications open in their own window
+        if (Applications[targetId].component !== "FileExplorer") return openApplication(targetId, currentWindows, dispatch);
+
+        updateWindow(targetId);
     };
 
     const fileClickHandler = (_: unknown, appId: string | null = null) => {
