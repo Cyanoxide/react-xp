@@ -55,7 +55,7 @@
         position: absolute;
         bottom: calc(100% + 2.2rem);
         left: 50%;
-        transform: translateX(-58%);
+        transform: translateX(-50%);
         width: 21rem;
         background: #ffffe4;
         color: #000;
@@ -67,21 +67,22 @@
         cursor: default;
         animation: clippy-balloon-fade-in 0.3s linear;
 
+        // Tail tip sits at the balloon's centre, directly above Clippy
         &:before {
             content: "";
             position: absolute;
-            border-right: 2rem solid #000;
+            border-left: 2rem solid #000;
             border-bottom: 2rem solid transparent;
-            right: 4rem;
+            left: 50%;
             bottom: -2rem;
         }
 
         &:after {
             content: "";
             position: absolute;
-            border-right: 1.8rem solid #ffffe4;
+            border-left: 1.8rem solid #ffffe4;
             border-bottom: 1.8rem solid transparent;
-            right: 4.08rem;
+            left: calc(50% + 0.08rem);
             bottom: -1.78rem;
         }
 
@@ -90,7 +91,8 @@
         }
 
         input {
-            width: 100%;
+            flex: 1;
+            min-width: 0;
             background: #fff;
             color: #000;
             border: 0.1rem solid #7f9db9;
@@ -101,6 +103,11 @@
             &:focus {
                 outline: none;
             }
+        }
+
+        // The submit button blends with the balloon background
+        button {
+            background: #ffffe4;
         }
     }
 }

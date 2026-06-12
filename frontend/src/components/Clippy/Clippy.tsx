@@ -210,16 +210,14 @@ const Clippy = () => {
             {isBalloonOpen && (
                 <div className={styles.balloon} onClick={(event) => event.stopPropagation()} onPointerDown={(event) => event.stopPropagation()}>
                     <p>{(isThinking) ? "..." : response}</p>
-                    <form onSubmit={onQuestionSubmit}>
+                    <form onSubmit={onQuestionSubmit} className="flex items-center gap-2">
                         <input
                             type="text"
                             value={question}
                             placeholder="Type your question here"
                             onChange={(event) => setQuestion(event.target.value)}
                         />
-                        <div className="flex justify-end mt-2">
-                            <Button type="submit" disabled={isThinking}>Search</Button>
-                        </div>
+                        <Button type="submit" disabled={isThinking}>Submit</Button>
                     </form>
                 </div>
             )}
