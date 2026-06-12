@@ -1,4 +1,4 @@
-type sounds = "startup" | "shutdown";
+type sounds = "startup" | "shutdown" | "recycle";
 
 export const loadSound = (sound: sounds) => {
     if (typeof window == "undefined") return;
@@ -8,6 +8,7 @@ export const loadSound = (sound: sounds) => {
     const sounds = {
         "startup": "audio__startup.wav",
         "shutdown": "audio__shutdown.wav",
+        "recycle": "audio__shutdown.wav", // placeholder until the recycle sound is added (audio__recycle.wav)
     };
 
     return new Audio(`${src}${sounds[sound]}`);

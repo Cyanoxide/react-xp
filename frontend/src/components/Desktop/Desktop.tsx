@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useContext } from "../../context/context";
 import filesJSON from "../../data/files.json";
 import { throttle } from "../../utils/general";
 import DesktopIcon from "../DesktopIcon/DesktopIcon";
@@ -21,12 +22,29 @@ const desktopItems = Files["desktop"].map(([appId, position], index) => ({
 }));
 
 const Desktop = () => {
+    const { recycledItems } = useContext();
     const [selectedIds, setSelectedIds] = useState<(number | string)[]>([]);
     const [selectionRect, setSelectionRect] = useState<SelectionRect | null>(null);
     const [positions, setPositions] = useState<Record<string | number, AbsoluteObject>>(() =>
         Object.fromEntries(desktopItems.map(({ itemId, position }) => [itemId, position]))
     );
     const desktopRef = useRef<HTMLDivElement | null>(null);
+    const previousRecycledRef = useRef<string[]>([]);
+
+    // Items restored from the recycle bin return to their initial position
+    useEffect(() => {
+        const restored = previousRecycledRef.current.filter((appId) => !recycledItems.includes(appId));
+        if (restored.length) {
+            setPositions((prev) => {
+                const updated = { ...prev };
+                desktopItems.forEach(({ itemId, appId, position }) => {
+                    if (restored.includes(appId)) updated[itemId] = position;
+                });
+                return updated;
+            });
+        }
+        previousRecycledRef.current = recycledItems;
+    }, [recycledItems]);
 
     // Moves every icon in the drag group, keeping their relative offsets
     const moveIcons = (ids: (number | string)[], startRects: Record<string | number, { top: number; left: number }>, deltaX: number, deltaY: number) => {
@@ -85,7 +103,7 @@ const Desktop = () => {
 
     return (
         <div ref={desktopRef} className={styles.desktop} onPointerDown={onPointerDown}>
-            {desktopItems.map(({ itemId, appId }) => (
+            {desktopItems.filter(({ appId }) => !recycledItems.includes(appId)).map(({ itemId, appId }) => (
                 <DesktopIcon key={itemId} id={itemId} appId={appId} position={positions[itemId]} selectedIds={selectedIds} setSelectedIds={setSelectedIds} moveIcons={moveIcons} />
             ))}
             {selectionRect && <div className={styles.selectionRect} style={{ top: selectionRect.top, left: selectionRect.left, width: selectionRect.width, height: selectionRect.height }} />}

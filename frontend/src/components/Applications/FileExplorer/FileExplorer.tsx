@@ -12,7 +12,7 @@ const Applications = applicationsJSON as unknown as Record<string, Application>;
 const Files = filesJSON as unknown as Record<string, string[] | File[]>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
-    const { currentWindows, dispatch } = useContext();
+    const { currentWindows, recycledItems, dispatch } = useContext();
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const [isBackDisabled, setIsBackDisabled] = useState(true);
     const [isForwardDisabled, setIsForwardDisabled] = useState(true);
@@ -29,7 +29,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
     const appData = Applications[appId];
 
     const bgAccent = (["pictures", "music"].includes(appId) ? appId : null);
-    const documents = Files[appId];
+    const documents = (appId === "recycleBin") ? [...Files[appId], ...recycledItems] : Files[appId];
+
+    const emptyRecycleBinHandler = () => {
+        dispatch({ type: "SET_RECYCLED_ITEMS", payload: [] });
+    };
 
     const updateWindow = (appId: string | null = null) => {
         if (appId && Applications[appId].link) return window.open(Applications[appId].link, "_blank", "noopener,noreferrer");
@@ -175,6 +179,18 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
             </div>
             <main className={`${styles.mainContent} h-full flex overflow-auto`} data-bg-accent={bgAccent}>
                 <aside className={`${styles.sidebar} h-full`}>
+                    {appId === "recycleBin" && (
+                        <CollapseBox title="Recycle Bin Tasks">
+                            <ul className="flex flex-col gap-2 p-3">
+                                <li>
+                                    <button className="flex items-center" onClick={emptyRecycleBinHandler} disabled={!recycledItems.length}>
+                                        <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
+                                        <p>Empty the Recycle Bin</p>
+                                    </button>
+                                </li>
+                            </ul>
+                        </CollapseBox>
+                    )}
                     <CollapseBox title="File & Folder Tasks">
                         <ul className="flex flex-col gap-2 p-3">
                             <li className="flex items-center">

@@ -26,6 +26,8 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isInitialBoot: action.payload };
     case "SET_TRANSITION_LABEL":
         return { ...state, transitionLabel: action.payload };
+    case "SET_RECYCLED_ITEMS":
+        return { ...state, recycledItems: action.payload };
     case "SET_IS_CRT_ENABLED": 
         return { ...state, isCRTEnabled: action.payload };
     case "SET_THEME_COLOR": 
@@ -53,4 +55,5 @@ export const initialState: State = {
     transitionLabel: "",
     isCRTEnabled: true,
     themeColor: "blue",
+    recycledItems: [],
 };
