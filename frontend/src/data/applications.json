@@ -219,8 +219,8 @@
         "title": "ReadMe.txt",
         "iconLarge": "/icon__notepad--large.png",
         "component": "Notepad",
-        "content": "Welcome to my React XP project.\n\nI wanted to recreate Windows XP using React and Typescript.\nIt's still a work in progress. Many features are not yet implemented, but I plan to continue adding new features as I can.\n\nSo far, I've added the initial boot sequence, logout/shutdown functionality, File Explorer, Internet Explorer (with Wayback Machine), Notepad, Display Properties, the Run window, as well as core functionalities like movable desktop icons and windows. I've recently also added Solitaire, and Clippy, who you can chat to on the desktop.\n\nNext up, I'm looking at adding XP styled scroll bars.",
-        "height": 265,
+        "content": "Welcome to my React XP project.\n\nI wanted to recreate Windows XP using React and Typescript.\nIt's still a work in progress. Many features are not yet implemented, but I plan to continue adding new features as I can.\n\nSo far, I've added the initial boot sequence, logout/shutdown functionality, File Explorer, Internet Explorer (with Wayback Machine), Notepad, Display Properties, the Run window, as well as core functionalities like movable desktop icons and windows.\n\nMost recently, I've added Solitaire, and Clippy.",
+        "height": 250,
         "width": 330,
         "top": 25,
         "right": 25
