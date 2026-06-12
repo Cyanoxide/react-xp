@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useContext } from "../../context/context";
 import applicationsJSON from "../../data/applications.json";
 import { throttle } from "../../utils/general";
@@ -6,42 +6,45 @@ import { openApplication } from "../../utils/general";
 import styles from "./DesktopIcon.module.scss";
 import type { AbsoluteObject, Application } from "../../context/types";
 
-type DesktopIconProps = AbsoluteObject & {
+type DesktopIconProps = {
     id: string | number;
     appId: string;
+    position: AbsoluteObject;
     selectedIds: (string | number)[];
     setSelectedIds: (value: (string | number)[]) => void;
+    moveIcons: (ids: (string | number)[], startRects: Record<string | number, { top: number; left: number }>, deltaX: number, deltaY: number) => void;
 };
 
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undefined, left = undefined, id, selectedIds, setSelectedIds }: DesktopIconProps) => {
+const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIcons }: DesktopIconProps) => {
     const { currentWindows, dispatch } = useContext();
-    const [position, setPosition] = useState<AbsoluteObject>({ top, right, bottom, left });
     const desktopIconRef = useRef<HTMLButtonElement | null>(null);
-    const desktopIcon = desktopIconRef.current;
     const isActive = selectedIds.includes(id);
     const appData = applications[appId];
     const { title, icon, iconLarge, link } = { ...appData };
 
-    const select = () => {
-        // Keep a marquee multi-selection intact when grabbing one of its icons
-        if (!selectedIds.includes(id)) setSelectedIds([id]);
-    };
-
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
-        const desktopIconRect = desktopIcon?.getBoundingClientRect();
-        if (!desktopIconRect) return;
+        if (!desktopIconRef.current) return;
 
-        const xOffset = event.clientX - desktopIconRect.left;
-        const yOffset = event.clientY - desktopIconRect.top;
-        select();
+        // Dragging one icon of a multi-selection moves the whole group
+        const isGroupDrag = selectedIds.includes(id) && selectedIds.length > 1;
+        const dragIds = (isGroupDrag) ? selectedIds : [id];
+        if (!isGroupDrag) setSelectedIds([id]);
 
-        const onPointerMove = (event: PointerEvent) => {
-            setPosition({
-                top: event.clientY - yOffset,
-                left: event.clientX - xOffset,
-            });
+        const startRects: Record<string | number, { top: number; left: number }> = {};
+        dragIds.forEach((dragId) => {
+            const element = document.querySelector(`[data-icon-id="${dragId}"]`);
+            if (!element) return;
+            const rect = element.getBoundingClientRect();
+            startRects[dragId] = { top: rect.top, left: rect.left };
+        });
+
+        const startX = event.clientX;
+        const startY = event.clientY;
+
+        const onPointerMove = (moveEvent: PointerEvent) => {
+            moveIcons(dragIds, startRects, moveEvent.clientX - startX, moveEvent.clientY - startY);
             document.body.style.userSelect = "none";
         };
         const throttledPointerMove = throttle(onPointerMove, 50);
@@ -56,7 +59,7 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
     };
 
     const onClickHandler = () => {
-        select();
+        if (!selectedIds.includes(id)) setSelectedIds([id]);
 
         const onSecondClick = (event: PointerEvent) => {
             const target = (event.target as HTMLElement);
@@ -78,7 +81,7 @@ const DesktopIcon = ({ appId, top = undefined, right = undefined, bottom = undef
     const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
 
     return (
-        <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position.top, right: position.right, bottom: position.bottom, left: position.left }}>
+        <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position?.top, right: position?.right, bottom: position?.bottom, left: position?.left }}>
             <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="50" draggable={false} /></span>
             <div className="relative w-full flex justify-center"><h4 className="text-center">{title}</h4></div>
         </button>

@@ -14,13 +14,31 @@ interface SelectionRect {
     height: number;
 }
 
+const desktopItems = Files["desktop"].map(([appId, position], index) => ({
+    itemId: index + 1,
+    appId,
+    position,
+}));
+
 const Desktop = () => {
     const [selectedIds, setSelectedIds] = useState<(number | string)[]>([]);
     const [selectionRect, setSelectionRect] = useState<SelectionRect | null>(null);
+    const [positions, setPositions] = useState<Record<string | number, AbsoluteObject>>(() =>
+        Object.fromEntries(desktopItems.map(({ itemId, position }) => [itemId, position]))
+    );
     const desktopRef = useRef<HTMLDivElement | null>(null);
-    const next = (() => { let count = 0; return () => ++count; })();
 
-    const desktopItems = Files["desktop"];
+    // Moves every icon in the drag group, keeping their relative offsets
+    const moveIcons = (ids: (number | string)[], startRects: Record<string | number, { top: number; left: number }>, deltaX: number, deltaY: number) => {
+        setPositions((prev) => {
+            const updated = { ...prev };
+            ids.forEach((id) => {
+                const start = startRects[id];
+                if (start) updated[id] = { top: start.top + deltaY, left: start.left + deltaX };
+            });
+            return updated;
+        });
+    };
 
     const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         // Only begin a marquee from the desktop background itself
@@ -67,14 +85,9 @@ const Desktop = () => {
 
     return (
         <div ref={desktopRef} className={styles.desktop} onPointerDown={onPointerDown}>
-            {desktopItems.map((item) => {
-                const [ id, {top=undefined, right=undefined, bottom=undefined, left=undefined}] = item;
-                const itemId = next();
-
-                return (
-                    <DesktopIcon key={itemId} id={itemId} appId={id} top={top} right={right} bottom={bottom} left={left} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
-                );
-            })}
+            {desktopItems.map(({ itemId, appId }) => (
+                <DesktopIcon key={itemId} id={itemId} appId={appId} position={positions[itemId]} selectedIds={selectedIds} setSelectedIds={setSelectedIds} moveIcons={moveIcons} />
+            ))}
             {selectionRect && <div className={styles.selectionRect} style={{ top: selectionRect.top, left: selectionRect.left, width: selectionRect.width, height: selectionRect.height }} />}
         </div>
     );
