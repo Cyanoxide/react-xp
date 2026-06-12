@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useContext } from "../../context/context";
 import { throttle } from "../../utils/general";
+import Button from "../Button/Button";
 import styles from "./Clippy.module.scss";
 import agentData from "./clippyAgent.json";
 import type { AbsoluteObject } from "../../context/types";
@@ -213,9 +214,12 @@ const Clippy = () => {
                         <input
                             type="text"
                             value={question}
-                            placeholder="Ask me anything"
+                            placeholder="Type your question here"
                             onChange={(event) => setQuestion(event.target.value)}
                         />
+                        <div className="flex justify-end mt-2">
+                            <Button type="submit" disabled={isThinking}>Search</Button>
+                        </div>
                     </form>
                 </div>
             )}
