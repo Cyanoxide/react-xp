@@ -4,6 +4,7 @@ import applicationsJSON from "../../../data/applications.json";
 import { getBaseDomain, sameBaseDomain } from "../../../utils/general";
 import { getCurrentWindow } from "../../../utils/general";
 import WindowMenu from "../../WindowMenu/WindowMenu";
+import XPScrollbars from "../../XPScrollbars/XPScrollbars";
 import styles from "./InternetExplorer.module.scss";
 import type { Application } from "../../../context/types";
 
@@ -183,8 +184,10 @@ const InternetExplorer = ({ appId }: Record<string, string>) => {
                     </div>
                 </section>
             </div>
-            <main className={`${styles.mainContent} h-full flex overflow-auto`}>
-                <iframe ref={iframeRef} src={getIframeSrc(inputField?.value || HOMEPAGE).url} width="100%" height="100%" />
+            <main className={`${styles.mainContent} h-full flex`}>
+                <XPScrollbars className="w-full h-full" contentClassName="h-full">
+                    <iframe ref={iframeRef} src={getIframeSrc(inputField?.value || HOMEPAGE).url} width="100%" height="100%" />
+                </XPScrollbars>
             </main >
             <div className={`${styles.statusBar} flex justify-between px-2 py-0.5`}>
                 <div className="flex items-center gap-1">
