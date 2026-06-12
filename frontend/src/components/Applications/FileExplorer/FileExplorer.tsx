@@ -6,6 +6,7 @@ import { getCurrentWindow, openApplication } from "../../../utils/general";
 import playSound from "../../../utils/sounds";
 import CollapseBox from "../../CollapseBox/CollapseBox";
 import WindowMenu from "../../WindowMenu/WindowMenu";
+import XPScrollbars from "../../XPScrollbars/XPScrollbars";
 import styles from "./FileExplorer.module.scss";
 import type { Application } from "../../../context/types";
 
@@ -186,89 +187,93 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                     </div>
                 </section>
             </div>
-            <main className={`${styles.mainContent} h-full flex overflow-auto`} data-bg-accent={bgAccent}>
+            <main className={`${styles.mainContent} flex-1 min-h-0 flex`} data-bg-accent={bgAccent}>
                 <aside className={`${styles.sidebar} h-full`}>
-                    {appId === "recycleBin" && (
-                        <CollapseBox title="Recycle Bin Tasks">
+                    <XPScrollbars className="h-full">
+                        {appId === "recycleBin" && (
+                            <CollapseBox title="Recycle Bin Tasks">
+                                <ul className="flex flex-col gap-2 p-3">
+                                    <li>
+                                        <button className="flex items-center" onClick={emptyRecycleBinHandler} disabled={!recycledItems.length}>
+                                            <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
+                                            <p>Empty the Recycle Bin</p>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </CollapseBox>
+                        )}
+                        <CollapseBox title="File & Folder Tasks">
+                            <ul className="flex flex-col gap-2 p-3">
+                                <li className="flex items-center">
+                                    <img src="/icon__new_folder--large.png" className="mr-2" width="12" height="12" />
+                                    <p>Make a new folder</p>
+                                </li>
+                                <li className="flex items-start">
+                                    <img src="/icon__publish_web--large.png" className="mr-2" width="12" height="12" />
+                                    <p>Publish this folder to the web</p>
+                                </li>
+                                <li className="flex items-center">
+                                    <img src="/icon__file_explorer.png" className="mr-2" width="12" height="12" />
+                                    <p>Share this folder</p>
+                                </li>
+                            </ul>
+                        </CollapseBox>
+                        <CollapseBox title="Other Places">
                             <ul className="flex flex-col gap-2 p-3">
                                 <li>
-                                    <button className="flex items-center" onClick={emptyRecycleBinHandler} disabled={!recycledItems.length}>
+                                    <button className="flex items-center" onClick={() => updateWindow("desktop")}>
+                                        <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
+                                        <p>Desktop</p>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button className="flex items-center" onClick={() => updateWindow("computer")}>
+                                        <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
+                                        <p>My Computer</p>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button className="flex items-center" onClick={() => updateWindow("recycleBin")}>
                                         <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
-                                        <p>Empty the Recycle Bin</p>
+                                        <p>Recycle Bin</p>
                                     </button>
                                 </li>
                             </ul>
                         </CollapseBox>
-                    )}
-                    <CollapseBox title="File & Folder Tasks">
-                        <ul className="flex flex-col gap-2 p-3">
-                            <li className="flex items-center">
-                                <img src="/icon__new_folder--large.png" className="mr-2" width="12" height="12" />
-                                <p>Make a new folder</p>
-                            </li>
-                            <li className="flex items-start">
-                                <img src="/icon__publish_web--large.png" className="mr-2" width="12" height="12" />
-                                <p>Publish this folder to the web</p>
-                            </li>
-                            <li className="flex items-center">
-                                <img src="/icon__file_explorer.png" className="mr-2" width="12" height="12" />
-                                <p>Share this folder</p>
-                            </li>
-                        </ul>
-                    </CollapseBox>
-                    <CollapseBox title="Other Places">
-                        <ul className="flex flex-col gap-2 p-3">
-                            <li>
-                                <button className="flex items-center" onClick={() => updateWindow("desktop")}>
-                                    <img src="/icon__desktop--large.png" className="mr-2" width="12" height="12" />
-                                    <p>Desktop</p>
-                                </button>
-                            </li>
-                            <li>
-                                <button className="flex items-center" onClick={() => updateWindow("computer")}>
-                                    <img src="/icon__computer.png" className="mr-2" width="12" height="12" />
-                                    <p>My Computer</p>
-                                </button>
-                            </li>
-                            <li>
-                                <button className="flex items-center" onClick={() => updateWindow("recycleBin")}>
-                                    <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
-                                    <p>Recycle Bin</p>
-                                </button>
-                            </li>
-                        </ul>
-                    </CollapseBox>
-                    <CollapseBox title="Details">
-                        <div className="p-3">
-                            <h3 className="font-bold">{appData.title}</h3>
-                            <p>System Folder</p>
-                        </div>
-                    </CollapseBox>
+                        <CollapseBox title="Details">
+                            <div className="p-3">
+                                <h3 className="font-bold">{appData.title}</h3>
+                                <p>System Folder</p>
+                            </div>
+                        </CollapseBox>
+                    </XPScrollbars>
                 </aside>
-                <section className={`${styles.contents} relative w-full`}>
-                    <div className="absolute inset-0 p-3 h-fit">
-                        {appId === "computer" && <h3 className="w-full">Files Stored on this Computer</h3>}
-                        {documents.map((item) => {
-                            if (item === appId) return;
+                <section className={`${styles.contents} relative w-full h-full`}>
+                    <XPScrollbars className="w-full h-full" viewportClassName="relative h-full">
+                        <div className={`${styles.iconGrid} absolute inset-0 p-3 h-fit`}>
+                            {appId === "computer" && <h3 className="w-full">Files Stored on this Computer</h3>}
+                            {documents.map((item) => {
+                                if (item === appId) return;
 
-                            const itemId = (Array.isArray(item) ? item[0] : item);
-                            const appData = Applications[itemId];
-                            if (!appData) return;
+                                const itemId = (Array.isArray(item) ? item[0] : item);
+                                const appData = Applications[itemId];
+                                if (!appData) return;
                             
-                            const isActive = (selectedItem === itemId);
-                            const { title, icon, iconLarge, disabled, link } = appData;
-                            const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
+                                const isActive = (selectedItem === itemId);
+                                const { title, icon, iconLarge, disabled, link } = appData;
+                                const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
                             
-                            return (
-                                <button key={itemId} data-id={itemId} data-selected={isActive} data-link={!!link} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
-                                    <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="35" height="35" draggable={false} /></span>
-                                    <h4 className="px-0.5">{title}</h4>
-                                </button>
-                            );
-                        })}
-                        {appId === "computer" && <h3 className="w-full">Hard Disk Drives</h3>}
+                                return (
+                                    <button key={itemId} data-id={itemId} data-selected={isActive} data-link={!!link} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
+                                        <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="35" height="35" draggable={false} /></span>
+                                        <h4 className="px-0.5">{title}</h4>
+                                    </button>
+                                );
+                            })}
+                            {appId === "computer" && <h3 className="w-full">Hard Disk Drives</h3>}
 
-                    </div>
+                        </div>
+                    </XPScrollbars>
                 </section>
             </main>
         </>

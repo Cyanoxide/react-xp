@@ -1,0 +1,131 @@
+// Authentic Windows XP scrollbars rendered as real elements so every browser
+// (including Firefox) gets the same look. Artwork and palette come from the
+// theme-aware CSS variables defined in src/styles/scrollbars.css.
+
+.container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 0;
+    min-width: 0;
+}
+
+.viewport {
+    grid-area: 1 / 1;
+    overflow: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.content {
+    min-width: fit-content;
+}
+
+.bar {
+    display: flex;
+    user-select: none;
+
+    &.vertical {
+        grid-area: 1 / 2;
+        flex-direction: column;
+        width: 1.7rem;
+    }
+
+    &.horizontal {
+        grid-area: 2 / 1;
+        flex-direction: row;
+        height: 1.7rem;
+    }
+
+    button {
+        width: 1.7rem;
+        height: 1.7rem;
+        flex-shrink: 0;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        background-size: 1.7rem 1.7rem;
+        image-rendering: pixelated;
+        cursor: default;
+
+        &:active {
+            filter: brightness(0.92);
+        }
+    }
+
+    .arrowUp {
+        background-image: var(--scrollbar-arrow-up);
+    }
+
+    .arrowDown {
+        background-image: var(--scrollbar-arrow-down);
+    }
+
+    .arrowLeft {
+        background-image: var(--scrollbar-arrow-left);
+    }
+
+    .arrowRight {
+        background-image: var(--scrollbar-arrow-right);
+    }
+
+    .track {
+        position: relative;
+        flex: 1;
+        image-rendering: pixelated;
+    }
+
+    &.vertical .track {
+        background-image: url("/scrollbar__track.svg");
+        background-repeat: repeat-y;
+        background-size: 1.7rem 1px;
+    }
+
+    &.horizontal .track {
+        background-image: url("/scrollbar__track-horizontal.svg");
+        background-repeat: repeat-x;
+        background-size: 1px 1.7rem;
+    }
+
+    .thumb {
+        position: absolute;
+        background-color: var(--scrollbar-thumb-bg);
+        background-position: center;
+        background-repeat: no-repeat;
+        border: 1px solid #fff;
+        border-radius: 2px;
+        box-shadow: inset -3px 0 var(--scrollbar-thumb-shadow-a), inset 1px 1px var(--scrollbar-thumb-shadow-b);
+        image-rendering: pixelated;
+
+        &:hover {
+            filter: brightness(1.04);
+        }
+
+        &:active {
+            filter: brightness(0.96);
+        }
+    }
+
+    &.vertical .thumb {
+        left: 0;
+        width: 1.7rem;
+        background-image: var(--scrollbar-thumb-grip);
+        background-size: 7px;
+    }
+
+    &.horizontal .thumb {
+        top: 0;
+        height: 1.7rem;
+        background-image: var(--scrollbar-thumb-grip-h);
+        background-size: 8px;
+    }
+}
+
+.corner {
+    grid-area: 2 / 2;
+    background: var(--scrollbar-track-fallback);
+}

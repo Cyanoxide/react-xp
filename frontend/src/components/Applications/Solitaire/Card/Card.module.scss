@@ -1,0 +1,47 @@
+.card {
+    width: 14.28cqw;
+    height: 18.5cqw;
+    aspect-ratio: 44 / 57;
+    padding: 1.5cqw;
+    pointer-events: none;
+
+    &>div {
+        height: 100%;
+        background-image: url("/spritemap__solitaire-cards.png?v=1");
+        background-size: 1300% 600%;
+        pointer-events: auto;
+
+        --y-offset: 20%;
+        --x-offset: 8.332%;
+
+        &[data-suit="spades"] {
+            background-position-y: calc(0 * var(--y-offset));
+        }
+
+        &[data-suit="hearts"] {
+            background-position-y: calc(1 * var(--y-offset));
+        }
+
+        &[data-suit="clubs"] {
+            background-position-y: calc(2 * var(--y-offset));
+        }
+
+        &[data-suit="diamonds"] {
+            background-position-y: calc(3 * var(--y-offset));
+        }
+
+        @for $i from 1 through 13 {
+            &[data-rank="#{$i}"] {
+                background-position-x: calc(#{$i - 1} * var(--x-offset));
+            }
+        }
+
+        &.faceDown {
+            background-position-y: calc(4 * var(--y-offset));
+        }
+    }
+
+    &:not(:first-child) {
+        margin-top: var(--stack-margin);
+    }
+}

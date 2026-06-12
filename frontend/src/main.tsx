@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import { Provider } from './context/provider.tsx';
 import './index.css';
+import './styles/scrollbars.css';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
