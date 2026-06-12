@@ -39,6 +39,10 @@ npm run dev
 
 Then open [http://localhost:5174](http://localhost:5174) in your browser.
 
+## Special Thanks
+
+- [XP.css](https://github.com/botoxparty/XP.css)
+
 ## Support & Contribution
 
 If you like the project and wish to support it, consider sharing the project online or donating here: [https://ko-fi.com/cyanoxide](https://ko-fi.com/cyanoxide)

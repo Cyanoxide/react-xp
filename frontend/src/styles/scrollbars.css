@@ -1,0 +1,135 @@
+/* Authentic Windows XP scrollbars, adapted from XP.css (https://github.com/botoxparty/XP.css)
+   with olive/silver variants generated from the Luna originals to match the active theme */
+
+:root {
+    --scrollbar-thumb-bg: #c8d6fb;
+    --scrollbar-thumb-shadow-a: #bad1fc;
+    --scrollbar-thumb-shadow-b: #b7caf5;
+    --scrollbar-track-fallback: #f5f4ef;
+    --scrollbar-thumb-grip: url("/scrollbar__thumb.svg");
+    --scrollbar-thumb-grip-h: url("/scrollbar__thumb-horizontal.svg");
+    --scrollbar-arrow-up: url("/scrollbar__arrow-up.svg");
+    --scrollbar-arrow-down: url("/scrollbar__arrow-down.svg");
+    --scrollbar-arrow-left: url("/scrollbar__arrow-left.svg");
+    --scrollbar-arrow-right: url("/scrollbar__arrow-right.svg");
+}
+
+body[data-theme="green"] {
+    --scrollbar-thumb-bg: #e8eed5;
+    --scrollbar-thumb-shadow-a: #e4eccb;
+    --scrollbar-thumb-shadow-b: #dee6c6;
+    --scrollbar-thumb-grip: url("/scrollbar__thumb--green.svg");
+    --scrollbar-thumb-grip-h: url("/scrollbar__thumb-horizontal--green.svg");
+    --scrollbar-arrow-up: url("/scrollbar__arrow-up--green.svg");
+    --scrollbar-arrow-down: url("/scrollbar__arrow-down--green.svg");
+    --scrollbar-arrow-left: url("/scrollbar__arrow-left--green.svg");
+    --scrollbar-arrow-right: url("/scrollbar__arrow-right--green.svg");
+}
+
+body[data-theme="silver"] {
+    --scrollbar-thumb-bg: #dfe0e4;
+    --scrollbar-thumb-shadow-a: #d8dade;
+    --scrollbar-thumb-shadow-b: #d3d5d9;
+    --scrollbar-thumb-grip: url("/scrollbar__thumb--silver.svg");
+    --scrollbar-thumb-grip-h: url("/scrollbar__thumb-horizontal--silver.svg");
+    --scrollbar-arrow-up: url("/scrollbar__arrow-up--silver.svg");
+    --scrollbar-arrow-down: url("/scrollbar__arrow-down--silver.svg");
+    --scrollbar-arrow-left: url("/scrollbar__arrow-left--silver.svg");
+    --scrollbar-arrow-right: url("/scrollbar__arrow-right--silver.svg");
+}
+
+::-webkit-scrollbar {
+    width: 17px;
+    height: 17px;
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--scrollbar-track-fallback);
+}
+
+::-webkit-scrollbar-track:vertical {
+    background-image: url("/scrollbar__track.svg");
+    background-repeat: repeat-y;
+    background-size: 17px 1px;
+    image-rendering: pixelated;
+}
+
+::-webkit-scrollbar-track:horizontal {
+    background-image: url("/scrollbar__track-horizontal.svg");
+    background-repeat: repeat-x;
+    background-size: 1px 17px;
+    image-rendering: pixelated;
+}
+
+::-webkit-scrollbar-thumb {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--scrollbar-thumb-bg);
+    background-size: 7px;
+    border: 1px solid white;
+    border-radius: 2px;
+    box-shadow: inset -3px 0 var(--scrollbar-thumb-shadow-a), inset 1px 1px var(--scrollbar-thumb-shadow-b);
+    image-rendering: pixelated;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    background-image: var(--scrollbar-thumb-grip);
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    background-size: 8px;
+    background-image: var(--scrollbar-thumb-grip-h);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    filter: brightness(1.04);
+}
+
+::-webkit-scrollbar-thumb:active {
+    filter: brightness(0.94);
+}
+
+::-webkit-scrollbar-button {
+    background-repeat: no-repeat;
+    background-size: 17px 17px;
+    image-rendering: pixelated;
+}
+
+::-webkit-scrollbar-button:vertical:start {
+    height: 17px;
+    background-image: var(--scrollbar-arrow-up);
+}
+
+::-webkit-scrollbar-button:vertical:end {
+    height: 17px;
+    background-image: var(--scrollbar-arrow-down);
+}
+
+::-webkit-scrollbar-button:horizontal:start {
+    width: 17px;
+    background-image: var(--scrollbar-arrow-left);
+}
+
+::-webkit-scrollbar-button:horizontal:end {
+    width: 17px;
+    background-image: var(--scrollbar-arrow-right);
+}
+
+/* Chromium renders hidden secondary buttons at each end; keep them collapsed */
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement,
+::-webkit-scrollbar-button:horizontal:start:increment,
+::-webkit-scrollbar-button:horizontal:end:decrement {
+    display: none;
+}
+
+::-webkit-scrollbar-button:active {
+    filter: brightness(0.92);
+}
+
+/* Firefox can't render the full design; approximate with theme colours */
+@supports not selector(::-webkit-scrollbar) {
+    * {
+        scrollbar-color: var(--scrollbar-thumb-bg) var(--scrollbar-track-fallback);
+    }
+}
