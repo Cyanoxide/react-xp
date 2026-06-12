@@ -41,7 +41,7 @@ Then open [http://localhost:5174](http://localhost:5174) in your browser.
 
 ## Special Thanks
 
-- [XP.css](https://github.com/botoxparty/XP.css)
+- [XP.css](https://github.com/botoxparty/XP.css) — used specifically for the scrollbar assets (arrows, track and thumb)
 
 ## Support & Contribution
 

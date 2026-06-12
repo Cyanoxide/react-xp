@@ -175,8 +175,8 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                 </section>
             </div>
             <main className={`${styles.mainContent} h-full flex`} data-bg-accent={bgAccent}>
-                <XPScrollbars className="w-full h-full" viewportClassName="h-full" contentClassName="flex min-h-full">
-                    <aside className={`${styles.sidebar} h-full`}>
+                <aside className={`${styles.sidebar} h-full`}>
+                    <XPScrollbars className="h-full">
                         <CollapseBox title="File & Folder Tasks">
                             <ul className="flex flex-col gap-2 p-3">
                                 <li className="flex items-center">
@@ -221,9 +221,11 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                 <p>System Folder</p>
                             </div>
                         </CollapseBox>
-                    </aside>
-                    <section className={`${styles.contents} relative w-full`}>
-                        <div className="absolute inset-0 p-3 h-fit">
+                    </XPScrollbars>
+                </aside>
+                <section className={`${styles.contents} relative w-full h-full`}>
+                    <XPScrollbars className="w-full h-full" viewportClassName="relative h-full">
+                        <div className={`${styles.iconGrid} absolute inset-0 p-3 h-fit`}>
                             {appId === "computer" && <h3 className="w-full">Files Stored on this Computer</h3>}
                             {documents.map((item) => {
                                 if (item === appId) return;
@@ -246,8 +248,8 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             {appId === "computer" && <h3 className="w-full">Hard Disk Drives</h3>}
 
                         </div>
-                    </section>
-                </XPScrollbars>
+                    </XPScrollbars>
+                </section>
             </main>
         </>
     );
