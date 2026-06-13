@@ -12,7 +12,7 @@ An authentic recreation of Windows XP, created using **React** and **Typescript*
 - Browsable **File Explorer** with back and forward functionality
 - **Internet Explorer** with Wayback Machine implementation for period accurate web browsing.
 - **Run** can open applications and Folders, either by internal appId, or title. URLs will also open in Internet Explorer.
-- **Solitaire**
+- **[Solitaire](https://github.com/Cyanoxide/react-solitaire)**
 - **Clippy**, the desktop assistant — drag him around, ask him questions, I can't guarentee he will be much help though.
 - Login, Shutdown and boot up sequences
 
