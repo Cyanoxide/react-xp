@@ -18,6 +18,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-github-btn": "^1.4.0",
+    "react-solitaire": "github:Cyanoxide/react-solitaire",
     "tailwindcss": "^4.1.16"
   },
   "devDependencies": {
