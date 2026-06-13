@@ -53,14 +53,20 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
         };
         const throttledPointerMove = throttle(onPointerMove, 50);
 
-        const onPointerUp = (upEvent: PointerEvent) => {
+        // Also fired on pointercancel so an interrupted touch drag never leaves icons raised
+        const endDrag = () => {
             window.removeEventListener("pointermove", throttledPointerMove);
             window.removeEventListener("pointerup", onPointerUp);
+            window.removeEventListener("pointercancel", endDrag);
             document.body.style.userSelect = "";
             dragIds.forEach((dragId) => {
                 const element = document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement | null;
                 if (element) element.style.zIndex = "";
             });
+        };
+
+        const onPointerUp = (upEvent: PointerEvent) => {
+            endDrag();
             if (!hasMoved) return;
 
             // The dragged icon sits under the cursor, so test the cursor against the bin's rect directly
@@ -82,6 +88,7 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
         };
         window.addEventListener("pointermove", throttledPointerMove);
         window.addEventListener("pointerup", onPointerUp);
+        window.addEventListener("pointercancel", endDrag);
     };
 
     const onClickHandler = () => {
