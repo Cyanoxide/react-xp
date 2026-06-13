@@ -152,8 +152,18 @@
 
 .mainContent {
 
+    // Lay the page out at a desktop-like viewport and scale it down.
+    // A transform (unlike zoom) never leaks into the iframe document,
+    // so mobile WebKit reports the same viewport as desktop browsers.
+    .iframeViewport {
+        overflow: hidden;
+    }
+
     iframe {
-        zoom: 0.6;
+        width: calc(100% / 0.6);
+        height: calc(100% / 0.6);
+        transform: scale(0.6);
+        transform-origin: 0 0;
     }
 }
 
