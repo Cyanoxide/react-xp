@@ -23,10 +23,16 @@ const Window = ({ ...props }: WindowProps) => {
     const dragWindowPadding = (window.innerWidth < 500) ? 12 : 3;
     const isBiggerThanViewport = (width + dragWindowPadding * 2 > window.innerWidth);
 
+    // On narrow screens pull right/top-anchored windows snug into the corner so
+    // they clear the left-hand desktop icons instead of overlapping their labels
+    const isMobileViewport = (window.innerWidth < 500);
+    const initialTop = (isMobileViewport && top !== undefined) ? Math.min(top, 5) : top;
+    const initialRight = (isMobileViewport && right !== undefined) ? Math.min(right, 2) : right;
+
     const activeWindowRef = useRef<HTMLDivElement | null>(null);
     const activeWindow = activeWindowRef.current;
 
-    const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? 0 : top, left: (isBiggerThanViewport) ? 0 : left, right: (isBiggerThanViewport) ? undefined : right , bottom });
+    const [{ top: topPos, right: rightPos, bottom: bottomPos, left: leftPos }, setWindowPosition] = useState({ top: (isBiggerThanViewport) ? 0 : initialTop, left: (isBiggerThanViewport) ? 0 : left, right: (isBiggerThanViewport) ? undefined : initialRight , bottom });
 
     const offset = (leftPos + width) - window.innerWidth;
     const [[windowWidth, windowHeight], setWindowSize] = useState([(isBiggerThanViewport) ? window.innerWidth - dragWindowPadding * 2 : width, height]);
