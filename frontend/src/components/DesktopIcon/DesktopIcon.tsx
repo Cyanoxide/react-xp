@@ -39,7 +39,6 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
             if (!element) return;
             const rect = element.getBoundingClientRect();
             startRects[dragId] = { top: rect.top, left: rect.left };
-            element.style.zIndex = "1";
         });
 
         const startX = event.clientX;
@@ -47,6 +46,14 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
         let hasMoved = false;
 
         const onPointerMove = (moveEvent: PointerEvent) => {
+            // Raise the dragged icons only once a drag begins, so a plain click
+            // (selection) never briefly lifts the label above overlapping windows
+            if (!hasMoved) {
+                dragIds.forEach((dragId) => {
+                    const element = document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement | null;
+                    if (element) element.style.zIndex = "1";
+                });
+            }
             hasMoved = true;
             moveIcons(dragIds, startRects, moveEvent.clientX - startX, moveEvent.clientY - startY);
             document.body.style.userSelect = "none";
