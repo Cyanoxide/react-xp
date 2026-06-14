@@ -60,6 +60,7 @@ const PALETTE = [
 ];
 
 const SIZES = [1, 2, 3, 5, 8];
+const TEXT_SIZE = 14;
 
 // Bottom-right resize grip: six bevelled squares in a 3-2-1 staircase whose
 // right angle points into the corner. Each entry is a dark square's top-left
@@ -142,6 +143,10 @@ const Paint = () => {
     const [size, setSize] = useState(2);
     const [zoom, setZoom] = useState(1);
     const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+    // Text tool: a box (dragged out like a selection) you type plain text into
+    const [textBox, setTextBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+    const [textValue, setTextValue] = useState("");
+    const [textEditing, setTextEditing] = useState(false);
     // Rectangular selection (Select / Free-Form Select): the marquee rectangle
     const [selection, setSelection] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
 
@@ -171,6 +176,16 @@ const Paint = () => {
     const polyBaseRef = useRef<ImageData | null>(null);
     const polyLastClickRef = useRef<{ t: number; x: number; y: number } | null>(null);
     const polyDraggingRef = useRef(false);
+
+    // Curve: drag a straight line (phase 1), then drag to bend it (phase 2),
+    // keeping the endpoints fixed. base = the canvas before the curve started.
+    const curveRef = useRef<{ phase: number; a: { x: number; y: number }; b: { x: number; y: number }; base: ImageData } | null>(null);
+    const curveDraggingRef = useRef(false);
+
+    // Text define-drag state + the textarea overlay
+    const textDefiningRef = useRef(false);
+    const textStartRef = useRef({ x: 0, y: 0 });
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
     // Size the canvas to the drawing area once it has a real layout, leaving a
     // grey margin to the right/bottom (XP Paint's bitmap is a fixed size inside a
@@ -214,7 +229,17 @@ const Paint = () => {
             polyPointsRef.current = null;
             polyBaseRef.current = null;
         }
+        // Leaving the curve tool finalises whatever's already drawn
+        if (tool !== "curve") {
+            curveRef.current = null;
+            curveDraggingRef.current = false;
+        }
     }, [tool]);
+
+    // Focus the text box when it opens for editing
+    useEffect(() => {
+        if (textEditing) textareaRef.current?.focus();
+    }, [textEditing]);
 
     const getCtx = () => canvasRef.current?.getContext("2d") ?? null;
 
@@ -295,7 +320,7 @@ const Paint = () => {
         } else if (tool === "ellipse") {
             ctx.ellipse((from.x + to.x) / 2, (from.y + to.y) / 2, Math.abs(to.x - from.x) / 2, Math.abs(to.y - from.y) / 2, 0, 0, Math.PI * 2);
         } else {
-            // line and curve (curve approximated as a straight line for now)
+            // line
             ctx.moveTo(from.x, from.y);
             ctx.lineTo(to.x, to.y);
         }
@@ -303,7 +328,7 @@ const Paint = () => {
     };
 
     const isFreehand = tool === "pencil" || tool === "brush" || tool === "eraser";
-    const isShape = tool === "line" || tool === "curve" || tool === "rectangle" || tool === "ellipse" || tool === "roundRectangle";
+    const isShape = tool === "line" || tool === "rectangle" || tool === "ellipse" || tool === "roundRectangle";
     const isSelect = tool === "select" || tool === "freeSelect";
 
     // Polygon: click to drop vertices, double-click to close. Each frame redraws
@@ -372,6 +397,121 @@ const Paint = () => {
         }
         polyPointsRef.current = null;
         polyBaseRef.current = null;
+    };
+
+    // Curve: first drag lays a straight line (phase 1); the second drag bends it
+    // into a quadratic curve with the endpoints fixed (phase 2).
+    const strokeCurve = (ctx: CanvasRenderingContext2D, c: { phase: number; a: { x: number; y: number }; b: { x: number; y: number } }, ctrl: { x: number; y: number }) => {
+        ctx.strokeStyle = strokeColor(buttonRef.current);
+        ctx.lineWidth = size;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(c.a.x, c.a.y);
+        if (c.phase === 1) ctx.lineTo(ctrl.x, ctrl.y);
+        else ctx.quadraticCurveTo(ctrl.x, ctrl.y, c.b.x, c.b.y);
+        ctx.stroke();
+    };
+
+    const handleCurveDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        const canvas = canvasRef.current;
+        const ctx = getCtx();
+        if (!canvas || !ctx) return;
+        buttonRef.current = event.button;
+        if (!curveRef.current) {
+            pushUndo(ctx);
+            const pos = getPos(event);
+            curveRef.current = { phase: 1, a: pos, b: pos, base: ctx.getImageData(0, 0, canvas.width, canvas.height) };
+        }
+        curveDraggingRef.current = true;
+    };
+
+    const handleCurveMove = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        const ctx = getCtx();
+        const c = curveRef.current;
+        if (!ctx || !c) return;
+        ctx.putImageData(c.base, 0, 0);
+        strokeCurve(ctx, c, getPos(event));
+    };
+
+    const handleCurveUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        if (!curveDraggingRef.current) return;
+        curveDraggingRef.current = false;
+        const ctx = getCtx();
+        const c = curveRef.current;
+        if (!ctx || !c) return;
+        const pos = getPos(event);
+        ctx.putImageData(c.base, 0, 0);
+        if (c.phase === 1) {
+            c.b = pos;
+            strokeCurve(ctx, c, c.b);
+            c.phase = 2;
+        } else {
+            strokeCurve(ctx, c, pos);
+            curveRef.current = null;
+        }
+    };
+
+    // Text: drag a box, then type into the overlaid textarea; the text is stamped
+    // onto the canvas when it loses focus / the tool changes.
+    const commitText = () => {
+        const box = textBox;
+        const ctx = getCtx();
+        if (box && ctx && textValue.length) {
+            pushUndo(ctx);
+            ctx.fillStyle = fgColor;
+            ctx.textBaseline = "top";
+            ctx.font = `${TEXT_SIZE}px sans-serif`;
+            const lineH = Math.round(TEXT_SIZE * 1.3);
+            let y = box.y + 2;
+            for (const para of textValue.split("\n")) {
+                let line = "";
+                for (const word of para.split(" ")) {
+                    const test = line ? `${line} ${word}` : word;
+                    if (ctx.measureText(test).width > box.w - 4 && line) {
+                        ctx.fillText(line, box.x + 2, y);
+                        y += lineH;
+                        line = word;
+                    } else {
+                        line = test;
+                    }
+                }
+                ctx.fillText(line, box.x + 2, y);
+                y += lineH;
+            }
+        }
+        setTextBox(null);
+        setTextValue("");
+        setTextEditing(false);
+    };
+
+    const handleTextDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        canvas.setPointerCapture(event.pointerId);
+        const pos = getPos(event);
+        textStartRef.current = pos;
+        textDefiningRef.current = true;
+        setTextEditing(false);
+        setTextBox({ x: pos.x, y: pos.y, w: 0, h: 0 });
+    };
+
+    const handleTextMove = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        if (!textDefiningRef.current) return;
+        const pos = getPos(event);
+        setTextBox({
+            x: Math.min(pos.x, textStartRef.current.x),
+            y: Math.min(pos.y, textStartRef.current.y),
+            w: Math.abs(pos.x - textStartRef.current.x),
+            h: Math.abs(pos.y - textStartRef.current.y),
+        });
+    };
+
+    const handleTextUp = () => {
+        if (!textDefiningRef.current) return;
+        textDefiningRef.current = false;
+        if (textBox && textBox.w > 8 && textBox.h > 8) setTextEditing(true);
+        else setTextBox(null);
     };
 
     // Selection. Select drags a rectangle; Free-Form Select traces a freehand
@@ -510,13 +650,13 @@ const Paint = () => {
         }
         if (isSelect) { handleSelectDown(event); return; }
         if (tool === "polygon") { handlePolygonDown(event); return; }
+        if (tool === "curve") { handleCurveDown(event); return; }
+        if (tool === "text") { handleTextDown(event); return; }
         if (tool === "magnifier") {
             // Left-click zooms in (1→2→4→8→1), right-click zooms back out
             setZoom((z) => (event.button === 2 ? (z <= 1 ? 1 : z / 2) : (z >= 8 ? 1 : z * 2)));
             return;
         }
-        // Text is present in the toolbox but not yet interactive.
-        if (tool === "text") return;
 
         canvas.setPointerCapture(event.pointerId);
         buttonRef.current = event.button;
@@ -551,6 +691,8 @@ const Paint = () => {
             if (polyDraggingRef.current && polyPointsRef.current) drawPolygon(ctx, pos, buttonRef.current, false);
             return;
         }
+        if (tool === "curve") { if (curveDraggingRef.current) handleCurveMove(event); return; }
+        if (tool === "text") { if (textDefiningRef.current) handleTextMove(event); return; }
         if (!drawingRef.current) return;
 
         if (isFreehand) {
@@ -567,6 +709,8 @@ const Paint = () => {
     const endStroke = (event?: ReactPointerEvent<HTMLCanvasElement>) => {
         if (isSelect) { handleSelectUp(); return; }
         if (tool === "polygon") { if (event) handlePolygonUp(event); return; }
+        if (tool === "curve") { if (event) handleCurveUp(event); return; }
+        if (tool === "text") { handleTextUp(); return; }
         drawingRef.current = false;
         startRef.current = null;
         lastRef.current = null;
@@ -747,6 +891,21 @@ const Paint = () => {
                                     style={{ left: selection.x, top: selection.y, width: selection.w, height: selection.h }}
                                 />
                             )}
+                            {textBox && (textEditing ? (
+                                <textarea
+                                    ref={textareaRef}
+                                    className={styles.textInput}
+                                    style={{ left: textBox.x, top: textBox.y, width: textBox.w, height: textBox.h, color: fgColor }}
+                                    value={textValue}
+                                    onChange={(e) => setTextValue(e.target.value)}
+                                    onBlur={commitText}
+                                />
+                            ) : (
+                                <div
+                                    className={styles.marquee}
+                                    style={{ left: textBox.x, top: textBox.y, width: textBox.w, height: textBox.h }}
+                                />
+                            ))}
                         </div>
                     </XPScrollbars>
                 </div>

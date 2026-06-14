@@ -275,6 +275,21 @@
     z-index: 1;
 }
 
+// Text tool: a plain textarea overlaid on the bitmap while editing
+.textInput {
+    position: absolute;
+    z-index: 2;
+    margin: 0;
+    padding: 0.1rem 0.2rem;
+    border: 0.1rem dashed #000;
+    background: transparent;
+    font: 14px/1.3 sans-serif;
+    resize: none;
+    outline: none;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
 // ---- Palette ---------------------------------------------------------------
 .palette {
     display: flex;
