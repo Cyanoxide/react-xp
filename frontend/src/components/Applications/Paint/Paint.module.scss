@@ -1,0 +1,338 @@
+.paint {
+    background: #ece9d8;
+    color: #000;
+    outline: none;
+    font-family: Tahoma, "Trebuchet MS", sans-serif;
+    font-size: 1.1rem;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+}
+
+.main {
+    min-height: 0;
+}
+
+// ---- Toolbox ---------------------------------------------------------------
+.toolbox {
+    width: 5.6rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.3rem;
+    background: #ece9d8;
+    border-right: 0.1rem solid #919b9c;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+        border-right-color: #8a936b;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+        border-right-color: #aeb0bd;
+    }
+}
+
+.tools {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.1rem;
+}
+
+.toolButton {
+    width: 2.4rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    color: #000;
+    background: transparent;
+    // Flat until hovered/selected, like the XP toolbar
+    border: 0.1rem solid transparent;
+
+    &:hover {
+        border-color: #fff #808080 #808080 #fff;
+    }
+
+    &[data-active="true"] {
+        border-color: #808080 #fff #fff #808080;
+        background: #faf9f4;
+
+        @include theme-color("green") {
+            background: #f1f2e3;
+        }
+
+        @include theme-color("silver") {
+            background: #f3f3f7;
+        }
+    }
+}
+
+// One sprite cell per tool (size/position set inline from the CELLS table)
+.toolIcon {
+    display: block;
+    background-image: url("/spritemap__paint-tools.png");
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
+// Tool-options box below the tools (shows width choices for the relevant tools)
+.options {
+    height: 5.6rem;
+    margin-top: 0.5rem;
+    padding: 0.3rem;
+    background: #ece9d8;
+    // Sunken bevel
+    border: 0.1rem solid;
+    border-color: #808080 #fff #fff #808080;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+}
+
+.sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    height: 100%;
+    justify-content: center;
+    padding: 0 0.3rem;
+}
+
+.sizeOption {
+    display: flex;
+    align-items: center;
+    height: 0.9rem;
+    padding: 0 0.1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    span {
+        display: block;
+        width: 100%;
+        min-height: 0.1rem;
+        background: #000;
+        border-radius: 1rem;
+    }
+
+    &[data-active="true"] {
+        background: #0a246a;
+
+        span {
+            background: #fff;
+        }
+
+        @include theme-color("green") {
+            background: #5e6948;
+        }
+
+        @include theme-color("silver") {
+            background: #4a4d63;
+        }
+    }
+}
+
+// ---- Canvas ----------------------------------------------------------------
+.canvasArea {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    // Absolutely-positioned scroller below keeps the wide bitmap from inflating
+    // the window's intrinsic width (Window has min-width: fit-content), so the
+    // viewport stays constrained and the XP scrollbars actually engage.
+    overflow: hidden;
+}
+
+.scroll {
+    position: absolute;
+    inset: 0;
+}
+
+// The grey scrollable region the bitmap floats in
+.scrollViewport {
+    padding: 0.3rem;
+    background: #808080;
+
+    @include theme-color("silver") {
+        background: #7e8088;
+    }
+}
+
+.canvasWrap {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+    // Room for the handles to sit just outside the bitmap without being clipped
+    margin: 0 0.4rem 0.4rem 0;
+}
+
+.canvas {
+    display: block;
+    background: #fff;
+    cursor: crosshair;
+    touch-action: none;
+    box-shadow: 0 0 0 0.1rem #000;
+}
+
+// Bitmap resize handles: small blue squares at right-middle, bottom-middle and
+// the corner; dragging them resizes the white canvas.
+.handle {
+    position: absolute;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: #2f6bf6;
+    touch-action: none;
+}
+
+.handleRight {
+    top: 50%;
+    right: -0.2rem;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+}
+
+.handleBottom {
+    bottom: -0.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+}
+
+.handleCorner {
+    bottom: -0.2rem;
+    right: -0.2rem;
+    cursor: nwse-resize;
+}
+
+// ---- Palette ---------------------------------------------------------------
+.palette {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0.4rem;
+    background: #ece9d8;
+    border-top: 0.1rem solid #919b9c;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+        border-top-color: #8a936b;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+        border-top-color: #aeb0bd;
+    }
+}
+
+.swatches {
+    position: relative;
+    width: 2.8rem;
+    height: 2.6rem;
+    flex-shrink: 0;
+}
+
+.swatchFg,
+.swatchBg {
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 0.1rem solid #000;
+    box-shadow: inset 0 0 0 0.1rem #fff;
+}
+
+.swatchFg {
+    top: 0;
+    left: 0.2rem;
+    z-index: 1;
+}
+
+.swatchBg {
+    bottom: 0;
+    right: 0.2rem;
+}
+
+.paletteGrid {
+    display: grid;
+    grid-template-columns: repeat(14, 1.3rem);
+    grid-template-rows: repeat(2, 1.3rem);
+    gap: 0.1rem;
+}
+
+.colorCell {
+    width: 1.3rem;
+    height: 1.3rem;
+    padding: 0;
+    cursor: pointer;
+    border: 0.1rem solid #808080;
+}
+
+// ---- Status bar ------------------------------------------------------------
+.statusBar {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    height: 2.2rem;
+    padding: 0.2rem;
+    background: #ece9d8;
+    border-top: 0.1rem solid #fff;
+    font-size: 1.05rem;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+}
+
+.statusHelp,
+.statusPanel {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // Sunken inset bevel
+    border: 0.1rem solid;
+    border-color: #808080 #fff #fff #808080;
+}
+
+.statusHelp {
+    flex: 1;
+    min-width: 0;
+}
+
+.statusPanel {
+    width: 8rem;
+    flex-shrink: 0;
+}
+
+.statusGrip {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    align-self: flex-end;
+}
