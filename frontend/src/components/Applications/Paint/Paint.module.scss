@@ -161,13 +161,15 @@
     }
 }
 
-// Shared selected look for the icon-style option buttons (sunken + tinted)
+// Shared look for the icon-style option buttons. Selected = solid blue fill; the
+// icon (drawn in currentColor) turns white, while fixed greys stay grey.
 @mixin option-button {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
     cursor: pointer;
+    color: #000;
     background: transparent;
     border: 0.1rem solid transparent;
 
@@ -180,15 +182,16 @@
     }
 
     &[data-active="true"] {
-        border-color: #808080 #fff #fff #808080;
-        background: #c9d9f0;
+        border-color: transparent;
+        background: #0a246a;
+        color: #fff;
 
         @include theme-color("green") {
-            background: #d3dabb;
+            background: #5e6948;
         }
 
         @include theme-color("silver") {
-            background: #d3d7e6;
+            background: #4a4d63;
         }
     }
 }
@@ -317,21 +320,23 @@
     }
 }
 
-// Shape fill styles: border-only, border+fill, fill-only
+// Shape fill styles: border-only, border+fill, fill-only — wide, full-width rows
 .fillOpts {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 0.25rem;
-    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .fillOpt {
-    width: 2.8rem;
-    height: 1.4rem;
+    width: 100%;
+    height: 1.5rem;
     @include option-button;
 
     svg {
-        width: 2.4rem;
+        width: 4rem;
         height: 1.2rem;
     }
 }

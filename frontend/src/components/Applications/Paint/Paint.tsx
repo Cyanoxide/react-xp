@@ -870,25 +870,26 @@ const Paint = () => {
 
     // Option-box icons (inline SVG, no sprites)
     const brushIcon = (b: { kind: BrushKind; v: number }) => {
-        if (b.kind === "circle") return <circle cx="8" cy="8" r={b.v} fill="#000" />;
-        if (b.kind === "square") return <rect x={8 - b.v / 2} y={8 - b.v / 2} width={b.v} height={b.v} fill="#000" />;
+        if (b.kind === "circle") return <circle cx="8" cy="8" r={b.v} fill="currentColor" />;
+        if (b.kind === "square") return <rect x={8 - b.v / 2} y={8 - b.v / 2} width={b.v} height={b.v} fill="currentColor" />;
         const h = b.v / 2;
         return b.kind === "diag"
-            ? <line x1={8 - h} y1={8 + h} x2={8 + h} y2={8 - h} stroke="#000" strokeWidth="1.4" strokeLinecap="round" />
-            : <line x1={8 - h} y1={8 - h} x2={8 + h} y2={8 + h} stroke="#000" strokeWidth="1.4" strokeLinecap="round" />;
+            ? <line x1={8 - h} y1={8 + h} x2={8 + h} y2={8 - h} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            : <line x1={8 - h} y1={8 - h} x2={8 + h} y2={8 + h} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />;
     };
     const sprayIcon = (r: number) => {
         const n = Math.round(r * 1.4);
         return Array.from({ length: n }, (_, i) => {
             const a = i * 2.39996323;
             const d = (r / 13) * 8 * Math.sqrt(i / n);
-            return <circle key={i} cx={10 + Math.cos(a) * d} cy={10 + Math.sin(a) * d} r="0.7" fill="#000" />;
+            return <circle key={i} cx={10 + Math.cos(a) * d} cy={10 + Math.sin(a) * d} r="0.7" fill="currentColor" />;
         });
     };
+    // Outline uses currentColor (black → white when selected); the grey fill stays grey
     const fillIcon = (f: string) => {
-        if (f === "stroke") return <rect x="3" y="3" width="18" height="10" fill="none" stroke="#000" strokeWidth="1.5" />;
-        if (f === "both") return <rect x="3" y="3" width="18" height="10" fill="#808080" stroke="#000" strokeWidth="1.5" />;
-        return <rect x="3" y="3" width="18" height="10" fill="#808080" />;
+        if (f === "stroke") return <rect x="2" y="2" width="36" height="10" fill="none" stroke="currentColor" strokeWidth="1.4" />;
+        if (f === "both") return <rect x="2" y="2" width="36" height="10" fill="#808080" stroke="currentColor" strokeWidth="1.4" />;
+        return <rect x="2" y="2" width="36" height="10" fill="#808080" />;
     };
 
     return (
@@ -975,7 +976,7 @@ const Paint = () => {
                             <div className={styles.fillOpts}>
                                 {SHAPE_FILLS.map((f) => (
                                     <button key={f} type="button" aria-label={f} className={styles.fillOpt} data-active={shapeFill === f} onClick={() => setShapeFill(f)}>
-                                        <svg viewBox="0 0 24 16" width="24" height="16">{fillIcon(f)}</svg>
+                                        <svg viewBox="0 0 40 14">{fillIcon(f)}</svg>
                                     </button>
                                 ))}
                             </div>
