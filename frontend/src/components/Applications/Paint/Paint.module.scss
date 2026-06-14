@@ -98,8 +98,11 @@
 
 // Tool-options box below the tools (shows width choices for the relevant tools)
 .options {
-    height: 5.6rem;
+    min-height: 5.6rem;
     margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.3rem;
     background: #ece9d8;
     // Sunken bevel
@@ -119,9 +122,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-    height: 100%;
-    justify-content: center;
-    padding: 0 0.3rem;
+    width: 4.2rem;
 }
 
 .sizeOption {
@@ -194,10 +195,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
-    align-content: center;
     justify-content: center;
-    height: 100%;
-    padding: 0.3rem;
+    width: 3.8rem;
 }
 
 .eraserOpt {
@@ -228,9 +227,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
-    height: 100%;
-    justify-content: center;
-    padding: 0 0.2rem;
 }
 
 .zoomOption {
@@ -247,6 +243,10 @@
     &[data-active="true"] {
         background: #0a246a;
         color: #fff;
+
+        .zoomSq {
+            background: #fff;
+        }
 
         @include theme-color("green") {
             background: #5e6948;
@@ -280,13 +280,11 @@
 
 // Airbrush: small + medium on one row, large beneath
 .sprayOpts {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.2rem;
-    justify-items: center;
-    align-content: center;
-    height: 100%;
-    padding: 0.3rem;
+    justify-content: center;
+    width: 4.8rem;
 }
 
 .sprayOpt {
@@ -301,9 +299,6 @@
     flex-direction: column;
     gap: 0.3rem;
     align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 0.3rem;
 }
 
 .fillOpt {
