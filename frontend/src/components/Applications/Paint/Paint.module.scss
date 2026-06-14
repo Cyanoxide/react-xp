@@ -103,7 +103,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.3rem;
+    // No horizontal padding so a full-width selection (zoom) can reach the edges;
+    // the other option sets are centred and don't need it
+    padding: 0.3rem 0;
     background: #ece9d8;
     // Sunken bevel
     border: 0.1rem solid;
@@ -234,8 +236,9 @@
     align-items: center;
     gap: 0.3rem;
     width: 100%;
-    padding: 0.05rem 0.4rem;
-    font-size: 0.9rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.85rem;
+    line-height: 1;
     color: #000;
     cursor: pointer;
     background: transparent;
@@ -259,10 +262,16 @@
     }
 }
 
-.zoomSq {
-    width: 0.65rem;
-    height: 0.65rem;
+// Fixed-width slot keeps the labels aligned while the squares vary in size
+.zoomSqSlot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9rem;
     flex-shrink: 0;
+}
+
+.zoomSq {
     background: #000;
 }
 
