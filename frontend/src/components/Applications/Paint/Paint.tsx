@@ -58,7 +58,8 @@ type BrushKind = "circle" | "square" | "diag" | "diag2";
 const BRUSHES: Array<{ id: string; kind: BrushKind; v: number }> = [
     { id: "c-l", kind: "circle", v: 4 }, { id: "c-m", kind: "circle", v: 2.5 }, { id: "c-s", kind: "circle", v: 1.2 },
     { id: "s-l", kind: "square", v: 8 }, { id: "s-m", kind: "square", v: 5 }, { id: "s-s", kind: "square", v: 2 },
-    { id: "d-r", kind: "diag", v: 11 }, { id: "d-m", kind: "diag", v: 7 }, { id: "d-l", kind: "diag2", v: 11 },
+    { id: "dr-l", kind: "diag", v: 11 }, { id: "dr-m", kind: "diag", v: 8 }, { id: "dr-s", kind: "diag", v: 5 },
+    { id: "dl-l", kind: "diag2", v: 11 }, { id: "dl-m", kind: "diag2", v: 8 }, { id: "dl-s", kind: "diag2", v: 5 },
 ];
 
 const SHAPE_TOOLS = new Set<Tool>(["rectangle", "polygon", "ellipse", "roundRectangle"]);
