@@ -49,9 +49,19 @@ const CELLS: Array<[number, number, number, number]> = [
     [1891, 17, 122, 90], [2061, 9, 114, 106], [2225, 20, 122, 82], [2395, 12, 122, 90],
 ];
 
-// Tools whose options box shows a line-width picker (matches Paint, where the
-// pencil/select/fill/text/pick/magnifier have no width option).
-const WIDTH_TOOLS = new Set<Tool>(["brush", "eraser", "airbrush", "line", "curve", "rectangle", "polygon", "ellipse", "roundRectangle"]);
+// Per-tool option sets shown in the options box.
+const ERASER_SIZES = [4, 6, 9, 13];
+const ZOOMS = [1, 2, 6, 8];
+const SPRAYS = [{ id: "s", r: 4 }, { id: "m", r: 8 }, { id: "l", r: 13 }];
+const SHAPE_FILLS = ["stroke", "both", "fill"] as const;
+type BrushKind = "circle" | "square" | "diag" | "diag2";
+const BRUSHES: Array<{ id: string; kind: BrushKind; v: number }> = [
+    { id: "c-l", kind: "circle", v: 4 }, { id: "c-m", kind: "circle", v: 2.5 }, { id: "c-s", kind: "circle", v: 1.2 },
+    { id: "s-l", kind: "square", v: 8 }, { id: "s-m", kind: "square", v: 5 }, { id: "s-s", kind: "square", v: 2 },
+    { id: "d-r", kind: "diag", v: 9 }, { id: "d-l", kind: "diag2", v: 9 },
+];
+
+const SHAPE_TOOLS = new Set<Tool>(["rectangle", "polygon", "ellipse", "roundRectangle"]);
 
 // The classic Windows Paint 28-colour palette (two rows of fourteen).
 const PALETTE = [
@@ -141,6 +151,10 @@ const Paint = () => {
     const [fgColor, setFgColor] = useState("#000000");
     const [bgColor, setBgColor] = useState("#ffffff");
     const [size, setSize] = useState(2);
+    const [eraserSize, setEraserSize] = useState(6);
+    const [brushId, setBrushId] = useState("c-m");
+    const [sprayId, setSprayId] = useState("m");
+    const [shapeFill, setShapeFill] = useState<(typeof SHAPE_FILLS)[number]>("stroke");
     const [zoom, setZoom] = useState(1);
     const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
     // Text tool: a box (dragged out like a selection) you type plain text into
@@ -285,33 +299,78 @@ const Paint = () => {
 
     const strokeColor = (button: number) => (button === 2 ? bgColor : fgColor);
 
+    // Stamp a single brush/eraser nib at a point
+    const stampNib = (ctx: CanvasRenderingContext2D, x: number, y: number, color: string, kind: BrushKind, v: number) => {
+        if (kind === "circle") {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, v, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (kind === "square") {
+            ctx.fillStyle = color;
+            ctx.fillRect(Math.round(x - v / 2), Math.round(y - v / 2), v, v);
+        } else {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            const h = v / 2;
+            if (kind === "diag") { ctx.moveTo(x - h, y + h); ctx.lineTo(x + h, y - h); } // right-leaning /
+            else { ctx.moveTo(x - h, y - h); ctx.lineTo(x + h, y + h); } // left-leaning \
+            ctx.stroke();
+        }
+    };
+
+    // Freehand draw (pencil / brush / eraser). Pencil is a 1px line; brush and
+    // eraser stamp their nib densely along the segment.
     const drawSegment = (ctx: CanvasRenderingContext2D, from: { x: number; y: number }, to: { x: number; y: number }, button: number) => {
-        ctx.strokeStyle = tool === "eraser" ? bgColor : strokeColor(button);
-        ctx.lineWidth = tool === "eraser" ? Math.max(size * 3, 8) : tool === "pencil" ? 1 : size;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.beginPath();
-        ctx.moveTo(from.x, from.y);
-        ctx.lineTo(to.x, to.y);
-        ctx.stroke();
+        if (tool === "pencil") {
+            ctx.strokeStyle = strokeColor(button);
+            ctx.lineWidth = 1;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+            ctx.moveTo(from.x, from.y);
+            ctx.lineTo(to.x, to.y);
+            ctx.stroke();
+            return;
+        }
+        const steps = Math.max(1, Math.ceil(Math.hypot(to.x - from.x, to.y - from.y)));
+        const brush = BRUSHES.find((b) => b.id === brushId) ?? BRUSHES[1];
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            const x = from.x + (to.x - from.x) * t;
+            const y = from.y + (to.y - from.y) * t;
+            if (tool === "eraser") stampNib(ctx, x, y, bgColor, "square", eraserSize);
+            else stampNib(ctx, x, y, strokeColor(button), brush.kind, brush.v);
+        }
     };
 
     const spray = (ctx: CanvasRenderingContext2D, at: { x: number; y: number }, button: number) => {
         ctx.fillStyle = strokeColor(button);
-        const radius = Math.max(size * 2, 6);
-        for (let i = 0; i < 14; i++) {
+        const radius = (SPRAYS.find((s) => s.id === sprayId) ?? SPRAYS[1]).r;
+        const count = Math.round(radius * 1.6);
+        for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
             const dist = Math.random() * radius;
             ctx.fillRect(Math.round(at.x + Math.cos(angle) * dist), Math.round(at.y + Math.sin(angle) * dist), 1, 1);
         }
     };
 
+    // Border colour is the draw colour; fill is the opposite (bg) colour, except
+    // the fill-only style which fills with the draw colour.
+    const fillShape = (ctx: CanvasRenderingContext2D, button: number) => {
+        if (shapeFill === "stroke") return;
+        ctx.fillStyle = shapeFill === "fill" ? strokeColor(button) : (button === 2 ? fgColor : bgColor);
+        ctx.fill();
+    };
+
     const drawShape = (ctx: CanvasRenderingContext2D, from: { x: number; y: number }, to: { x: number; y: number }, button: number) => {
-        ctx.strokeStyle = strokeColor(button);
         ctx.lineWidth = size;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.beginPath();
+        let closed = true;
         if (tool === "rectangle") {
             ctx.rect(from.x, from.y, to.x - from.x, to.y - from.y);
         } else if (tool === "roundRectangle") {
@@ -322,11 +381,15 @@ const Paint = () => {
         } else if (tool === "ellipse") {
             ctx.ellipse((from.x + to.x) / 2, (from.y + to.y) / 2, Math.abs(to.x - from.x) / 2, Math.abs(to.y - from.y) / 2, 0, 0, Math.PI * 2);
         } else {
-            // line
             ctx.moveTo(from.x, from.y);
             ctx.lineTo(to.x, to.y);
+            closed = false;
         }
-        ctx.stroke();
+        if (closed) fillShape(ctx, button);
+        if (!closed || shapeFill !== "fill") {
+            ctx.strokeStyle = strokeColor(button);
+            ctx.stroke();
+        }
     };
 
     const isFreehand = tool === "pencil" || tool === "brush" || tool === "eraser";
@@ -347,8 +410,14 @@ const Paint = () => {
         ctx.moveTo(pts[0].x, pts[0].y);
         for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
         if (cursor) ctx.lineTo(cursor.x, cursor.y);
-        if (close) ctx.closePath();
-        ctx.stroke();
+        if (close) {
+            ctx.closePath();
+            fillShape(ctx, button);
+        }
+        if (!close || shapeFill !== "fill") {
+            ctx.strokeStyle = strokeColor(button);
+            ctx.stroke();
+        }
     };
 
     // A vertex is committed on pointer-up, so a plain click and a click-drag both
@@ -655,8 +724,12 @@ const Paint = () => {
         if (tool === "curve") { handleCurveDown(event); return; }
         if (tool === "text") { handleTextDown(event); return; }
         if (tool === "magnifier") {
-            // Left-click zooms in (1→2→4→8→1), right-click zooms back out
-            setZoom((z) => (event.button === 2 ? (z <= 1 ? 1 : z / 2) : (z >= 8 ? 1 : z * 2)));
+            // Cycle through the zoom levels (right-click steps back down)
+            setZoom((z) => {
+                const i = ZOOMS.indexOf(z);
+                const next = (event.button === 2 ? i - 1 : i + 1) + ZOOMS.length;
+                return ZOOMS[next % ZOOMS.length];
+            });
             return;
         }
 
@@ -794,7 +867,28 @@ const Paint = () => {
         else if (key === "n") { event.preventDefault(); clearCanvas(); }
     };
 
-    const showWidths = WIDTH_TOOLS.has(tool);
+    // Option-box icons (inline SVG, no sprites)
+    const brushIcon = (b: { kind: BrushKind; v: number }) => {
+        if (b.kind === "circle") return <circle cx="8" cy="8" r={b.v} fill="#000" />;
+        if (b.kind === "square") return <rect x={8 - b.v / 2} y={8 - b.v / 2} width={b.v} height={b.v} fill="#000" />;
+        const h = b.v / 2;
+        return b.kind === "diag"
+            ? <line x1={8 - h} y1={8 + h} x2={8 + h} y2={8 - h} stroke="#000" strokeWidth="2.5" strokeLinecap="round" />
+            : <line x1={8 - h} y1={8 - h} x2={8 + h} y2={8 + h} stroke="#000" strokeWidth="2.5" strokeLinecap="round" />;
+    };
+    const sprayIcon = (r: number) => {
+        const n = Math.round(r * 1.4);
+        return Array.from({ length: n }, (_, i) => {
+            const a = i * 2.39996323;
+            const d = (r / 13) * 8 * Math.sqrt(i / n);
+            return <circle key={i} cx={10 + Math.cos(a) * d} cy={10 + Math.sin(a) * d} r="0.7" fill="#000" />;
+        });
+    };
+    const fillIcon = (f: string) => {
+        if (f === "stroke") return <rect x="3" y="3" width="18" height="10" fill="none" stroke="#000" strokeWidth="1.5" />;
+        if (f === "both") return <rect x="3" y="3" width="18" height="10" fill="#808080" stroke="#000" strokeWidth="1.5" />;
+        return <rect x="3" y="3" width="18" height="10" fill="#808080" />;
+    };
 
     return (
         <div ref={rootRef} className={`${styles.paint} flex flex-col h-full`} tabIndex={0} onKeyDown={handleKeyDown}>
@@ -828,38 +922,60 @@ const Paint = () => {
                         ))}
                     </div>
                     <div className={styles.options}>
-                        {tool === "magnifier" ? (
-                            <div className={styles.zooms}>
-                                {[1, 2, 4, 8].map((z) => (
-                                    <button
-                                        key={z}
-                                        type="button"
-                                        aria-label={`${z}x zoom`}
-                                        className={styles.zoomOption}
-                                        data-active={zoom === z}
-                                        onClick={() => setZoom(z)}
-                                    >
-                                        {z}x
+                        {tool === "eraser" && (
+                            <div className={styles.eraserOpts}>
+                                {ERASER_SIZES.map((s) => (
+                                    <button key={s} type="button" aria-label={`eraser ${s}`} className={styles.eraserOpt} data-active={eraserSize === s} onClick={() => setEraserSize(s)}>
+                                        <span style={{ width: `${s}px`, height: `${s}px` }} />
                                     </button>
                                 ))}
                             </div>
-                        ) : showWidths ? (
+                        )}
+                        {tool === "magnifier" && (
+                            <div className={styles.zooms}>
+                                {ZOOMS.map((z) => (
+                                    <button key={z} type="button" aria-label={`${z}x zoom`} className={styles.zoomOption} data-active={zoom === z} onClick={() => setZoom(z)}>
+                                        <span className={styles.zoomSq} />{z}x
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        {tool === "brush" && (
+                            <div className={styles.brushOpts}>
+                                {BRUSHES.map((b) => (
+                                    <button key={b.id} type="button" aria-label={b.id} className={styles.brushOpt} data-active={brushId === b.id} onClick={() => setBrushId(b.id)}>
+                                        <svg viewBox="0 0 16 16" width="16" height="16">{brushIcon(b)}</svg>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        {tool === "airbrush" && (
+                            <div className={styles.sprayOpts}>
+                                {SPRAYS.map((s) => (
+                                    <button key={s.id} type="button" aria-label={`spray ${s.id}`} className={styles.sprayOpt} data-active={sprayId === s.id} onClick={() => setSprayId(s.id)}>
+                                        <svg viewBox="0 0 20 20" width="20" height="20">{sprayIcon(s.r)}</svg>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        {(tool === "line" || tool === "curve") && (
                             <div className={styles.sizes}>
                                 {SIZES.map((s) => (
-                                    <button
-                                        key={s}
-                                        type="button"
-                                        title={`${s}px`}
-                                        aria-label={`${s} pixel width`}
-                                        className={styles.sizeOption}
-                                        data-active={size === s}
-                                        onClick={() => setSize(s)}
-                                    >
+                                    <button key={s} type="button" aria-label={`${s} pixel width`} className={styles.sizeOption} data-active={size === s} onClick={() => setSize(s)}>
                                         <span style={{ height: `${s}px` }} />
                                     </button>
                                 ))}
                             </div>
-                        ) : null}
+                        )}
+                        {SHAPE_TOOLS.has(tool) && (
+                            <div className={styles.fillOpts}>
+                                {SHAPE_FILLS.map((f) => (
+                                    <button key={f} type="button" aria-label={f} className={styles.fillOpt} data-active={shapeFill === f} onClick={() => setShapeFill(f)}>
+                                        <svg viewBox="0 0 24 16" width="24" height="16">{fillIcon(f)}</svg>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
 
