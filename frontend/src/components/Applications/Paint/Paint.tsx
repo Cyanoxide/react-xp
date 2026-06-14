@@ -223,11 +223,13 @@ const Paint = () => {
             selBaseRef.current = null;
             selPathRef.current = null;
         }
-        // Abandon an unfinished polygon (restore the canvas to before it started)
+        // Leaving the polygon tool commits the segments drawn so far (they're
+        // already on the canvas) — just drop the in-progress state, don't erase.
         if (tool !== "polygon" && polyBaseRef.current) {
-            canvasRef.current?.getContext("2d")?.putImageData(polyBaseRef.current, 0, 0);
             polyPointsRef.current = null;
             polyBaseRef.current = null;
+            polyDraggingRef.current = false;
+            polyLastClickRef.current = null;
         }
         // Leaving the curve tool finalises whatever's already drawn
         if (tool !== "curve") {
