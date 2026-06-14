@@ -120,18 +120,19 @@
     }
 }
 
+// Each row hugs its line plus a constant padding, with a fixed gap, so the space
+// between the lines stays equal (a fixed-height row would close up as lines grow)
 .sizes {
     display: flex;
     flex-direction: column;
-    gap: 0.18rem;
+    gap: 0.3rem;
     width: 4.2rem;
 }
 
 .sizeOption {
     display: flex;
     align-items: center;
-    height: 0.6rem;
-    padding: 0 0.1rem;
+    padding: 0.15rem 0.1rem;
     background: transparent;
     border: none;
     cursor: pointer;
