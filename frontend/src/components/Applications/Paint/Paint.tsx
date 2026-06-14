@@ -169,6 +169,7 @@ const Paint = () => {
     // double-click to close. polyBase is the canvas before the polygon started.
     const polyPointsRef = useRef<Array<{ x: number; y: number }> | null>(null);
     const polyBaseRef = useRef<ImageData | null>(null);
+    const polyLastClickRef = useRef<{ t: number; x: number; y: number } | null>(null);
 
     // Size the canvas to the drawing area once it has a real layout, leaving a
     // grey margin to the right/bottom (XP Paint's bitmap is a fixed size inside a
@@ -328,6 +329,18 @@ const Paint = () => {
         if (!canvas || !ctx) return;
         const pos = getPos(event);
         buttonRef.current = event.button;
+
+        // Detect a double-click manually (a second click in the same spot, soon
+        // after): close the polygon rather than add another vertex.
+        const now = Date.now();
+        const last = polyLastClickRef.current;
+        if (polyPointsRef.current && polyPointsRef.current.length >= 2 && last && now - last.t < 400 && Math.abs(pos.x - last.x) < 6 && Math.abs(pos.y - last.y) < 6) {
+            handlePolygonClose();
+            polyLastClickRef.current = null;
+            return;
+        }
+        polyLastClickRef.current = { t: now, x: pos.x, y: pos.y };
+
         if (!polyPointsRef.current) {
             pushUndo(ctx);
             polyBaseRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -484,8 +497,8 @@ const Paint = () => {
         if (isSelect) { handleSelectDown(event); return; }
         if (tool === "polygon") { handlePolygonDown(event); return; }
         if (tool === "magnifier") {
-            // Left-click zooms in (1→2→4→1), right-click zooms back out
-            setZoom((z) => (event.button === 2 ? (z <= 1 ? 1 : z / 2) : (z >= 4 ? 1 : z * 2)));
+            // Left-click zooms in (1→2→4→8→1), right-click zooms back out
+            setZoom((z) => (event.button === 2 ? (z <= 1 ? 1 : z / 2) : (z >= 8 ? 1 : z * 2)));
             return;
         }
         // Text is present in the toolbox but not yet interactive.
@@ -518,7 +531,8 @@ const Paint = () => {
         const pos = getPos(event);
         setCursor(pos);
         if (isSelect) { handleSelectMove(event); return; }
-        if (tool === "polygon") { if (polyPointsRef.current) drawPolygon(ctx, pos, buttonRef.current, false); return; }
+        // Polygon segments only commit on click — no line follows the cursor
+        if (tool === "polygon") return;
         if (!drawingRef.current) return;
 
         if (isFreehand) {
