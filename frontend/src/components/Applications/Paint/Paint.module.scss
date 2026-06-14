@@ -5,6 +5,10 @@
     font-family: Tahoma, "Trebuchet MS", sans-serif;
     font-size: 1.1rem;
 
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
     @include theme-color("silver") {
         background: #ece9e1;
     }
@@ -21,12 +25,11 @@
 
 // ---- Toolbox ---------------------------------------------------------------
 .toolbox {
-    width: 5.4rem;
+    width: 5.6rem;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    padding: 0.4rem;
+    padding: 0.3rem;
     background: #ece9d8;
     border-right: 0.1rem solid #919b9c;
 
@@ -44,11 +47,11 @@
 .tools {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.3rem;
+    gap: 0.1rem;
 }
 
 .toolButton {
-    width: 2.2rem;
+    width: 2.4rem;
     height: 2.2rem;
     display: flex;
     align-items: center;
@@ -56,50 +59,65 @@
     padding: 0;
     cursor: pointer;
     color: #000;
-    background: #ece9d8;
-    // Raised XP bevel
-    border: 0.1rem solid;
-    border-color: #fff #808080 #808080 #fff;
+    background: transparent;
+    // Flat until hovered/selected, like the XP toolbar
+    border: 0.1rem solid transparent;
 
     svg {
         display: block;
-        fill: currentColor;
     }
 
     &:hover {
-        background: #f4f2e6;
+        border-color: #fff #808080 #808080 #fff;
     }
 
     &[data-active="true"] {
-        // Sunken + themed tint so the active tool reads clearly per theme
         border-color: #808080 #fff #fff #808080;
-        background: #c9d9f0;
-        box-shadow: inset 0.1rem 0.1rem 0.2rem #00000022;
+        background: #faf9f4;
 
         @include theme-color("green") {
-            background: #d3dabb;
+            background: #f1f2e3;
         }
 
         @include theme-color("silver") {
-            background: #d3d7e6;
+            background: #f3f3f7;
         }
+    }
+}
+
+// Tool-options box below the tools (shows width choices for the relevant tools)
+.options {
+    height: 5.6rem;
+    margin-top: 0.5rem;
+    padding: 0.3rem;
+    background: #ece9d8;
+    // Sunken bevel
+    border: 0.1rem solid;
+    border-color: #808080 #fff #fff #808080;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
     }
 }
 
 .sizes {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    padding: 0.3rem;
-    background: #fff;
-    border: 0.1rem solid #808080;
+    gap: 0.3rem;
+    height: 100%;
+    justify-content: center;
+    padding: 0 0.3rem;
 }
 
 .sizeOption {
     display: flex;
     align-items: center;
-    height: 1.4rem;
-    padding: 0 0.2rem;
+    height: 0.9rem;
+    padding: 0 0.1rem;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -113,18 +131,18 @@
     }
 
     &[data-active="true"] {
-        background: #316ac5;
+        background: #0a246a;
 
         span {
             background: #fff;
         }
 
         @include theme-color("green") {
-            background: #94a06f;
+            background: #5e6948;
         }
 
         @include theme-color("silver") {
-            background: #8084a0;
+            background: #4a4d63;
         }
     }
 }
@@ -133,7 +151,7 @@
 .canvasArea {
     flex: 1;
     min-width: 0;
-    padding: 0.8rem;
+    padding: 0.3rem;
     overflow: auto;
     background: #808080;
 
@@ -142,12 +160,47 @@
     }
 }
 
+.canvasWrap {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+}
+
 .canvas {
     display: block;
     background: #fff;
-    box-shadow: 0 0 0 0.1rem #000;
     cursor: crosshair;
     touch-action: none;
+    box-shadow: 0 0 0 0.1rem #000;
+}
+
+// Bitmap resize handles (visual for now): right-middle, bottom-middle, corner
+.handle {
+    position: absolute;
+    width: 0.6rem;
+    height: 0.6rem;
+    background: #316ac5;
+    box-shadow: 0 0 0 0.1rem #fff;
+}
+
+.handleRight {
+    top: 50%;
+    right: -0.4rem;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+}
+
+.handleBottom {
+    bottom: -0.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+}
+
+.handleCorner {
+    bottom: -0.4rem;
+    right: -0.4rem;
+    cursor: nwse-resize;
 }
 
 // ---- Palette ---------------------------------------------------------------
@@ -155,7 +208,7 @@
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.4rem 0.6rem;
+    padding: 0.3rem 0.4rem;
     background: #ece9d8;
     border-top: 0.1rem solid #919b9c;
 
@@ -210,4 +263,56 @@
     padding: 0;
     cursor: pointer;
     border: 0.1rem solid #808080;
+}
+
+// ---- Status bar ------------------------------------------------------------
+.statusBar {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    height: 2.2rem;
+    padding: 0.2rem;
+    background: #ece9d8;
+    border-top: 0.1rem solid #fff;
+    font-size: 1.05rem;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+}
+
+.statusHelp,
+.statusPanel {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // Sunken inset bevel
+    border: 0.1rem solid;
+    border-color: #808080 #fff #fff #808080;
+}
+
+.statusHelp {
+    flex: 1;
+    min-width: 0;
+}
+
+.statusPanel {
+    width: 8rem;
+    flex-shrink: 0;
+}
+
+.statusGrip {
+    width: 1.6rem;
+    height: 100%;
+    flex-shrink: 0;
+    // Diagonal "grip" hatch in the bottom-right corner
+    background-image: repeating-linear-gradient(135deg, transparent 0 0.2rem, #fff 0.2rem 0.3rem, transparent 0.3rem 0.5rem, #919b9c 0.5rem 0.6rem);
 }
