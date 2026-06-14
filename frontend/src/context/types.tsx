@@ -32,6 +32,9 @@ export interface AbsoluteObject {
 
 export interface Application {
     title: string;
+    // Optional display name for the Start menu / desktop icon (falls back to
+    // title); lets the window title differ from the launcher label
+    name?: string;
     icon?: string;
     iconLarge?: string;
     content: ReactNode | string;

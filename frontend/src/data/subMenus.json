@@ -23,7 +23,7 @@
             },
             {
                 "appId": "startup",
-                "subMenu": "accessories"
+                "subMenu": "startup"
             },
             {
                 "appId": "internetExplorer"
@@ -50,12 +50,7 @@
         "contents": []
     },
     "startup": {
-        "contents": [
-            {
-                "appId": "test",
-                "subMenu": "placeholder1"
-            }
-        ]
+        "contents": []
     },
     "games": {
         "contents": [

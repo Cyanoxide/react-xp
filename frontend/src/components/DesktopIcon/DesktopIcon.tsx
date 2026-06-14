@@ -23,7 +23,7 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
     const desktopIconRef = useRef<HTMLButtonElement | null>(null);
     const isActive = selectedIds.includes(id);
     const appData = applications[appId];
-    const { title, icon, iconLarge, link } = { ...appData };
+    const { title, name, icon, iconLarge, link } = { ...appData };
 
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         if (!desktopIconRef.current) return;
@@ -123,7 +123,7 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
     return (
         <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-app-id={appId} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position?.top, right: position?.right, bottom: position?.bottom, left: position?.left }}>
             <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="50" draggable={false} /></span>
-            <div className="relative w-full flex justify-center"><h4 className="text-center">{title}</h4></div>
+            <div className="relative w-full flex justify-center"><h4 className="text-center">{name ?? title}</h4></div>
         </button>
     );
 };

@@ -19,7 +19,8 @@ const StartMenuItem = ({ ...props }: StartMenuItemProps) => {
     const { iconSize = (subTitle) ? 30 : 22 } = props;
     const { currentWindows, dispatch } = useContext();
     const appData = applications[appId];
-    const { title, icon, iconLarge, disabled } = { ...appData };
+    const { title, name, icon, iconLarge, disabled } = { ...appData };
+    const label = name ?? title;
 
     const onClickHandler = () => {
         if (subMenu || disabled) return;
@@ -39,12 +40,12 @@ const StartMenuItem = ({ ...props }: StartMenuItemProps) => {
                 <img src={iconLarge || icon} className="mr-2" width={iconSize} height={iconSize} />
                 <span>
                     <h5 className="font-bold">{subTitle}</h5>
-                    <p>{title}</p>
+                    <p>{label}</p>
                 </span>
             </>}
             {!subTitle && <>
                 <img src={iconLarge || icon} className="mr-2" width={iconSize} height={iconSize} />
-                <h5>{title}</h5>
+                <h5>{label}</h5>
             </>}
         </button>
     );

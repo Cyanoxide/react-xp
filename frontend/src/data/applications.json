@@ -16,6 +16,7 @@
     },
     "paint": {
         "title": "untitled - Paint",
+        "name": "Paint",
         "iconLarge": "/icon__paint--large.png",
         "component": "Paint",
         "height": 460,
