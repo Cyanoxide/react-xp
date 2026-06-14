@@ -64,6 +64,13 @@
             }
         ]
     },
+    "accessories": {
+        "contents": [
+            {
+                "appId": "paint"
+            }
+        ]
+    },
     "placeholder1": {
         "contents": [
             {

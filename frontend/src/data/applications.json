@@ -14,6 +14,14 @@
         "height": 500,
         "width": 500
     },
+    "paint": {
+        "title": "untitled - Paint",
+        "icon": "/icon__paint.svg",
+        "iconLarge": "/icon__paint.svg",
+        "component": "Paint",
+        "height": 460,
+        "width": 600
+    },
     "outlook": {
         "title": "Microsoft Outlook",
         "iconLarge": "/icon__outlook--large.png",

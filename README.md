@@ -13,6 +13,7 @@ An authentic recreation of Windows XP, created using **React** and **Typescript*
 - **Internet Explorer** with Wayback Machine implementation for period accurate web browsing.
 - **Run** can open applications and Folders, either by internal appId, or title. URLs will also open in Internet Explorer.
 - **[Solitaire](https://github.com/Cyanoxide/react-solitaire)**
+- **Paint** — a lightweight, theme-aware recreation with pencil, brush, shapes, fill, eraser and the classic colour palette (Ctrl+Z undo, Ctrl+S save, Ctrl+N new).
 - **Clippy**, the desktop assistant — drag him around, ask him questions, I can't guarentee he will be much help though.
 - Login, Shutdown and boot up sequences
 
@@ -21,7 +22,6 @@ An authentic recreation of Windows XP, created using **React** and **Typescript*
 This is an ongoing project, with many more features I’d like to include in the future, here are some potential features I make look into:
 
 - MSN Messenger
-- MS Paint
 - Minesweeper
 
 ## Demo
@@ -44,6 +44,7 @@ Then open [http://localhost:5174](http://localhost:5174) in your browser.
 
 - [XP.css](https://github.com/botoxparty/XP.css) — Used specifically for scrollbar assets (arrows, track and thumb)
 - [clippyjs](https://github.com/pithings/clippy)
+- [JS Paint](https://github.com/1j01/jspaint) by Isaiah Odhner — reference and inspiration for the Paint app's look and tooling (MIT)
 
 ## Support & Contribution
 
