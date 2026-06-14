@@ -190,25 +190,24 @@
     }
 }
 
-// Eraser: four square sizes, one per row, evenly spaced down the box
+// Eraser: four square sizes, one per row. Each button hugs its square and the
+// gap between buttons is fixed, so the spacing between the squares is constant
+// (a fixed-height row would make the gaps shrink as the squares grow).
 .eraserOpts {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: 0.5rem;
     height: 100%;
 }
 
 .eraserOpt {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.6rem;
-    height: 1.4rem;
+    display: block;
     padding: 0;
     cursor: pointer;
     background: transparent;
-    border: 0.1rem solid transparent;
+    border: none;
 
     span {
         display: block;
