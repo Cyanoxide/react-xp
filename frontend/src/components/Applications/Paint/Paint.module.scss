@@ -190,12 +190,13 @@
     }
 }
 
-// Eraser: four square sizes, one per row, black until selected (white + blue)
+// Eraser: four square sizes, one per row, evenly spaced down the box
 .eraserOpts {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
+    justify-content: space-evenly;
+    height: 100%;
 }
 
 .eraserOpt {
@@ -203,7 +204,7 @@
     align-items: center;
     justify-content: center;
     width: 1.6rem;
-    height: 1.05rem;
+    height: 1.4rem;
     padding: 0;
     cursor: pointer;
     background: transparent;
