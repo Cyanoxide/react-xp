@@ -96,9 +96,9 @@
     image-rendering: pixelated;
 }
 
-// Tool-options box below the tools (shows width choices for the relevant tools)
+// Tool-options box below the tools — fixed size for every tool; content fits in
 .options {
-    min-height: 5.6rem;
+    height: 5.6rem;
     margin-top: 0.5rem;
     display: flex;
     align-items: center;
@@ -121,14 +121,14 @@
 .sizes {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.18rem;
     width: 4.2rem;
 }
 
 .sizeOption {
     display: flex;
     align-items: center;
-    height: 0.9rem;
+    height: 0.6rem;
     padding: 0 0.1rem;
     background: transparent;
     border: none;
@@ -190,13 +190,12 @@
     }
 }
 
-// Eraser: four square sizes, black until selected (then white + blue border)
+// Eraser: four square sizes, one per row, black until selected (white + blue)
 .eraserOpts {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    justify-content: center;
-    width: 3.8rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
 }
 
 .eraserOpt {
@@ -204,7 +203,7 @@
     align-items: center;
     justify-content: center;
     width: 1.6rem;
-    height: 1.6rem;
+    height: 1.05rem;
     padding: 0;
     cursor: pointer;
     background: transparent;
@@ -232,9 +231,9 @@
 .zoomOption {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.15rem 0.3rem;
-    font-size: 1.1rem;
+    gap: 0.3rem;
+    padding: 0.05rem 0.3rem;
+    font-size: 0.95rem;
     color: #000;
     cursor: pointer;
     background: transparent;
@@ -259,52 +258,67 @@
 }
 
 .zoomSq {
-    width: 0.8rem;
-    height: 0.8rem;
+    width: 0.7rem;
+    height: 0.7rem;
     flex-shrink: 0;
     background: #000;
 }
 
-// Brush nib shapes (3 circles, 3 squares, 2 diagonals)
+// Brush nib shapes (3 circles, 3 squares, 3 diagonals) — 3 per row
 .brushOpts {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1.35rem);
     gap: 0.1rem;
-    padding: 0.2rem;
 }
 
 .brushOpt {
-    height: 1.5rem;
+    width: 1.35rem;
+    height: 1.35rem;
     @include option-button;
+
+    svg {
+        width: 1.1rem;
+        height: 1.1rem;
+    }
 }
 
-// Airbrush: small + medium on one row, large beneath
+// Airbrush: small + medium on one row, large beneath (centred)
 .sprayOpts {
     display: flex;
     flex-wrap: wrap;
     gap: 0.2rem;
     justify-content: center;
-    width: 4.8rem;
+    width: 4.4rem;
 }
 
 .sprayOpt {
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2rem;
+    height: 2rem;
     @include option-button;
+
+    svg {
+        width: 1.6rem;
+        height: 1.6rem;
+    }
 }
 
 // Shape fill styles: border-only, border+fill, fill-only
 .fillOpts {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.25rem;
     align-items: center;
 }
 
 .fillOpt {
-    width: 3rem;
-    height: 1.8rem;
+    width: 2.8rem;
+    height: 1.4rem;
     @include option-button;
+
+    svg {
+        width: 2.4rem;
+        height: 1.2rem;
+    }
 }
 
 // ---- Canvas ----------------------------------------------------------------

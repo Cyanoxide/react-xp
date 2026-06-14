@@ -58,7 +58,7 @@ type BrushKind = "circle" | "square" | "diag" | "diag2";
 const BRUSHES: Array<{ id: string; kind: BrushKind; v: number }> = [
     { id: "c-l", kind: "circle", v: 4 }, { id: "c-m", kind: "circle", v: 2.5 }, { id: "c-s", kind: "circle", v: 1.2 },
     { id: "s-l", kind: "square", v: 8 }, { id: "s-m", kind: "square", v: 5 }, { id: "s-s", kind: "square", v: 2 },
-    { id: "d-r", kind: "diag", v: 9 }, { id: "d-l", kind: "diag2", v: 9 },
+    { id: "d-r", kind: "diag", v: 11 }, { id: "d-m", kind: "diag", v: 7 }, { id: "d-l", kind: "diag2", v: 11 },
 ];
 
 const SHAPE_TOOLS = new Set<Tool>(["rectangle", "polygon", "ellipse", "roundRectangle"]);
@@ -311,7 +311,7 @@ const Paint = () => {
             ctx.fillRect(Math.round(x - v / 2), Math.round(y - v / 2), v, v);
         } else {
             ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.5;
             ctx.lineCap = "round";
             ctx.beginPath();
             const h = v / 2;
@@ -873,8 +873,8 @@ const Paint = () => {
         if (b.kind === "square") return <rect x={8 - b.v / 2} y={8 - b.v / 2} width={b.v} height={b.v} fill="#000" />;
         const h = b.v / 2;
         return b.kind === "diag"
-            ? <line x1={8 - h} y1={8 + h} x2={8 + h} y2={8 - h} stroke="#000" strokeWidth="2.5" strokeLinecap="round" />
-            : <line x1={8 - h} y1={8 - h} x2={8 + h} y2={8 + h} stroke="#000" strokeWidth="2.5" strokeLinecap="round" />;
+            ? <line x1={8 - h} y1={8 + h} x2={8 + h} y2={8 - h} stroke="#000" strokeWidth="1.4" strokeLinecap="round" />
+            : <line x1={8 - h} y1={8 - h} x2={8 + h} y2={8 + h} stroke="#000" strokeWidth="1.4" strokeLinecap="round" />;
     };
     const sprayIcon = (r: number) => {
         const n = Math.round(r * 1.4);
