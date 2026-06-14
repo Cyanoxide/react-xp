@@ -63,10 +63,6 @@
     // Flat until hovered/selected, like the XP toolbar
     border: 0.1rem solid transparent;
 
-    svg {
-        display: block;
-    }
-
     &:hover {
         border-color: #fff #808080 #808080 #fff;
     }
@@ -83,6 +79,14 @@
             background: #f3f3f7;
         }
     }
+}
+
+// One sprite cell per tool (size/position set inline from the CELLS table)
+.toolIcon {
+    display: block;
+    background-image: url("/spritemap__paint-tools.png");
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
 }
 
 // Tool-options box below the tools (shows width choices for the relevant tools)
