@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import XPScrollbars from "../../XPScrollbars/XPScrollbars";
 import styles from "./Paint.module.scss";
-import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent, ReactNode } from "react";
+import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 
 type Tool =
     | "freeSelect" | "select" | "eraser" | "fill" | "eyedropper" | "magnifier"
@@ -12,29 +12,40 @@ type Tool =
 interface ToolDef {
     id: Tool;
     title: string;
-    icon: ReactNode;
 }
 
-// Placeholder inline-SVG glyphs (viewBox 0 0 16 16). These will be swapped for
-// the XP tool spritemap once it lands; the 2-column order below matches the
-// real Paint toolbox row-for-row.
+// Tools in the same left-to-right order as spritemap__paint-tools.png.
 const TOOLS: ToolDef[] = [
-    { id: "freeSelect", title: "Free-Form Select", icon: <path d="M3 9l3-5 5 1-1 5-4 2z" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="1.5 1" /> },
-    { id: "select", title: "Select", icon: <rect x="2.5" y="3.5" width="11" height="9" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="1.5 1" /> },
-    { id: "eraser", title: "Eraser/Color Eraser", icon: <path d="M2.5 11l6-6 4.5 4.5-3 3H5z" fill="currentColor" /> },
-    { id: "fill", title: "Fill With Color", icon: <><path d="M7 2l5 5-5 5-5-5z" fill="currentColor" /><path d="M12.5 9c1 1.6 1 3 0 3s-1-1.4 0-3z" fill="currentColor" /></> },
-    { id: "eyedropper", title: "Pick Color", icon: <path d="M11 2.5l2.5 2.5-1.5 1.5-1-1-5 5L4 13l-1 .5.5-1 .5-1.5 5-5-1-1z" fill="currentColor" /> },
-    { id: "magnifier", title: "Magnifier", icon: <><circle cx="7" cy="7" r="3.8" fill="none" stroke="currentColor" strokeWidth="1.3" /><path d="M10 10l3.5 3.5" stroke="currentColor" strokeWidth="1.6" fill="none" /></> },
-    { id: "pencil", title: "Pencil", icon: <path d="M11.5 2.5l2 2-7 7-2.5.5.5-2.5z" fill="currentColor" /> },
-    { id: "brush", title: "Brush", icon: <path d="M3 13c2-1 1-3 3-4l5-6 2 2-6 5c-1 2-3 1-4 3z" fill="currentColor" /> },
-    { id: "airbrush", title: "Airbrush", icon: <><path d="M6 6h3v7H6z" fill="currentColor" /><path d="M9 4.5h2.2v2.2H9z" fill="currentColor" /><circle cx="13" cy="3" r="0.7" fill="currentColor" /><circle cx="14" cy="5.2" r="0.7" fill="currentColor" /><circle cx="12.8" cy="6.6" r="0.7" fill="currentColor" /></> },
-    { id: "text", title: "Text", icon: <path d="M5 13L8 3l3 10M6 9.5h4" stroke="currentColor" strokeWidth="1.4" fill="none" /> },
-    { id: "line", title: "Line", icon: <path d="M3 13L13 3" stroke="currentColor" strokeWidth="1.6" fill="none" /> },
-    { id: "curve", title: "Curve", icon: <path d="M3 12C5 4 11 4 13 12" stroke="currentColor" strokeWidth="1.4" fill="none" /> },
-    { id: "rectangle", title: "Rectangle", icon: <rect x="3" y="4.5" width="10" height="7" fill="none" stroke="currentColor" strokeWidth="1.4" /> },
-    { id: "polygon", title: "Polygon", icon: <path d="M8 3l5 4-2 6H5L3 7z" fill="none" stroke="currentColor" strokeWidth="1.2" /> },
-    { id: "ellipse", title: "Ellipse", icon: <ellipse cx="8" cy="8" rx="5.5" ry="4" fill="none" stroke="currentColor" strokeWidth="1.4" /> },
-    { id: "roundRectangle", title: "Rounded Rectangle", icon: <rect x="3" y="4.5" width="10" height="7" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.4" /> },
+    { id: "freeSelect", title: "Free-Form Select" },
+    { id: "select", title: "Select" },
+    { id: "eraser", title: "Eraser/Color Eraser" },
+    { id: "fill", title: "Fill With Color" },
+    { id: "eyedropper", title: "Pick Color" },
+    { id: "magnifier", title: "Magnifier" },
+    { id: "pencil", title: "Pencil" },
+    { id: "brush", title: "Brush" },
+    { id: "airbrush", title: "Airbrush" },
+    { id: "text", title: "Text" },
+    { id: "line", title: "Line" },
+    { id: "curve", title: "Curve" },
+    { id: "rectangle", title: "Rectangle" },
+    { id: "polygon", title: "Polygon" },
+    { id: "ellipse", title: "Ellipse" },
+    { id: "roundRectangle", title: "Rounded Rectangle" },
+];
+
+// Icons come from a single-row spritemap (16 icons, evenly ~50px apart, varying
+// widths). Each cell is [startX, width] in source pixels, measured from the gap
+// midpoints so a cell's edges fall in the blank gaps and no neighbour bleeds in.
+// The sheet is scaled by height, so every icon shares one scale and the wider
+// shapes (rectangle, fill) stay proportionally wider — as in the real toolbox.
+const SPRITE_W = 2517;
+const SPRITE_H = 129;
+const ICON_H = 16;
+const SCALE = ICON_H / SPRITE_H;
+const CELLS: Array<[number, number]> = [
+    [0, 152], [152, 170], [322, 165], [487, 180], [667, 179], [846, 170], [1016, 122], [1138, 122],
+    [1260, 179], [1439, 163], [1602, 164], [1766, 100], [1866, 171], [2037, 163], [2200, 171], [2371, 146],
 ];
 
 // Tools whose options box shows a line-width picker (matches Paint, where the
@@ -376,7 +387,7 @@ const Paint = () => {
             <div className={`${styles.main} flex flex-1 min-h-0`}>
                 <div className={styles.toolbox}>
                     <div className={styles.tools}>
-                        {TOOLS.map((t) => (
+                        {TOOLS.map((t, i) => (
                             <button
                                 key={t.id}
                                 type="button"
@@ -386,7 +397,15 @@ const Paint = () => {
                                 data-active={tool === t.id}
                                 onClick={() => setTool(t.id)}
                             >
-                                <svg viewBox="0 0 16 16" width="16" height="16">{t.icon}</svg>
+                                <span
+                                    className={styles.toolIcon}
+                                    style={{
+                                        width: `${(CELLS[i][1] * SCALE).toFixed(2)}px`,
+                                        height: `${ICON_H}px`,
+                                        backgroundSize: `${(SPRITE_W * SCALE).toFixed(2)}px ${ICON_H}px`,
+                                        backgroundPosition: `${(-CELLS[i][0] * SCALE).toFixed(2)}px 0`,
+                                    }}
+                                />
                             </button>
                         ))}
                     </div>
