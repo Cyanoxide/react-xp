@@ -935,10 +935,10 @@ const Paint = () => {
                             <div className={styles.zooms}>
                                 {ZOOMS.map((z, i) => (
                                     <button key={z} type="button" aria-label={`${z}x zoom`} className={styles.zoomOption} data-active={zoom === z} onClick={() => setZoom(z)}>
+                                        {z}x
                                         <span className={styles.zoomSqSlot}>
                                             <span className={styles.zoomSq} style={{ width: `${0.4 + i * 0.15}rem`, height: `${0.4 + i * 0.15}rem` }} />
                                         </span>
-                                        {z}x
                                     </button>
                                 ))}
                             </div>

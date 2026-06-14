@@ -103,9 +103,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // No horizontal padding so a full-width selection (zoom) can reach the edges;
-    // the other option sets are centred and don't need it
-    padding: 0.3rem 0;
+    // No padding so a full-bleed selection (zoom rows) can reach the edges; the
+    // other option sets are centred and have their own spacing
+    padding: 0;
     background: #ece9d8;
     // Sunken bevel
     border: 0.1rem solid;
@@ -229,14 +229,16 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 100%;
 }
 
 .zoomOption {
+    flex: 1;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.3rem;
     width: 100%;
-    padding: 0.1rem 0.4rem;
     font-size: 0.85rem;
     line-height: 1;
     color: #000;
