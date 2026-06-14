@@ -222,18 +222,20 @@
 }
 
 // Magnifier zoom-level options: a black square + label; selected = blue overlay
+// that fills the row width
 .zooms {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
+    width: 100%;
 }
 
 .zoomOption {
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    padding: 0.05rem 0.3rem;
-    font-size: 0.95rem;
+    width: 100%;
+    padding: 0.05rem 0.4rem;
+    font-size: 0.9rem;
     color: #000;
     cursor: pointer;
     background: transparent;
@@ -258,8 +260,8 @@
 }
 
 .zoomSq {
-    width: 0.7rem;
-    height: 0.7rem;
+    width: 0.65rem;
+    height: 0.65rem;
     flex-shrink: 0;
     background: #000;
 }
