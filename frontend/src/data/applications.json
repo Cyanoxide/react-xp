@@ -16,8 +16,7 @@
     },
     "paint": {
         "title": "untitled - Paint",
-        "icon": "/icon__paint.svg",
-        "iconLarge": "/icon__paint.svg",
+        "iconLarge": "/icon__paint--large.png",
         "component": "Paint",
         "height": 460,
         "width": 600

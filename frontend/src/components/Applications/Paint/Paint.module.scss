@@ -19,6 +19,13 @@
     }
 }
 
+// Keep the menu bar (and its bottom border) painting above the canvas area so
+// the vertical scrollbar can't cover it
+.menuBar {
+    position: relative;
+    z-index: 1;
+}
+
 .main {
     min-height: 0;
 }
@@ -182,8 +189,8 @@
     position: relative;
     display: inline-block;
     line-height: 0;
-    // Room for the handles to sit just outside the bitmap without being clipped
-    margin: 0 0.4rem 0.4rem 0;
+    // Room for the handles to sit fully outside the bitmap without being clipped
+    margin: 0 0.8rem 0.8rem 0;
 }
 
 .canvas {
@@ -206,22 +213,30 @@
 
 .handleRight {
     top: 50%;
-    right: -0.2rem;
+    right: -0.5rem;
     transform: translateY(-50%);
     cursor: ew-resize;
 }
 
 .handleBottom {
-    bottom: -0.2rem;
+    bottom: -0.5rem;
     left: 50%;
     transform: translateX(-50%);
     cursor: ns-resize;
 }
 
 .handleCorner {
-    bottom: -0.2rem;
-    right: -0.2rem;
+    bottom: -0.5rem;
+    right: -0.5rem;
     cursor: nwse-resize;
+}
+
+// Selection marquee (dashed outline over the bitmap)
+.marquee {
+    position: absolute;
+    border: 0.1rem dashed #000;
+    pointer-events: none;
+    z-index: 1;
 }
 
 // ---- Palette ---------------------------------------------------------------

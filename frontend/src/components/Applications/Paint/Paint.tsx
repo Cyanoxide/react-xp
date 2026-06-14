@@ -141,6 +141,8 @@ const Paint = () => {
     const [bgColor, setBgColor] = useState("#ffffff");
     const [size, setSize] = useState(2);
     const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+    // Rectangular selection (Select / Free-Form Select): the marquee rectangle
+    const [selection, setSelection] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
 
     // Mutable per-stroke state (avoids re-render churn while dragging)
     const drawingRef = useRef(false);
@@ -149,6 +151,18 @@ const Paint = () => {
     const snapshotRef = useRef<ImageData | null>(null);
     const buttonRef = useRef(0);
     const undoStackRef = useRef<ImageData[]>([]);
+
+    // Selection drag state: define a region (rectangle, or a freehand lasso for
+    // Free-Form Select), then drag inside it to move the pixels (lifted, leaving
+    // white behind). selCanvas = lifted pixels (masked to the lasso when present),
+    // selBase = the canvas with the original area cleared, selPath = lasso points.
+    const selDefiningRef = useRef(false);
+    const selMovingRef = useRef(false);
+    const selStartRef = useRef({ x: 0, y: 0 });
+    const selGrabRef = useRef({ dx: 0, dy: 0 });
+    const selBaseRef = useRef<ImageData | null>(null);
+    const selCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const selPathRef = useRef<Array<{ x: number; y: number }> | null>(null);
 
     // Size the canvas to the drawing area once it has a real layout, leaving a
     // grey margin to the right/bottom (XP Paint's bitmap is a fixed size inside a
@@ -176,6 +190,17 @@ const Paint = () => {
         observer.observe(area);
         return () => observer.disconnect();
     }, []);
+
+    // Switching away from a selection tool commits the floating selection (its
+    // pixels are already drawn) and drops the marquee.
+    useEffect(() => {
+        if (tool !== "select" && tool !== "freeSelect") {
+            setSelection(null);
+            selCanvasRef.current = null;
+            selBaseRef.current = null;
+            selPathRef.current = null;
+        }
+    }, [tool]);
 
     const getCtx = () => canvasRef.current?.getContext("2d") ?? null;
 
@@ -265,6 +290,128 @@ const Paint = () => {
 
     const isFreehand = tool === "pencil" || tool === "brush" || tool === "eraser";
     const isShape = tool === "line" || tool === "curve" || tool === "rectangle" || tool === "polygon" || tool === "ellipse" || tool === "roundRectangle";
+    const isSelect = tool === "select" || tool === "freeSelect";
+
+    // Selection. Select drags a rectangle; Free-Form Select traces a freehand
+    // lasso (its marquee becomes the bounding box once complete, but only the
+    // pixels inside the lasso are lifted). Drag inside to move; Delete clears.
+    const tracePath = (c: CanvasRenderingContext2D, path: Array<{ x: number; y: number }>, ox: number, oy: number) => {
+        c.beginPath();
+        path.forEach((p, i) => (i === 0 ? c.moveTo(p.x - ox, p.y - oy) : c.lineTo(p.x - ox, p.y - oy)));
+        c.closePath();
+    };
+
+    // Lift the selected pixels into an offscreen canvas (clipped to the lasso when
+    // present) and clear the original area to white.
+    const liftSelection = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, sel: { x: number; y: number; w: number; h: number }) => {
+        const off = document.createElement("canvas");
+        off.width = Math.max(1, sel.w);
+        off.height = Math.max(1, sel.h);
+        const octx = off.getContext("2d");
+        if (!octx) return;
+        octx.save();
+        if (selPathRef.current) { tracePath(octx, selPathRef.current, sel.x, sel.y); octx.clip(); }
+        octx.drawImage(canvas, -sel.x, -sel.y);
+        octx.restore();
+        selCanvasRef.current = off;
+
+        ctx.save();
+        if (selPathRef.current) tracePath(ctx, selPathRef.current, 0, 0);
+        else { ctx.beginPath(); ctx.rect(sel.x, sel.y, sel.w, sel.h); }
+        ctx.clip();
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(sel.x, sel.y, sel.w, sel.h);
+        ctx.restore();
+
+        selBaseRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(off, sel.x, sel.y);
+    };
+
+    const handleSelectDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        const canvas = canvasRef.current;
+        const ctx = getCtx();
+        if (!canvas || !ctx) return;
+        canvas.setPointerCapture(event.pointerId);
+        const pos = getPos(event);
+        const inside = selection && pos.x >= selection.x && pos.x < selection.x + selection.w && pos.y >= selection.y && pos.y < selection.y + selection.h;
+
+        if (inside && selection) {
+            pushUndo(ctx);
+            if (!selCanvasRef.current) liftSelection(ctx, canvas, selection);
+            selGrabRef.current = { dx: pos.x - selection.x, dy: pos.y - selection.y };
+            selMovingRef.current = true;
+        } else {
+            // Commit any floating selection (already drawn) and start a new one
+            selCanvasRef.current = null;
+            selBaseRef.current = null;
+            selDefiningRef.current = true;
+            if (tool === "freeSelect") {
+                selPathRef.current = [pos];
+                snapshotRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                setSelection(null);
+            } else {
+                selPathRef.current = null;
+                selStartRef.current = pos;
+                setSelection({ x: pos.x, y: pos.y, w: 0, h: 0 });
+            }
+        }
+    };
+
+    const handleSelectMove = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        const ctx = getCtx();
+        if (!ctx) return;
+        const pos = getPos(event);
+        if (selDefiningRef.current) {
+            if (tool === "freeSelect" && selPathRef.current && snapshotRef.current) {
+                selPathRef.current.push(pos);
+                ctx.putImageData(snapshotRef.current, 0, 0);
+                ctx.save();
+                ctx.strokeStyle = "#000";
+                ctx.lineWidth = 1;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                selPathRef.current.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+                ctx.stroke();
+                ctx.restore();
+            } else {
+                setSelection({
+                    x: Math.min(pos.x, selStartRef.current.x),
+                    y: Math.min(pos.y, selStartRef.current.y),
+                    w: Math.abs(pos.x - selStartRef.current.x),
+                    h: Math.abs(pos.y - selStartRef.current.y),
+                });
+            }
+        } else if (selMovingRef.current && selBaseRef.current && selCanvasRef.current) {
+            const nx = pos.x - selGrabRef.current.dx;
+            const ny = pos.y - selGrabRef.current.dy;
+            ctx.putImageData(selBaseRef.current, 0, 0);
+            ctx.drawImage(selCanvasRef.current, nx, ny);
+            setSelection((s) => (s ? { ...s, x: nx, y: ny } : s));
+        }
+    };
+
+    const handleSelectUp = () => {
+        const ctx = getCtx();
+        if (selDefiningRef.current) {
+            selDefiningRef.current = false;
+            if (tool === "freeSelect" && selPathRef.current && snapshotRef.current && ctx) {
+                ctx.putImageData(snapshotRef.current, 0, 0);
+                snapshotRef.current = null;
+                const path = selPathRef.current;
+                const xs = path.map((p) => p.x);
+                const ys = path.map((p) => p.y);
+                const x = Math.min(...xs);
+                const y = Math.min(...ys);
+                const w = Math.max(...xs) - x;
+                const h = Math.max(...ys) - y;
+                if (path.length > 2 && w > 2 && h > 2) setSelection({ x, y, w, h });
+                else { selPathRef.current = null; setSelection(null); }
+            } else {
+                setSelection((s) => (s && s.w > 2 && s.h > 2 ? s : null));
+            }
+        }
+        selMovingRef.current = false;
+    };
 
     const handlePointerDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current;
@@ -279,9 +426,9 @@ const Paint = () => {
             if (event.button === 2) setBgColor(hex); else setFgColor(hex);
             return;
         }
-        // Selection / text / magnifier are present in the toolbox but not yet
-        // interactive — ignore canvas input for them.
-        if (tool === "freeSelect" || tool === "select" || tool === "text" || tool === "magnifier") return;
+        if (isSelect) { handleSelectDown(event); return; }
+        // Text / magnifier are present in the toolbox but not yet interactive.
+        if (tool === "text" || tool === "magnifier") return;
 
         canvas.setPointerCapture(event.pointerId);
         buttonRef.current = event.button;
@@ -309,6 +456,7 @@ const Paint = () => {
         if (!ctx) return;
         const pos = getPos(event);
         setCursor(pos);
+        if (isSelect) { handleSelectMove(event); return; }
         if (!drawingRef.current) return;
 
         if (isFreehand) {
@@ -323,6 +471,7 @@ const Paint = () => {
     };
 
     const endStroke = () => {
+        if (isSelect) { handleSelectUp(); return; }
         drawingRef.current = false;
         startRef.current = null;
         lastRef.current = null;
@@ -372,6 +521,31 @@ const Paint = () => {
     };
 
     const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+        if (event.key === "Delete" || event.key === "Backspace") {
+            if (!selection) return;
+            event.preventDefault();
+            const ctx = getCtx();
+            if (ctx) {
+                pushUndo(ctx);
+                if (selCanvasRef.current && selBaseRef.current) {
+                    // Already lifted: drop the floating pixels (base is already cleared)
+                    ctx.putImageData(selBaseRef.current, 0, 0);
+                } else {
+                    ctx.save();
+                    if (selPathRef.current) tracePath(ctx, selPathRef.current, 0, 0);
+                    else { ctx.beginPath(); ctx.rect(selection.x, selection.y, selection.w, selection.h); }
+                    ctx.clip();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(selection.x, selection.y, selection.w, selection.h);
+                    ctx.restore();
+                }
+            }
+            selCanvasRef.current = null;
+            selBaseRef.current = null;
+            selPathRef.current = null;
+            setSelection(null);
+            return;
+        }
         if (!(event.ctrlKey || event.metaKey)) return;
         const key = event.key.toLowerCase();
         if (key === "z") { event.preventDefault(); undo(); }
@@ -383,7 +557,9 @@ const Paint = () => {
 
     return (
         <div ref={rootRef} className={`${styles.paint} flex flex-col h-full`} tabIndex={0} onKeyDown={handleKeyDown}>
-            <WindowMenu menuItems={["File", "Edit", "View", "Image", "Colors", "Help"]} />
+            <div className={styles.menuBar}>
+                <WindowMenu menuItems={["File", "Edit", "View", "Image", "Colors", "Help"]} />
+            </div>
 
             <div className={`${styles.main} flex flex-1 min-h-0`}>
                 <div className={styles.toolbox}>
@@ -454,6 +630,12 @@ const Paint = () => {
                                     onPointerCancel={handleResizeUp}
                                 />
                             ))}
+                            {selection && selection.w > 0 && selection.h > 0 && (
+                                <div
+                                    className={styles.marquee}
+                                    style={{ left: selection.x, top: selection.y, width: selection.w, height: selection.h }}
+                                />
+                            )}
                         </div>
                     </XPScrollbars>
                 </div>
