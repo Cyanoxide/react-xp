@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import WindowMenu from "../../WindowMenu/WindowMenu";
+import XPScrollbars from "../../XPScrollbars/XPScrollbars";
 import styles from "./Paint.module.scss";
 import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent, ReactNode } from "react";
 
@@ -47,6 +48,11 @@ const PALETTE = [
 ];
 
 const SIZES = [1, 2, 3, 5, 8];
+
+// Bottom-right resize grip: six bevelled squares in a 3-2-1 staircase whose
+// right angle points into the corner. Each entry is a dark square's top-left
+// (a white highlight is drawn one pixel down-right of it).
+const GRIP: Array<[number, number]> = [[5, 13], [9, 13], [13, 13], [9, 9], [13, 9], [13, 5]];
 
 const hexToRgba = (hex: string): [number, number, number, number] => {
     const v = hex.replace("#", "");
@@ -311,6 +317,48 @@ const Paint = () => {
         snapshotRef.current = null;
     };
 
+    // Dragging a canvas handle resizes the bitmap, anchored top-left, preserving
+    // the existing drawing (new area is filled white).
+    const resizeRef = useRef<{ dir: string; startX: number; startY: number; startW: number; startH: number; snapshot: ImageData } | null>(null);
+
+    const handleResizeDown = (dir: string) => (event: ReactPointerEvent<HTMLSpanElement>) => {
+        const canvas = canvasRef.current;
+        const ctx = getCtx();
+        if (!canvas || !ctx) return;
+        event.stopPropagation();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        resizeRef.current = {
+            dir,
+            startX: event.clientX,
+            startY: event.clientY,
+            startW: canvas.width,
+            startH: canvas.height,
+            snapshot: ctx.getImageData(0, 0, canvas.width, canvas.height),
+        };
+        // Past snapshots no longer match the new dimensions
+        undoStackRef.current = [];
+    };
+
+    const handleResizeMove = (event: ReactPointerEvent<HTMLSpanElement>) => {
+        const r = resizeRef.current;
+        const canvas = canvasRef.current;
+        const ctx = getCtx();
+        if (!r || !canvas || !ctx) return;
+        const w = r.dir.includes("e") ? Math.max(1, r.startW + Math.round(event.clientX - r.startX)) : r.startW;
+        const h = r.dir.includes("s") ? Math.max(1, r.startH + Math.round(event.clientY - r.startY)) : r.startH;
+        canvas.width = w;
+        canvas.height = h;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+        ctx.putImageData(r.snapshot, 0, 0);
+    };
+
+    const handleResizeUp = (event: ReactPointerEvent<HTMLSpanElement>) => {
+        if (!resizeRef.current) return;
+        event.currentTarget.releasePointerCapture(event.pointerId);
+        resizeRef.current = null;
+    };
+
     const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
         if (!(event.ctrlKey || event.metaKey)) return;
         const key = event.key.toLowerCase();
@@ -364,21 +412,30 @@ const Paint = () => {
                 </div>
 
                 <div ref={canvasAreaRef} className={styles.canvasArea}>
-                    <div className={styles.canvasWrap}>
-                        <canvas
-                            ref={canvasRef}
-                            className={styles.canvas}
-                            onPointerDown={handlePointerDown}
-                            onPointerMove={handlePointerMove}
-                            onPointerUp={endStroke}
-                            onPointerCancel={endStroke}
-                            onPointerLeave={() => setCursor(null)}
-                            onContextMenu={(e) => e.preventDefault()}
-                        />
-                        <span className={`${styles.handle} ${styles.handleRight}`} />
-                        <span className={`${styles.handle} ${styles.handleBottom}`} />
-                        <span className={`${styles.handle} ${styles.handleCorner}`} />
-                    </div>
+                    <XPScrollbars className={styles.scroll} viewportClassName={styles.scrollViewport}>
+                        <div className={styles.canvasWrap}>
+                            <canvas
+                                ref={canvasRef}
+                                className={styles.canvas}
+                                onPointerDown={handlePointerDown}
+                                onPointerMove={handlePointerMove}
+                                onPointerUp={endStroke}
+                                onPointerCancel={endStroke}
+                                onPointerLeave={() => setCursor(null)}
+                                onContextMenu={(e) => e.preventDefault()}
+                            />
+                            {([["e", styles.handleRight], ["s", styles.handleBottom], ["se", styles.handleCorner]] as const).map(([dir, cls]) => (
+                                <span
+                                    key={dir}
+                                    className={`${styles.handle} ${cls}`}
+                                    onPointerDown={handleResizeDown(dir)}
+                                    onPointerMove={handleResizeMove}
+                                    onPointerUp={handleResizeUp}
+                                    onPointerCancel={handleResizeUp}
+                                />
+                            ))}
+                        </div>
+                    </XPScrollbars>
                 </div>
             </div>
 
@@ -406,7 +463,14 @@ const Paint = () => {
                 <span className={styles.statusHelp}>For Help, click Help Topics on the Help Menu.</span>
                 <span className={styles.statusPanel}>{cursor ? `${cursor.x},${cursor.y}` : ""}</span>
                 <span className={styles.statusPanel} />
-                <span className={styles.statusGrip} />
+                <svg className={styles.statusGrip} viewBox="0 0 16 16" aria-hidden="true">
+                    {GRIP.map(([x, y]) => (
+                        <g key={`${x}-${y}`}>
+                            <rect x={x + 1} y={y + 1} width="2" height="2" fill="#fff" />
+                            <rect x={x} y={y} width="2" height="2" fill="#9d9d92" />
+                        </g>
+                    ))}
+                </svg>
             </div>
         </div>
     );
