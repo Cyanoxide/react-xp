@@ -170,6 +170,7 @@ const Paint = () => {
     const polyPointsRef = useRef<Array<{ x: number; y: number }> | null>(null);
     const polyBaseRef = useRef<ImageData | null>(null);
     const polyLastClickRef = useRef<{ t: number; x: number; y: number } | null>(null);
+    const polyDraggingRef = useRef(false);
 
     // Size the canvas to the drawing area once it has a real layout, leaving a
     // grey margin to the right/bottom (XP Paint's bitmap is a fixed size inside a
@@ -323,6 +324,9 @@ const Paint = () => {
         ctx.stroke();
     };
 
+    // A vertex is committed on pointer-up, so a plain click and a click-drag both
+    // work: while the button is held the segment from the last vertex previews
+    // (like the Line tool); releasing locks it in.
     const handlePolygonDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
         const canvas = canvasRef.current;
         const ctx = getCtx();
@@ -330,8 +334,8 @@ const Paint = () => {
         const pos = getPos(event);
         buttonRef.current = event.button;
 
-        // Detect a double-click manually (a second click in the same spot, soon
-        // after): close the polygon rather than add another vertex.
+        // Manual double-click: a second click in the same spot soon after closes
+        // the polygon instead of adding another vertex.
         const now = Date.now();
         const last = polyLastClickRef.current;
         if (polyPointsRef.current && polyPointsRef.current.length >= 2 && last && now - last.t < 400 && Math.abs(pos.x - last.x) < 6 && Math.abs(pos.y - last.y) < 6) {
@@ -345,10 +349,20 @@ const Paint = () => {
             pushUndo(ctx);
             polyBaseRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
             polyPointsRef.current = [pos];
-        } else {
-            polyPointsRef.current.push(pos);
         }
-        drawPolygon(ctx, null, event.button, false);
+        polyDraggingRef.current = true;
+    };
+
+    const handlePolygonUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        if (!polyDraggingRef.current) return;
+        polyDraggingRef.current = false;
+        const ctx = getCtx();
+        if (!ctx || !polyPointsRef.current) return;
+        const pos = getPos(event);
+        const pts = polyPointsRef.current;
+        const lastV = pts[pts.length - 1];
+        if (lastV.x !== pos.x || lastV.y !== pos.y) pts.push(pos);
+        drawPolygon(ctx, null, buttonRef.current, false);
     };
 
     const handlePolygonClose = () => {
@@ -531,8 +545,12 @@ const Paint = () => {
         const pos = getPos(event);
         setCursor(pos);
         if (isSelect) { handleSelectMove(event); return; }
-        // Polygon segments only commit on click — no line follows the cursor
-        if (tool === "polygon") return;
+        // Polygon: preview the next segment only while dragging (button held); a
+        // plain move shows no trailing line.
+        if (tool === "polygon") {
+            if (polyDraggingRef.current && polyPointsRef.current) drawPolygon(ctx, pos, buttonRef.current, false);
+            return;
+        }
         if (!drawingRef.current) return;
 
         if (isFreehand) {
@@ -546,9 +564,9 @@ const Paint = () => {
         }
     };
 
-    const endStroke = () => {
+    const endStroke = (event?: ReactPointerEvent<HTMLCanvasElement>) => {
         if (isSelect) { handleSelectUp(); return; }
-        if (tool === "polygon") return;
+        if (tool === "polygon") { if (event) handlePolygonUp(event); return; }
         drawingRef.current = false;
         startRef.current = null;
         lastRef.current = null;
