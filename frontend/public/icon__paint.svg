@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Painter's palette -->
+  <path d="M14 3C7 3 2 7.5 2 13.5c0 4 3 6 6 6 2 0 2.5 1.2 2.2 2.6C9.7 25 11 28 15 28c8 0 15-5.6 15-13C30 8 23 3 14 3z"
+        fill="#f2d9a8" stroke="#8a6a3a" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Thumb hole -->
+  <ellipse cx="11" cy="20.5" rx="2.4" ry="2.2" fill="#fff" stroke="#8a6a3a" stroke-width="1"/>
+  <!-- Paint dabs -->
+  <circle cx="9.5" cy="10.5" r="2.1" fill="#e23b2e"/>
+  <circle cx="16" cy="8" r="2.1" fill="#f2c43a"/>
+  <circle cx="22" cy="9.5" r="2.1" fill="#3aa64a"/>
+  <circle cx="24.5" cy="15.5" r="2.1" fill="#2f6bd6"/>
+  <!-- Brush -->
+  <g transform="rotate(38 22 24)">
+    <rect x="20.5" y="13" width="3" height="13" rx="1" fill="#caa15a" stroke="#7a5a2a" stroke-width="0.8"/>
+    <rect x="20.2" y="25.5" width="3.6" height="3.2" fill="#b8c2cc" stroke="#6f7a85" stroke-width="0.8"/>
+    <path d="M20.2 28.5h3.6l-0.6 3.2h-2.4z" fill="#2b2b2b"/>
+  </g>
+</svg>

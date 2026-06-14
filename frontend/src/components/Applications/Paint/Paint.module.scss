@@ -1,0 +1,213 @@
+.paint {
+    background: #ece9d8;
+    color: #000;
+    outline: none;
+    font-family: Tahoma, "Trebuchet MS", sans-serif;
+    font-size: 1.1rem;
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+}
+
+.main {
+    min-height: 0;
+}
+
+// ---- Toolbox ---------------------------------------------------------------
+.toolbox {
+    width: 5.4rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.4rem;
+    background: #ece9d8;
+    border-right: 0.1rem solid #919b9c;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+        border-right-color: #8a936b;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+        border-right-color: #aeb0bd;
+    }
+}
+
+.tools {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.3rem;
+}
+
+.toolButton {
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    color: #000;
+    background: #ece9d8;
+    // Raised XP bevel
+    border: 0.1rem solid;
+    border-color: #fff #808080 #808080 #fff;
+
+    svg {
+        display: block;
+        fill: currentColor;
+    }
+
+    &:hover {
+        background: #f4f2e6;
+    }
+
+    &[data-active="true"] {
+        // Sunken + themed tint so the active tool reads clearly per theme
+        border-color: #808080 #fff #fff #808080;
+        background: #c9d9f0;
+        box-shadow: inset 0.1rem 0.1rem 0.2rem #00000022;
+
+        @include theme-color("green") {
+            background: #d3dabb;
+        }
+
+        @include theme-color("silver") {
+            background: #d3d7e6;
+        }
+    }
+}
+
+.sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.3rem;
+    background: #fff;
+    border: 0.1rem solid #808080;
+}
+
+.sizeOption {
+    display: flex;
+    align-items: center;
+    height: 1.4rem;
+    padding: 0 0.2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    span {
+        display: block;
+        width: 100%;
+        min-height: 0.1rem;
+        background: #000;
+        border-radius: 1rem;
+    }
+
+    &[data-active="true"] {
+        background: #316ac5;
+
+        span {
+            background: #fff;
+        }
+
+        @include theme-color("green") {
+            background: #94a06f;
+        }
+
+        @include theme-color("silver") {
+            background: #8084a0;
+        }
+    }
+}
+
+// ---- Canvas ----------------------------------------------------------------
+.canvasArea {
+    flex: 1;
+    min-width: 0;
+    padding: 0.8rem;
+    overflow: auto;
+    background: #808080;
+
+    @include theme-color("silver") {
+        background: #7e8088;
+    }
+}
+
+.canvas {
+    display: block;
+    background: #fff;
+    box-shadow: 0 0 0 0.1rem #000;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+// ---- Palette ---------------------------------------------------------------
+.palette {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.6rem;
+    background: #ece9d8;
+    border-top: 0.1rem solid #919b9c;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+        border-top-color: #8a936b;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+        border-top-color: #aeb0bd;
+    }
+}
+
+.swatches {
+    position: relative;
+    width: 2.8rem;
+    height: 2.6rem;
+    flex-shrink: 0;
+}
+
+.swatchFg,
+.swatchBg {
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 0.1rem solid #000;
+    box-shadow: inset 0 0 0 0.1rem #fff;
+}
+
+.swatchFg {
+    top: 0;
+    left: 0.2rem;
+    z-index: 1;
+}
+
+.swatchBg {
+    bottom: 0;
+    right: 0.2rem;
+}
+
+.paletteGrid {
+    display: grid;
+    grid-template-columns: repeat(14, 1.3rem);
+    grid-template-rows: repeat(2, 1.3rem);
+    gap: 0.1rem;
+}
+
+.colorCell {
+    width: 1.3rem;
+    height: 1.3rem;
+    padding: 0;
+    cursor: pointer;
+    border: 0.1rem solid #808080;
+}

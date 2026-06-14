@@ -74,6 +74,7 @@ const StartMenu = ({ startButton }: StartMenuProps) => {
                             <li><StartMenuItem appId="winMediaPlayer" iconSize={30} /></li>
                             <li><StartMenuItem appId="notepad" iconSize={30} /></li>
                             <li><StartMenuItem appId="displayProperties" iconSize={30} /></li>
+                            <li><StartMenuItem appId="paint" iconSize={30} /></li>
                             <li><StartMenuItem appId="solitaire" iconSize={30} /></li>
                         </ul>
                     </div>
