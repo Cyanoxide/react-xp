@@ -158,6 +158,42 @@
     }
 }
 
+// Magnifier zoom-level options
+.zooms {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    height: 100%;
+    justify-content: center;
+    padding: 0 0.3rem;
+}
+
+.zoomOption {
+    padding: 0.2rem 0;
+    font-size: 1.1rem;
+    color: #000;
+    cursor: pointer;
+    background: transparent;
+    border: 0.1rem solid transparent;
+
+    &:hover {
+        border-color: #fff #808080 #808080 #fff;
+    }
+
+    &[data-active="true"] {
+        border-color: #808080 #fff #fff #808080;
+        background: #c9d9f0;
+
+        @include theme-color("green") {
+            background: #d3dabb;
+        }
+
+        @include theme-color("silver") {
+            background: #d3d7e6;
+        }
+    }
+}
+
 // ---- Canvas ----------------------------------------------------------------
 .canvasArea {
     position: relative;

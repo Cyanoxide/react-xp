@@ -140,6 +140,7 @@ const Paint = () => {
     const [fgColor, setFgColor] = useState("#000000");
     const [bgColor, setBgColor] = useState("#ffffff");
     const [size, setSize] = useState(2);
+    const [zoom, setZoom] = useState(1);
     const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
     // Rectangular selection (Select / Free-Form Select): the marquee rectangle
     const [selection, setSelection] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
@@ -163,6 +164,11 @@ const Paint = () => {
     const selBaseRef = useRef<ImageData | null>(null);
     const selCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const selPathRef = useRef<Array<{ x: number; y: number }> | null>(null);
+
+    // Polygon: click to drop vertices (rubber-band preview between clicks),
+    // double-click to close. polyBase is the canvas before the polygon started.
+    const polyPointsRef = useRef<Array<{ x: number; y: number }> | null>(null);
+    const polyBaseRef = useRef<ImageData | null>(null);
 
     // Size the canvas to the drawing area once it has a real layout, leaving a
     // grey margin to the right/bottom (XP Paint's bitmap is a fixed size inside a
@@ -199,6 +205,12 @@ const Paint = () => {
             selCanvasRef.current = null;
             selBaseRef.current = null;
             selPathRef.current = null;
+        }
+        // Abandon an unfinished polygon (restore the canvas to before it started)
+        if (tool !== "polygon" && polyBaseRef.current) {
+            canvasRef.current?.getContext("2d")?.putImageData(polyBaseRef.current, 0, 0);
+            polyPointsRef.current = null;
+            polyBaseRef.current = null;
         }
     }, [tool]);
 
@@ -271,7 +283,7 @@ const Paint = () => {
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.beginPath();
-        if (tool === "rectangle" || tool === "polygon") {
+        if (tool === "rectangle") {
             ctx.rect(from.x, from.y, to.x - from.x, to.y - from.y);
         } else if (tool === "roundRectangle") {
             const r = 10;
@@ -289,8 +301,51 @@ const Paint = () => {
     };
 
     const isFreehand = tool === "pencil" || tool === "brush" || tool === "eraser";
-    const isShape = tool === "line" || tool === "curve" || tool === "rectangle" || tool === "polygon" || tool === "ellipse" || tool === "roundRectangle";
+    const isShape = tool === "line" || tool === "curve" || tool === "rectangle" || tool === "ellipse" || tool === "roundRectangle";
     const isSelect = tool === "select" || tool === "freeSelect";
+
+    // Polygon: click to drop vertices, double-click to close. Each frame redraws
+    // from the snapshot taken when the first vertex was placed.
+    const drawPolygon = (ctx: CanvasRenderingContext2D, cursor: { x: number; y: number } | null, button: number, close: boolean) => {
+        if (!polyBaseRef.current || !polyPointsRef.current) return;
+        ctx.putImageData(polyBaseRef.current, 0, 0);
+        const pts = polyPointsRef.current;
+        ctx.strokeStyle = strokeColor(button);
+        ctx.lineWidth = size;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        if (cursor) ctx.lineTo(cursor.x, cursor.y);
+        if (close) ctx.closePath();
+        ctx.stroke();
+    };
+
+    const handlePolygonDown = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+        const canvas = canvasRef.current;
+        const ctx = getCtx();
+        if (!canvas || !ctx) return;
+        const pos = getPos(event);
+        buttonRef.current = event.button;
+        if (!polyPointsRef.current) {
+            pushUndo(ctx);
+            polyBaseRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            polyPointsRef.current = [pos];
+        } else {
+            polyPointsRef.current.push(pos);
+        }
+        drawPolygon(ctx, null, event.button, false);
+    };
+
+    const handlePolygonClose = () => {
+        const ctx = getCtx();
+        if (ctx && polyPointsRef.current && polyPointsRef.current.length >= 2) {
+            drawPolygon(ctx, null, buttonRef.current, true);
+        }
+        polyPointsRef.current = null;
+        polyBaseRef.current = null;
+    };
 
     // Selection. Select drags a rectangle; Free-Form Select traces a freehand
     // lasso (its marquee becomes the bounding box once complete, but only the
@@ -427,8 +482,14 @@ const Paint = () => {
             return;
         }
         if (isSelect) { handleSelectDown(event); return; }
-        // Text / magnifier are present in the toolbox but not yet interactive.
-        if (tool === "text" || tool === "magnifier") return;
+        if (tool === "polygon") { handlePolygonDown(event); return; }
+        if (tool === "magnifier") {
+            // Left-click zooms in (1→2→4→1), right-click zooms back out
+            setZoom((z) => (event.button === 2 ? (z <= 1 ? 1 : z / 2) : (z >= 4 ? 1 : z * 2)));
+            return;
+        }
+        // Text is present in the toolbox but not yet interactive.
+        if (tool === "text") return;
 
         canvas.setPointerCapture(event.pointerId);
         buttonRef.current = event.button;
@@ -457,6 +518,7 @@ const Paint = () => {
         const pos = getPos(event);
         setCursor(pos);
         if (isSelect) { handleSelectMove(event); return; }
+        if (tool === "polygon") { if (polyPointsRef.current) drawPolygon(ctx, pos, buttonRef.current, false); return; }
         if (!drawingRef.current) return;
 
         if (isFreehand) {
@@ -472,6 +534,7 @@ const Paint = () => {
 
     const endStroke = () => {
         if (isSelect) { handleSelectUp(); return; }
+        if (tool === "polygon") return;
         drawingRef.current = false;
         startRef.current = null;
         lastRef.current = null;
@@ -505,8 +568,8 @@ const Paint = () => {
         const canvas = canvasRef.current;
         const ctx = getCtx();
         if (!r || !canvas || !ctx) return;
-        const w = r.dir.includes("e") ? Math.max(1, r.startW + Math.round(event.clientX - r.startX)) : r.startW;
-        const h = r.dir.includes("s") ? Math.max(1, r.startH + Math.round(event.clientY - r.startY)) : r.startH;
+        const w = r.dir.includes("e") ? Math.max(1, r.startW + Math.round((event.clientX - r.startX) / zoom)) : r.startW;
+        const h = r.dir.includes("s") ? Math.max(1, r.startH + Math.round((event.clientY - r.startY) / zoom)) : r.startH;
         canvas.width = w;
         canvas.height = h;
         ctx.fillStyle = "#ffffff";
@@ -587,7 +650,22 @@ const Paint = () => {
                         ))}
                     </div>
                     <div className={styles.options}>
-                        {showWidths && (
+                        {tool === "magnifier" ? (
+                            <div className={styles.zooms}>
+                                {[1, 2, 4, 8].map((z) => (
+                                    <button
+                                        key={z}
+                                        type="button"
+                                        aria-label={`${z}x zoom`}
+                                        className={styles.zoomOption}
+                                        data-active={zoom === z}
+                                        onClick={() => setZoom(z)}
+                                    >
+                                        {z}x
+                                    </button>
+                                ))}
+                            </div>
+                        ) : showWidths ? (
                             <div className={styles.sizes}>
                                 {SIZES.map((s) => (
                                     <button
@@ -603,13 +681,13 @@ const Paint = () => {
                                     </button>
                                 ))}
                             </div>
-                        )}
+                        ) : null}
                     </div>
                 </div>
 
                 <div ref={canvasAreaRef} className={styles.canvasArea}>
                     <XPScrollbars className={styles.scroll} viewportClassName={styles.scrollViewport}>
-                        <div className={styles.canvasWrap}>
+                        <div className={styles.canvasWrap} style={{ zoom }}>
                             <canvas
                                 ref={canvasRef}
                                 className={styles.canvas}
@@ -618,6 +696,7 @@ const Paint = () => {
                                 onPointerUp={endStroke}
                                 onPointerCancel={endStroke}
                                 onPointerLeave={() => setCursor(null)}
+                                onDoubleClick={() => { if (tool === "polygon") handlePolygonClose(); }}
                                 onContextMenu={(e) => e.preventDefault()}
                             />
                             {([["e", styles.handleRight], ["s", styles.handleBottom], ["se", styles.handleCorner]] as const).map(([dir, cls]) => (
