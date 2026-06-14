@@ -34,18 +34,19 @@ const TOOLS: ToolDef[] = [
     { id: "roundRectangle", title: "Rounded Rectangle" },
 ];
 
-// Icons come from a single-row spritemap (16 icons, evenly ~50px apart, varying
-// widths). Each cell is [startX, width] in source pixels, measured from the gap
-// midpoints so a cell's edges fall in the blank gaps and no neighbour bleeds in.
-// The sheet is scaled by height, so every icon shares one scale and the wider
-// shapes (rectangle, fill) stay proportionally wider — as in the real toolbox.
+// Icons come from a single-row spritemap (16 icons). Each cell is the icon's
+// tight bounding box [x, y, w, h] in source pixels, so the sheet is scaled by a
+// single factor (by height) and each box is flex-centred in its button — every
+// icon lands centred on both axes, including the ones flush to the sheet edges.
 const SPRITE_W = 2517;
 const SPRITE_H = 129;
 const ICON_H = 16;
 const SCALE = ICON_H / SPRITE_H;
-const CELLS: Array<[number, number]> = [
-    [0, 152], [152, 170], [322, 165], [487, 180], [667, 179], [846, 170], [1016, 122], [1138, 122],
-    [1260, 179], [1439, 163], [1602, 164], [1766, 100], [1866, 171], [2037, 163], [2200, 171], [2371, 146],
+const CELLS: Array<[number, number, number, number]> = [
+    [0, 0, 130, 129], [175, 16, 122, 90], [348, 19, 114, 90], [512, 7, 130, 114],
+    [692, 3, 130, 122], [871, 0, 122, 129], [1040, 3, 74, 122], [1162, 0, 74, 129],
+    [1284, 11, 130, 106], [1464, 13, 114, 98], [1627, 9, 114, 106], [1791, 1, 50, 122],
+    [1891, 17, 122, 90], [2061, 9, 114, 106], [2225, 20, 122, 82], [2395, 12, 122, 90],
 ];
 
 // Tools whose options box shows a line-width picker (matches Paint, where the
@@ -400,10 +401,10 @@ const Paint = () => {
                                 <span
                                     className={styles.toolIcon}
                                     style={{
-                                        width: `${(CELLS[i][1] * SCALE).toFixed(2)}px`,
-                                        height: `${ICON_H}px`,
-                                        backgroundSize: `${(SPRITE_W * SCALE).toFixed(2)}px ${ICON_H}px`,
-                                        backgroundPosition: `${(-CELLS[i][0] * SCALE).toFixed(2)}px 0`,
+                                        width: `${(CELLS[i][2] * SCALE).toFixed(2)}px`,
+                                        height: `${(CELLS[i][3] * SCALE).toFixed(2)}px`,
+                                        backgroundSize: `${(SPRITE_W * SCALE).toFixed(2)}px ${(SPRITE_H * SCALE).toFixed(2)}px`,
+                                        backgroundPosition: `${(-CELLS[i][0] * SCALE).toFixed(2)}px ${(-CELLS[i][1] * SCALE).toFixed(2)}px`,
                                     }}
                                 />
                             </button>

@@ -153,16 +153,19 @@
 
 // ---- Canvas ----------------------------------------------------------------
 .canvasArea {
+    position: relative;
     flex: 1;
     min-width: 0;
     min-height: 0;
-    display: flex;
+    // Absolutely-positioned scroller below keeps the wide bitmap from inflating
+    // the window's intrinsic width (Window has min-width: fit-content), so the
+    // viewport stays constrained and the XP scrollbars actually engage.
+    overflow: hidden;
 }
 
 .scroll {
-    flex: 1;
-    min-width: 0;
-    min-height: 0;
+    position: absolute;
+    inset: 0;
 }
 
 // The grey scrollable region the bitmap floats in
@@ -195,30 +198,29 @@
 // the corner; dragging them resizes the white canvas.
 .handle {
     position: absolute;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.4rem;
+    height: 0.4rem;
     background: #2f6bf6;
-    box-shadow: 0 0 0 0.1rem #fff;
     touch-action: none;
 }
 
 .handleRight {
     top: 50%;
-    right: -0.3rem;
+    right: -0.2rem;
     transform: translateY(-50%);
     cursor: ew-resize;
 }
 
 .handleBottom {
-    bottom: -0.3rem;
+    bottom: -0.2rem;
     left: 50%;
     transform: translateX(-50%);
     cursor: ns-resize;
 }
 
 .handleCorner {
-    bottom: -0.3rem;
-    right: -0.3rem;
+    bottom: -0.2rem;
+    right: -0.2rem;
     cursor: nwse-resize;
 }
 
