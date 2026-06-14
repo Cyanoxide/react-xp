@@ -1,3 +1,17 @@
+// Selected-option highlight — matches the app's menu selection per theme
+@mixin menu-selection {
+    background: #4069bf;
+    color: #fff;
+
+    @include theme-color("green") {
+        background: #95a075;
+    }
+
+    @include theme-color("silver") {
+        background: #8788a1;
+    }
+}
+
 .paint {
     background: #ece9d8;
     color: #000;
@@ -145,18 +159,10 @@
     }
 
     &[data-active="true"] {
-        background: #0a246a;
+        @include menu-selection;
 
         span {
             background: #fff;
-        }
-
-        @include theme-color("green") {
-            background: #5e6948;
-        }
-
-        @include theme-color("silver") {
-            background: #4a4d63;
         }
     }
 }
@@ -177,22 +183,9 @@
         display: block;
     }
 
-    &:hover {
-        border-color: #fff #808080 #808080 #fff;
-    }
-
     &[data-active="true"] {
         border-color: transparent;
-        background: #0a246a;
-        color: #fff;
-
-        @include theme-color("green") {
-            background: #5e6948;
-        }
-
-        @include theme-color("silver") {
-            background: #4a4d63;
-        }
+        @include menu-selection;
     }
 }
 
@@ -223,7 +216,15 @@
 
     &[data-active="true"] span {
         background: #fff;
-        border-color: #2f6bf6;
+        border-color: #4069bf;
+
+        @include theme-color("green") {
+            border-color: #95a075;
+        }
+
+        @include theme-color("silver") {
+            border-color: #8788a1;
+        }
     }
 }
 
@@ -251,19 +252,10 @@
     border: none;
 
     &[data-active="true"] {
-        background: #0a246a;
-        color: #fff;
+        @include menu-selection;
 
         .zoomSq {
             background: #fff;
-        }
-
-        @include theme-color("green") {
-            background: #5e6948;
-        }
-
-        @include theme-color("silver") {
-            background: #4a4d63;
         }
     }
 }
@@ -324,15 +316,13 @@
 .fillOpts {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 0.25rem;
     width: 100%;
     height: 100%;
 }
 
 .fillOpt {
+    flex: 1;
     width: 100%;
-    height: 1.5rem;
     @include option-button;
 
     svg {
