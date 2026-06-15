@@ -132,6 +132,17 @@ const BRUSHES: Array<{ id: string; kind: BrushKind; v: number }> = [
 
 const SHAPE_TOOLS = new Set<Tool>(["rectangle", "polygon", "ellipse", "roundRectangle"]);
 
+// Monochrome tool-icon cursors (black glyph with a white outline for contrast),
+// with a hotspot for each. Tools not listed keep the default crosshair.
+const cursorSvg = (inner: string) => `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>${inner}</svg>`;
+const TOOL_CURSORS: Partial<Record<Tool, { svg: string; x: number; y: number }>> = {
+    pencil: { svg: cursorSvg("<path d='M16 2l6 6-12 12-6 1 1-6z' fill='#000' stroke='#fff' stroke-width='2' stroke-linejoin='round' paint-order='stroke'/>"), x: 4, y: 21 },
+    fill: { svg: cursorSvg("<path d='M12 2l9 9-8 8-9-9z' fill='#000' stroke='#fff' stroke-width='2' stroke-linejoin='round' paint-order='stroke'/><circle cx='4' cy='21' r='2.4' fill='#000' stroke='#fff' stroke-width='1.5' paint-order='stroke'/>"), x: 4, y: 21 },
+    eyedropper: { svg: cursorSvg("<path d='M15 3l6 6-2.5 2.5-1.5-1.5-7 7-1 4-3 1 1-3 4-1 7-7-1.5-1.5z' fill='#000' stroke='#fff' stroke-width='1.5' stroke-linejoin='round' paint-order='stroke'/>"), x: 4, y: 20 },
+    magnifier: { svg: cursorSvg("<circle cx='10' cy='10' r='6.5' fill='none' stroke='#fff' stroke-width='4'/><path d='M14.5 14.5l7 7' stroke='#fff' stroke-width='5' stroke-linecap='round'/><circle cx='10' cy='10' r='6.5' fill='none' stroke='#000' stroke-width='2'/><path d='M14.5 14.5l7 7' stroke='#000' stroke-width='2.5' stroke-linecap='round'/>"), x: 10, y: 10 },
+    airbrush: { svg: cursorSvg("<rect x='5' y='10' width='6' height='11' rx='1' fill='#000' stroke='#fff' stroke-width='1.5' paint-order='stroke'/><rect x='7' y='6' width='4' height='4' fill='#000' stroke='#fff' stroke-width='1' paint-order='stroke'/><g fill='#000' stroke='#fff' stroke-width='0.8' paint-order='stroke'><circle cx='15' cy='5' r='1.2'/><circle cx='18' cy='8' r='1.2'/><circle cx='15' cy='10' r='1.2'/><circle cx='19' cy='12' r='1.2'/></g>"), x: 16, y: 8 },
+};
+
 // The classic Windows Paint 28-colour palette (two rows of fourteen).
 const PALETTE = [
     "#000000", "#808080", "#800000", "#808000", "#008000", "#008080", "#000080", "#800080", "#808040", "#004040", "#0080ff", "#004080", "#8000ff", "#804000",
@@ -992,6 +1003,8 @@ const Paint = ({ id, content }: PaintProps) => {
         return <rect x="2" y="2" width="36" height="10" fill="#808080" />;
     };
 
+    const cursorTool = TOOL_CURSORS[tool];
+
     return (
         <div ref={rootRef} className={`${styles.paint} flex flex-col h-full`} tabIndex={0} onKeyDown={handleKeyDown}>
             <div className={styles.menuBar}>
@@ -1090,6 +1103,7 @@ const Paint = ({ id, content }: PaintProps) => {
                             <canvas
                                 ref={canvasRef}
                                 className={styles.canvas}
+                                style={cursorTool ? { cursor: `url("data:image/svg+xml,${encodeURIComponent(cursorTool.svg)}") ${cursorTool.x} ${cursorTool.y}, crosshair` } : undefined}
                                 onPointerDown={handlePointerDown}
                                 onPointerMove={handlePointerMove}
                                 onPointerUp={endStroke}
