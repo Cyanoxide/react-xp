@@ -14,16 +14,21 @@ type DesktopIconProps = {
     selectedIds: (string | number)[];
     setSelectedIds: (value: (string | number)[]) => void;
     moveIcons: (ids: (string | number)[], startRects: Record<string | number, { top: number; left: number }>, deltaX: number, deltaY: number) => void;
+    // For saved files: a label override, the payload to reopen the app with, and
+    // an icon image override (e.g. a thumbnail of the saved bitmap)
+    label?: string;
+    content?: unknown;
+    iconSrc?: string;
 };
 
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIcons }: DesktopIconProps) => {
-    const { currentWindows, recycledItems, dispatch } = useContext();
+const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIcons, label, content, iconSrc }: DesktopIconProps) => {
+    const { currentWindows, recycledItems, savedImages, dispatch } = useContext();
     const desktopIconRef = useRef<HTMLButtonElement | null>(null);
     const isActive = selectedIds.includes(id);
     const appData = applications[appId];
-    const { title, icon, iconLarge, link } = { ...appData };
+    const { title, name, icon, iconLarge, link } = { ...appData };
 
     const onPointerDown = (event: React.PointerEvent<HTMLElement>) => {
         if (!desktopIconRef.current) return;
@@ -84,12 +89,17 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
             const isOverBin = upEvent.clientX >= binRect.left && upEvent.clientX <= binRect.right && upEvent.clientY >= binRect.top && upEvent.clientY <= binRect.bottom;
             if (!isOverBin) return;
 
+            // Saved-image icons are flagged recycled by id (so they can be
+            // restored from the bin); other icons are recycled by appId
+            const savedToRecycle = dragIds.filter((dragId) => savedImages.some((image) => image.id === dragId));
             const binnedAppIds = dragIds
+                .filter((dragId) => !savedToRecycle.includes(dragId))
                 .map((dragId) => (document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement)?.dataset.appId)
                 .filter((itemAppId): itemAppId is string => !!itemAppId && itemAppId !== "recycleBin" && !recycledItems.includes(itemAppId));
-            if (!binnedAppIds.length) return;
+            if (!savedToRecycle.length && !binnedAppIds.length) return;
 
-            dispatch({ type: "SET_RECYCLED_ITEMS", payload: [...recycledItems, ...binnedAppIds] });
+            if (savedToRecycle.length) dispatch({ type: "SET_SAVED_IMAGES", payload: savedImages.map((image) => savedToRecycle.includes(image.id) ? { ...image, recycled: true } : image) });
+            if (binnedAppIds.length) dispatch({ type: "SET_RECYCLED_ITEMS", payload: [...recycledItems, ...binnedAppIds] });
             playSound("recycle", true);
             setSelectedIds([]);
         };
@@ -114,16 +124,19 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
     const onDoubleClickHandler = () => {
         if (link) return window.open(link, "_blank", "noopener,noreferrer");
 
-        openApplication(appId, currentWindows, dispatch);
+        openApplication(appId, currentWindows, dispatch, content);
         setSelectedIds([]);
     };
 
-    const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
+    const iconImage = iconSrc ?? iconLarge ?? icon;
+    // The selection tint masks with the icon's own shape; a rectangular thumbnail
+    // has no shape to mask, so skip it for saved-image icons
+    const imageMask = (isActive && !iconSrc) ? `url("${iconLarge || icon}")` : "";
 
     return (
         <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-app-id={appId} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position?.top, right: position?.right, bottom: position?.bottom, left: position?.left }}>
-            <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="50" draggable={false} /></span>
-            <div className="relative w-full flex justify-center"><h4 className="text-center">{title}</h4></div>
+            <span style={{ maskImage: imageMask }}><img src={iconImage} width="50" draggable={false} style={iconSrc ? { padding: 0, width: "auto", height: "3rem", maxWidth: "5.5rem", objectFit: "contain", background: "#fff" } : undefined} /></span>
+            <div className="relative w-full flex justify-center"><h4 className="text-center">{label ?? name ?? title}</h4></div>
         </button>
     );
 };

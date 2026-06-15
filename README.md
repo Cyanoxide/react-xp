@@ -7,22 +7,24 @@ An authentic recreation of Windows XP, created using **React** and **Typescript*
 - Functional Taskbar and Start Menu
 - Movable Desktop Icons
 - Movable & resizable windows
-- Login Screen
+- Login, Shutdown and boot up sequences
 - **Notepad**
-- Browsable **File Explorer** with back and forward functionality
+- **File Explorer**
 - **Internet Explorer** with Wayback Machine implementation for period accurate web browsing.
 - **Run** can open applications and Folders, either by internal appId, or title. URLs will also open in Internet Explorer.
 - **[Solitaire](https://github.com/Cyanoxide/react-solitaire)**
-- **Clippy**, the desktop assistant — drag him around, ask him questions, I can't guarentee he will be much help though.
-- Login, Shutdown and boot up sequences
+- **Paint**
+- **Clippy**
 
 ## Roadmap
 
 This is an ongoing project, with many more features I’d like to include in the future, here are some potential features I make look into:
 
 - MSN Messenger
-- MS Paint
 - Minesweeper
+- Doom?
+- Media Player
+- Picture Viewer
 
 ## Demo
 

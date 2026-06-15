@@ -1,0 +1,544 @@
+// Selected-option highlight — matches the app's menu selection per theme
+@mixin menu-selection {
+    background: #4069bf;
+    color: #fff;
+
+    @include theme-color("green") {
+        background: #95a075;
+    }
+
+    @include theme-color("silver") {
+        background: #8788a1;
+    }
+}
+
+.paint {
+    background: #ece9d8;
+    color: #000;
+    outline: none;
+    font-family: Tahoma, "Trebuchet MS", sans-serif;
+    font-size: 1.1rem;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+
+    &,
+    * {
+        box-sizing: border-box;
+    }
+}
+
+// Keep the menu bar (and its bottom border) painting above the canvas area so
+// the vertical scrollbar can't cover it
+.menuBar {
+    position: relative;
+    z-index: 1;
+}
+
+.main {
+    min-height: 0;
+}
+
+// ---- Toolbox ---------------------------------------------------------------
+.toolbox {
+    width: 5.6rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0.3rem;
+    background: #ece9d8;
+    border-right: 0.1rem solid #919b9c;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+        border-right-color: #8a936b;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+        border-right-color: #aeb0bd;
+    }
+}
+
+.tools {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.1rem;
+}
+
+.toolButton {
+    width: 2.4rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    color: #000;
+    background: transparent;
+    // Flat until hovered/selected, like the XP toolbar
+    border: 0.1rem solid transparent;
+
+    &:hover {
+        border-color: #fff #808080 #808080 #fff;
+    }
+
+    &[data-active="true"] {
+        border-color: #808080 #fff #fff #808080;
+        background: #faf9f4;
+
+        @include theme-color("green") {
+            background: #f1f2e3;
+        }
+
+        @include theme-color("silver") {
+            background: #f3f3f7;
+        }
+    }
+}
+
+// One sprite cell per tool (size/position set inline from the CELLS table)
+.toolIcon {
+    display: block;
+    background-image: url("/spritemap__paint-tools.png");
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
+// Tool-options box below the tools — fixed size for every tool; content fits in
+.options {
+    height: 5.6rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // No padding so a full-bleed selection (zoom rows) can reach the edges; the
+    // other option sets are centred and have their own spacing
+    padding: 0;
+    background: #ece9d8;
+    // Sunken bevel
+    border: 0.1rem solid;
+    border-color: #808080 #fff #fff #808080;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+}
+
+// Each row hugs its line plus a constant padding, with a fixed gap, so the space
+// between the lines stays equal (a fixed-height row would close up as lines grow)
+.sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 4.2rem;
+}
+
+.sizeOption {
+    display: flex;
+    align-items: center;
+    padding: 0.15rem 0.1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    span {
+        display: block;
+        width: 100%;
+        min-height: 0.1rem;
+        background: #000;
+    }
+
+    &[data-active="true"] {
+        @include menu-selection;
+
+        span {
+            background: #fff;
+        }
+    }
+}
+
+// Shared look for the icon-style option buttons. Selected = solid blue fill; the
+// icon (drawn in currentColor) turns white, while fixed greys stay grey.
+@mixin option-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    color: #000;
+    background: transparent;
+    border: 0.1rem solid transparent;
+
+    svg {
+        display: block;
+    }
+
+    &[data-active="true"] {
+        border-color: transparent;
+        @include menu-selection;
+    }
+}
+
+// Eraser: four square sizes, one per row. Each button hugs its square and the
+// gap between buttons is fixed, so the spacing between the squares is constant
+// (a fixed-height row would make the gaps shrink as the squares grow).
+.eraserOpts {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.eraserOpt {
+    display: block;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+
+    span {
+        display: block;
+        background: #000;
+        border: 0.1rem solid transparent;
+    }
+
+    &[data-active="true"] span {
+        background: #fff;
+        border-color: #4069bf;
+
+        @include theme-color("green") {
+            border-color: #95a075;
+        }
+
+        @include theme-color("silver") {
+            border-color: #8788a1;
+        }
+    }
+}
+
+// Magnifier zoom-level options: a black square + label; selected = blue overlay
+// that fills the row width
+.zooms {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.zoomOption {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    width: 100%;
+    font-size: 0.85rem;
+    line-height: 1;
+    color: #000;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+
+    &[data-active="true"] {
+        @include menu-selection;
+
+        .zoomSq {
+            background: #fff;
+        }
+    }
+}
+
+// Fixed-width slot keeps the labels aligned while the squares vary in size
+.zoomSqSlot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9rem;
+    flex-shrink: 0;
+}
+
+.zoomSq {
+    background: #000;
+}
+
+// Brush nib shapes: 3 circles, 3 squares, 3 right diagonals, 3 left diagonals
+// — 3 per row, 4 rows
+.brushOpts {
+    display: grid;
+    grid-template-columns: repeat(3, 1.2rem);
+    gap: 0.08rem;
+}
+
+.brushOpt {
+    width: 1.2rem;
+    height: 1.2rem;
+    @include option-button;
+
+    svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+// Airbrush: small + medium on one row, large beneath (centred)
+.sprayOpts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    justify-content: center;
+    width: 4.4rem;
+}
+
+.sprayOpt {
+    width: 2rem;
+    height: 2rem;
+    @include option-button;
+
+    svg {
+        width: 1.6rem;
+        height: 1.6rem;
+    }
+}
+
+// Shape fill styles: border-only, border+fill, fill-only — wide, full-width rows
+.fillOpts {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.fillOpt {
+    flex: 1;
+    width: 100%;
+    @include option-button;
+
+    svg {
+        width: 4rem;
+        height: 1.2rem;
+    }
+}
+
+// ---- Canvas ----------------------------------------------------------------
+.canvasArea {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    // Absolutely-positioned scroller below keeps the wide bitmap from inflating
+    // the window's intrinsic width (Window has min-width: fit-content), so the
+    // viewport stays constrained and the XP scrollbars actually engage.
+    overflow: hidden;
+}
+
+.scroll {
+    position: absolute;
+    inset: 0;
+}
+
+// The grey scrollable region the bitmap floats in
+.scrollViewport {
+    padding: 0.3rem;
+    background: #808080;
+
+    @include theme-color("silver") {
+        background: #7e8088;
+    }
+}
+
+.canvasWrap {
+    position: relative;
+    display: inline-block;
+    line-height: 0;
+    // Room for the handles to sit fully outside the bitmap without being clipped
+    margin: 0 0.8rem 0.8rem 0;
+}
+
+.canvas {
+    display: block;
+    background: #fff;
+    cursor: crosshair;
+    touch-action: none;
+    box-shadow: 0 0 0 0.1rem #000;
+    // Scaled up via CSS width/height when zoomed (not CSS `zoom`, which would also
+    // magnify and blur the cursor); pixelated keeps the magnified bitmap crisp.
+    image-rendering: pixelated;
+}
+
+// Bitmap resize handles: small blue squares at right-middle, bottom-middle and
+// the corner; dragging them resizes the white canvas.
+.handle {
+    position: absolute;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: #2f6bf6;
+    touch-action: none;
+}
+
+.handleRight {
+    top: 50%;
+    right: -0.5rem;
+    transform: translateY(-50%);
+    cursor: ew-resize;
+}
+
+.handleBottom {
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: ns-resize;
+}
+
+.handleCorner {
+    bottom: -0.5rem;
+    right: -0.5rem;
+    cursor: nwse-resize;
+}
+
+// Selection marquee (dashed outline over the bitmap)
+.marquee {
+    position: absolute;
+    border: 0.1rem dashed #000;
+    pointer-events: none;
+    z-index: 1;
+}
+
+// Text tool: a plain textarea overlaid on the bitmap while editing
+.textInput {
+    position: absolute;
+    z-index: 2;
+    margin: 0;
+    padding: 0.1rem 0.2rem;
+    border: 0.1rem dashed #000;
+    background: transparent;
+    font: 14px/1.3 sans-serif;
+    resize: none;
+    outline: none;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+// ---- Palette ---------------------------------------------------------------
+.palette {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0.4rem;
+    background: #ece9d8;
+    border-top: 0.1rem solid #919b9c;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+        border-top-color: #8a936b;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+        border-top-color: #aeb0bd;
+    }
+}
+
+.swatches {
+    position: relative;
+    width: 2.8rem;
+    height: 2.6rem;
+    flex-shrink: 0;
+}
+
+.swatchFg,
+.swatchBg {
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 0.1rem solid #000;
+    box-shadow: inset 0 0 0 0.1rem #fff;
+}
+
+.swatchFg {
+    top: 0;
+    left: 0.2rem;
+    z-index: 1;
+}
+
+.swatchBg {
+    bottom: 0;
+    right: 0.2rem;
+}
+
+.paletteGrid {
+    display: grid;
+    grid-template-columns: repeat(14, 1.3rem);
+    grid-template-rows: repeat(2, 1.3rem);
+    gap: 0.1rem;
+}
+
+.colorCell {
+    width: 1.3rem;
+    height: 1.3rem;
+    padding: 0;
+    cursor: pointer;
+    border: 0.1rem solid #808080;
+}
+
+// ---- Status bar ------------------------------------------------------------
+.statusBar {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    height: 2.2rem;
+    padding: 0.2rem;
+    background: #ece9d8;
+    border-top: 0.1rem solid #fff;
+    font-size: 1.05rem;
+
+    @include theme-color("green") {
+        background: #e9ead2;
+    }
+
+    @include theme-color("silver") {
+        background: #ece9e1;
+    }
+}
+
+.statusHelp,
+.statusPanel {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 0.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    // Sunken inset bevel
+    border: 0.1rem solid;
+    border-color: #808080 #fff #fff #808080;
+}
+
+.statusHelp {
+    flex: 1;
+    min-width: 0;
+}
+
+.statusPanel {
+    width: 8rem;
+    flex-shrink: 0;
+}
+
+.statusGrip {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    align-self: flex-end;
+}

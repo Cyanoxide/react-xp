@@ -27,13 +27,13 @@ const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const template = (item: SubMenuItem, onClickHandler: (e: React.MouseEvent<HTMLElement>, item: SubMenuItem) => void) => {
     const { appId, subMenu = "" } = { ...item };
-    const { title, icon, iconLarge, disabled } = { ...applications[appId] };
+    const { title, name, icon, iconLarge, disabled } = { ...applications[appId] };
 
     return (
         <div key={appId} className={`${styles.subMenuItem} relative font-normal`} data-has-sub-menu={!!subMenu}>
             <button className={`flex items-center p-1.5 relative ${(disabled) ? "cursor-not-allowed" : ""} ${(subMenu) ? "cursor-default" : ""}`} onClick={(e) => onClickHandler(e, item)} >
                 <img src={icon || iconLarge} className="mr-1.5" width="16" height="16" />
-                <span>{title}</span>
+                <span>{name ?? title}</span>
             </button>
             {subMenu && <StartMenuSubMenu data={subMenus[subMenu]} />}
         </div>

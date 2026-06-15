@@ -36,17 +36,22 @@ export const updateCurrentActiveWindow = (windowId: string | number, currentWind
     return updatedCurrentWindows;
 };
 
-export const openApplication = (appId: string, currentWindows: currentWindow[], dispatch: (value: Action) => void) => {
+export const openApplication = (appId: string, currentWindows: currentWindow[], dispatch: (value: Action) => void, content?: unknown) => {
     const newWindow: currentWindow = {
         id: generateUniqueId(),
         appId,
         active: true,
         history: [],
-        forward: []
+        forward: [],
+        ...(content !== undefined ? { content } : {}),
     };
     const updatedCurrentWindows = currentWindows.filter((item) => item.appId !== "run");
     updatedCurrentWindows.push(newWindow);
     dispatch({ type: "SET_CURRENT_WINDOWS", payload: updatedCurrentWindows });
+};
+
+export const closeWindow = (id: string | number, currentWindows: currentWindow[], dispatch: (value: Action) => void) => {
+    dispatch({ type: "SET_CURRENT_WINDOWS", payload: currentWindows.filter((item) => item.id !== id) });
 };
 
 export const getCurrentWindow = (currentWindows: currentWindow[]) => {

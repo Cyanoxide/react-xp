@@ -12,7 +12,10 @@ interface WindowProps extends currentWindow {
 }
 
 const THROTTLE_DELAY = 50;
-const taskBarHeight = document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
+// Read the taskbar height lazily: this module loads before the desktop (and its
+// taskbar) is in the DOM, so a module-level snapshot would be 0 and a maximised
+// window would extend under the taskbar.
+const getTaskBarHeight = () => document.querySelector("[data-label=taskbar]")?.getBoundingClientRect().height || 0;
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const Window = ({ ...props }: WindowProps) => {
@@ -45,7 +48,7 @@ const Window = ({ ...props }: WindowProps) => {
         activeWindow?.style?.left === "0px"
         && activeWindow?.style?.top === "0px"
         && activeWindow?.style?.width === "100%"
-        && activeWindow?.style?.height === (window.innerHeight - taskBarHeight) + "px"
+        && activeWindow?.style?.height === (window.innerHeight - getTaskBarHeight()) + "px"
     );
 
     useEffect(() => {
@@ -78,7 +81,7 @@ const Window = ({ ...props }: WindowProps) => {
         activeWindow.style.left = (isMaximized) ? unmaximizedValues.left : "0px";
         activeWindow.style.top = (isMaximized) ? unmaximizedValues.top : "0px";
         activeWindow.style.width = (isMaximized) ? unmaximizedValues.width : "100%";
-        activeWindow.style.height = (isMaximized) ? unmaximizedValues.height : window.innerHeight - taskBarHeight + "px";
+        activeWindow.style.height = (isMaximized) ? unmaximizedValues.height : window.innerHeight - getTaskBarHeight() + "px";
     };
 
     const onTitleBarPointerDown = (event: React.PointerEvent<HTMLElement>) => {
@@ -96,7 +99,7 @@ const Window = ({ ...props }: WindowProps) => {
         }
 
         const onPointerMove = (event: PointerEvent) => {
-            if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - taskBarHeight) return;
+            if (isMaximized || event.clientY <= 0 || event.clientY > window.innerHeight - getTaskBarHeight()) return;
 
             setWindowPosition({ top: event.clientY - windowOffsetY, left: event.clientX - windowOffsetX, right: undefined, bottom: undefined });
             document.body.style.userSelect = "none";
