@@ -135,7 +135,7 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
 
     return (
         <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-app-id={appId} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position?.top, right: position?.right, bottom: position?.bottom, left: position?.left }}>
-            <span style={{ maskImage: imageMask }}><img src={iconImage} width="50" draggable={false} style={iconSrc ? { padding: 0, width: "auto", height: "3rem", maxWidth: "5.5rem", objectFit: "contain", border: "0.1rem solid #888", background: "#fff" } : undefined} /></span>
+            <span style={{ maskImage: imageMask }}><img src={iconImage} width="50" draggable={false} style={iconSrc ? { padding: 0, width: "auto", height: "3rem", maxWidth: "5.5rem", objectFit: "contain", background: "#fff" } : undefined} /></span>
             <div className="relative w-full flex justify-center"><h4 className="text-center">{label ?? name ?? title}</h4></div>
         </button>
     );
