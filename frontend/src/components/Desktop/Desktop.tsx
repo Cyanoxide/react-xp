@@ -22,7 +22,7 @@ const desktopItems = Files["desktop"].map(([appId, position], index) => ({
 }));
 
 const Desktop = () => {
-    const { recycledItems } = useContext();
+    const { recycledItems, savedImages } = useContext();
     const [selectedIds, setSelectedIds] = useState<(number | string)[]>([]);
     const [selectionRect, setSelectionRect] = useState<SelectionRect | null>(null);
     const [positions, setPositions] = useState<Record<string | number, AbsoluteObject>>(() =>
@@ -30,6 +30,17 @@ const Desktop = () => {
     );
     const desktopRef = useRef<HTMLDivElement | null>(null);
     const previousRecycledRef = useRef<string[]>([]);
+
+    // Give each newly saved image a default desktop position (a second column)
+    useEffect(() => {
+        setPositions((prev) => {
+            const updated = { ...prev };
+            savedImages.forEach((image, index) => {
+                if (!updated[image.id]) updated[image.id] = { top: 5 + index * 75, left: 85 };
+            });
+            return updated;
+        });
+    }, [savedImages]);
 
     // Items restored from the recycle bin return to their initial position
     useEffect(() => {
@@ -107,6 +118,9 @@ const Desktop = () => {
         <div ref={desktopRef} className={styles.desktop} onPointerDown={onPointerDown}>
             {desktopItems.filter(({ appId }) => !recycledItems.includes(appId)).map(({ itemId, appId }) => (
                 <DesktopIcon key={itemId} id={itemId} appId={appId} position={positions[itemId]} selectedIds={selectedIds} setSelectedIds={setSelectedIds} moveIcons={moveIcons} />
+            ))}
+            {savedImages.map((image) => (
+                <DesktopIcon key={image.id} id={image.id} appId="paint" label={image.name} content={image.dataUrl} iconSrc={image.dataUrl} position={positions[image.id]} selectedIds={selectedIds} setSelectedIds={setSelectedIds} moveIcons={moveIcons} />
             ))}
             {selectionRect && <div className={styles.selectionRect} style={{ top: selectionRect.top, left: selectionRect.left, width: selectionRect.width, height: selectionRect.height }} />}
         </div>

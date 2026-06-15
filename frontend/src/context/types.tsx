@@ -20,8 +20,17 @@ export interface currentWindow {
     forward?: string[];
     landingUrl?: string | null;
     showOnTaskbar?: boolean;
+    // Per-window payload (e.g. a saved Paint image data-URL to reopen)
+    content?: unknown;
 }
 export type currentWindows = currentWindow[];
+
+// A Paint image saved to the desktop (rendered as a re-openable icon)
+export interface SavedImage {
+    id: string;
+    name: string;
+    dataUrl: string;
+}
 
 export interface AbsoluteObject {
     top?: number | undefined;
@@ -69,6 +78,7 @@ export interface State {
     themeColor: themeColor;
     recycledItems: string[];
     isClippyMinimised: boolean;
+    savedImages: SavedImage[];
 }
 
 export type Action =
@@ -87,6 +97,7 @@ export type Action =
     | { type: "SET_TRANSITION_LABEL"; payload: string; }
     | { type: "SET_IS_CRT_ENABLED"; payload: boolean; }
     | { type: "SET_THEME_COLOR"; payload: themeColor;}
+    | { type: "SET_SAVED_IMAGES"; payload: SavedImage[] }
 
 
 export interface ContextType extends State {

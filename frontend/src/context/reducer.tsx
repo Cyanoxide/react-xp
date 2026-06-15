@@ -33,8 +33,10 @@ export const reducer = (state: State, action: Action): State => {
         return { ...state, isClippyMinimised: action.payload };
     case "SET_IS_CRT_ENABLED": 
         return { ...state, isCRTEnabled: action.payload };
-    case "SET_THEME_COLOR": 
+    case "SET_THEME_COLOR":
         return { ...state, themeColor: action.payload };
+    case "SET_SAVED_IMAGES":
+        return { ...state, savedImages: action.payload };
     default:
         return state;
     }
@@ -60,4 +62,5 @@ export const initialState: State = {
     themeColor: "blue",
     recycledItems: [...filesJSON.recycleBin],
     isClippyMinimised: typeof window !== "undefined" && sessionStorage.getItem("isClippyMinimised") === "true",
+    savedImages: [],
 };

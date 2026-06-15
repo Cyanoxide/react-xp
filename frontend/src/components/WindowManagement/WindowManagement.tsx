@@ -14,7 +14,7 @@ const WindowManagement = () => {
             const appId = currentWindow.appId;
 
             const {component, content} = applications[currentWindow.appId];
-            return <Window key={currentWindow.id} {...currentWindow}><WindowContent key={appId} componentId={component} appId={appId} content={content} /></Window>;
+            return <Window key={currentWindow.id} {...currentWindow}><WindowContent key={currentWindow.id} componentId={component} appId={appId} id={currentWindow.id} content={currentWindow.content ?? content} /></Window>;
         })
     );
 };

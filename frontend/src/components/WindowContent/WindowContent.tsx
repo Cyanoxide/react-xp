@@ -3,6 +3,7 @@ import { lazy, Suspense, useMemo } from "react";
 interface WindowAppProps {
     appId?: string;
     componentId?: string;
+    id?: string | number;
     landingUrl?: string;
     content?: unknown;
 }

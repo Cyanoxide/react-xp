@@ -1,18 +1,27 @@
 import { useEffect, useRef, useState } from "react";
+import { useContext } from "../../../context/context";
+import { closeWindow, generateUniqueId } from "../../../utils/general";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import XPScrollbars from "../../XPScrollbars/XPScrollbars";
 import styles from "./Paint.module.scss";
 import type { WindowMenuDef } from "../../WindowMenu/WindowMenu";
 import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
 
-// The full Paint menu bar. Every item is disabled for now (the dropdowns open
-// to show the greyed options); individual items can be wired up later.
-const PAINT_MENUS: WindowMenuDef[] = [
+interface PaintMenuHandlers {
+    exit: () => void;
+    saveToDesktop: () => void;
+    saveToComputer: () => void;
+}
+
+// The full Paint menu bar. Save (→ desktop icon), Save to Computer (→ download)
+// and Exit are wired; the rest are disabled for now (dropdowns still open to
+// show the greyed options).
+const buildPaintMenus = (handlers: PaintMenuHandlers): WindowMenuDef[] => [
     { label: "File", items: [
         { label: "New", shortcut: "Ctrl+N", disabled: true },
         { label: "Open...", shortcut: "Ctrl+O", disabled: true },
-        { label: "Save", shortcut: "Ctrl+S", disabled: true },
-        { label: "Save As...", disabled: true },
+        { label: "Save", shortcut: "Ctrl+S", onClick: handlers.saveToDesktop },
+        { label: "Save to Computer...", onClick: handlers.saveToComputer },
         { separator: true },
         { label: "Print Preview", disabled: true },
         { label: "Page Setup...", disabled: true },
@@ -21,7 +30,7 @@ const PAINT_MENUS: WindowMenuDef[] = [
         { label: "Set As Background (Tiled)", disabled: true },
         { label: "Set As Background (Centered)", disabled: true },
         { separator: true },
-        { label: "Exit", disabled: true },
+        { label: "Exit", onClick: handlers.exit },
     ] },
     { label: "Edit", items: [
         { label: "Undo", shortcut: "Ctrl+Z", disabled: true },
@@ -201,7 +210,13 @@ const floodFill = (ctx: CanvasRenderingContext2D, x: number, y: number, fill: [n
     ctx.putImageData(img, 0, 0);
 };
 
-const Paint = () => {
+interface PaintProps {
+    id?: string | number;
+    content?: unknown;
+}
+
+const Paint = ({ id, content }: PaintProps) => {
+    const { currentWindows, savedImages, dispatch } = useContext();
     const rootRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const canvasAreaRef = useRef<HTMLDivElement>(null);
@@ -274,19 +289,31 @@ const Paint = () => {
             const w = Math.floor(area.clientWidth - 28);
             const h = Math.floor(area.clientHeight - 28);
             if (w <= 1 || h <= 1) return;
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext("2d");
-            if (ctx) {
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(0, 0, w, h);
+
+            // Reopened from a saved file: load the image at its own size
+            if (typeof content === "string" && content.startsWith("data:image")) {
+                const img = new Image();
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    canvas.getContext("2d")?.drawImage(img, 0, 0);
+                };
+                img.src = content;
+            } else {
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext("2d");
+                if (ctx) {
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(0, 0, w, h);
+                }
             }
             initedRef.current = true;
             observer.disconnect();
         });
         observer.observe(area);
         return () => observer.disconnect();
-    }, []);
+    }, [content]);
 
     // Switching away from a selection tool commits the floating selection (its
     // pixels are already drawn) and drops the marquee.
@@ -348,6 +375,7 @@ const Paint = () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
+    // Save to Computer: download the bitmap to the real machine
     const saveImage = () => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -355,6 +383,19 @@ const Paint = () => {
         link.download = "untitled.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
+    };
+
+    // Save: drop a re-openable icon on the XP desktop holding this image
+    const saveToDesktop = () => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const count = savedImages.length + 1;
+        const name = count === 1 ? "untitled.png" : `untitled (${count}).png`;
+        dispatch({ type: "SET_SAVED_IMAGES", payload: [...savedImages, { id: generateUniqueId(), name, dataUrl: canvas.toDataURL("image/png") }] });
+    };
+
+    const exit = () => {
+        if (id !== undefined) closeWindow(id, currentWindows, dispatch);
     };
 
     const strokeColor = (button: number) => (button === 2 ? bgColor : fgColor);
@@ -954,7 +995,7 @@ const Paint = () => {
     return (
         <div ref={rootRef} className={`${styles.paint} flex flex-col h-full`} tabIndex={0} onKeyDown={handleKeyDown}>
             <div className={styles.menuBar}>
-                <WindowMenu menus={PAINT_MENUS} />
+                <WindowMenu menus={buildPaintMenus({ exit, saveToDesktop, saveToComputer: saveImage })} />
             </div>
 
             <div className={`${styles.main} flex flex-1 min-h-0`}>

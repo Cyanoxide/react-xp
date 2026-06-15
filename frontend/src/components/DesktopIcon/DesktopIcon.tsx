@@ -14,11 +14,16 @@ type DesktopIconProps = {
     selectedIds: (string | number)[];
     setSelectedIds: (value: (string | number)[]) => void;
     moveIcons: (ids: (string | number)[], startRects: Record<string | number, { top: number; left: number }>, deltaX: number, deltaY: number) => void;
+    // For saved files: a label override, the payload to reopen the app with, and
+    // an icon image override (e.g. a thumbnail of the saved bitmap)
+    label?: string;
+    content?: unknown;
+    iconSrc?: string;
 };
 
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
-const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIcons }: DesktopIconProps) => {
+const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIcons, label, content, iconSrc }: DesktopIconProps) => {
     const { currentWindows, recycledItems, dispatch } = useContext();
     const desktopIconRef = useRef<HTMLButtonElement | null>(null);
     const isActive = selectedIds.includes(id);
@@ -114,16 +119,19 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
     const onDoubleClickHandler = () => {
         if (link) return window.open(link, "_blank", "noopener,noreferrer");
 
-        openApplication(appId, currentWindows, dispatch);
+        openApplication(appId, currentWindows, dispatch, content);
         setSelectedIds([]);
     };
 
-    const imageMask = (isActive) ? `url("${iconLarge || icon}")` : "";
+    const iconImage = iconSrc ?? iconLarge ?? icon;
+    // The selection tint masks with the icon's own shape; a rectangular thumbnail
+    // has no shape to mask, so skip it for saved-image icons
+    const imageMask = (isActive && !iconSrc) ? `url("${iconLarge || icon}")` : "";
 
     return (
         <button ref={desktopIconRef} className={styles.desktopIcon} data-icon-id={id} data-app-id={appId} data-selected={isActive} data-link={!!link} onClick={onClickHandler} onPointerDown={onPointerDown} onDoubleClick={onDoubleClickHandler} style={{ top: position?.top, right: position?.right, bottom: position?.bottom, left: position?.left }}>
-            <span style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="50" draggable={false} /></span>
-            <div className="relative w-full flex justify-center"><h4 className="text-center">{name ?? title}</h4></div>
+            <span style={{ maskImage: imageMask }}><img src={iconImage} width="50" draggable={false} style={iconSrc ? { objectFit: "contain", border: "0.1rem solid #888", background: "#fff" } : undefined} /></span>
+            <div className="relative w-full flex justify-center"><h4 className="text-center">{label ?? name ?? title}</h4></div>
         </button>
     );
 };
