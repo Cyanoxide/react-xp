@@ -280,10 +280,11 @@ const Paint = ({ id, content }: PaintProps) => {
     const polyLastClickRef = useRef<{ t: number; x: number; y: number } | null>(null);
     const polyDraggingRef = useRef(false);
 
-    // Curve: drag a straight line (phase 1), then drag to bend it (phase 2),
-    // keeping the endpoints fixed. base = the canvas before the curve started.
-    const curveRef = useRef<{ phase: number; a: { x: number; y: number }; b: { x: number; y: number }; base: ImageData } | null>(null);
-    const curveDraggingRef = useRef(false);
+    // Curve: lay a straight line (a -> b), then bend it with a control point,
+    // keeping the endpoints fixed. Each step works by click-drag or click-to-point.
+    // b is null while the line's end is still being placed; base = the canvas
+    // before the curve started.
+    const curveRef = useRef<{ a: { x: number; y: number }; b: { x: number; y: number } | null; base: ImageData } | null>(null);
 
     // Text define-drag state + the textarea overlay
     const textDefiningRef = useRef(false);
@@ -382,7 +383,6 @@ const Paint = ({ id, content }: PaintProps) => {
         // Leaving the curve tool finalises whatever's already drawn
         if (tool !== "curve") {
             curveRef.current = null;
-            curveDraggingRef.current = false;
         }
     }, [tool]);
 
@@ -618,17 +618,19 @@ const Paint = ({ id, content }: PaintProps) => {
         polyBaseRef.current = null;
     };
 
-    // Curve: first drag lays a straight line (phase 1); the second drag bends it
-    // into a quadratic curve with the endpoints fixed (phase 2).
-    const strokeCurve = (ctx: CanvasRenderingContext2D, c: { phase: number; a: { x: number; y: number }; b: { x: number; y: number } }, ctrl: { x: number; y: number }) => {
-        ctx.strokeStyle = strokeColor(buttonRef.current);
+    // Redraws the in-progress curve from its saved base: a straight line to the
+    // cursor while the end point is still being placed, otherwise a quadratic
+    // curve through the cursor as its control point (endpoints fixed).
+    const drawCurve = (ctx: CanvasRenderingContext2D, c: { a: { x: number; y: number }; b: { x: number; y: number } | null; base: ImageData }, cursor: { x: number; y: number }, button: number) => {
+        ctx.putImageData(c.base, 0, 0);
+        ctx.strokeStyle = strokeColor(button);
         ctx.lineWidth = size;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.beginPath();
         ctx.moveTo(c.a.x, c.a.y);
-        if (c.phase === 1) ctx.lineTo(ctrl.x, ctrl.y);
-        else ctx.quadraticCurveTo(ctrl.x, ctrl.y, c.b.x, c.b.y);
+        if (!c.b) ctx.lineTo(cursor.x, cursor.y);
+        else ctx.quadraticCurveTo(cursor.x, cursor.y, c.b.x, c.b.y);
         ctx.stroke();
     };
 
@@ -637,36 +639,37 @@ const Paint = ({ id, content }: PaintProps) => {
         const ctx = getCtx();
         if (!canvas || !ctx) return;
         buttonRef.current = event.button;
+        // First press anchors the start point; later presses just begin a drag
+        // whose release commits the next point (handled in handleCurveUp).
         if (!curveRef.current) {
             pushUndo(ctx);
             const pos = getPos(event);
-            curveRef.current = { phase: 1, a: pos, b: pos, base: ctx.getImageData(0, 0, canvas.width, canvas.height) };
+            curveRef.current = { a: pos, b: null, base: ctx.getImageData(0, 0, canvas.width, canvas.height) };
         }
-        curveDraggingRef.current = true;
     };
 
     const handleCurveMove = (event: ReactPointerEvent<HTMLCanvasElement>) => {
         const ctx = getCtx();
         const c = curveRef.current;
         if (!ctx || !c) return;
-        ctx.putImageData(c.base, 0, 0);
-        strokeCurve(ctx, c, getPos(event));
+        // Preview follows the cursor whether or not the button is held, so click
+        // -to-point works the same as click-drag.
+        drawCurve(ctx, c, getPos(event), buttonRef.current);
     };
 
     const handleCurveUp = (event: ReactPointerEvent<HTMLCanvasElement>) => {
-        if (!curveDraggingRef.current) return;
-        curveDraggingRef.current = false;
         const ctx = getCtx();
         const c = curveRef.current;
         if (!ctx || !c) return;
         const pos = getPos(event);
-        ctx.putImageData(c.base, 0, 0);
-        if (c.phase === 1) {
-            c.b = pos;
-            strokeCurve(ctx, c, c.b);
-            c.phase = 2;
+        if (!c.b) {
+            // Placing the line's end: a release away from the start (a drag, or the
+            // second click) locks it in; a click on the start waits for the end.
+            if (pos.x !== c.a.x || pos.y !== c.a.y) c.b = pos;
+            drawCurve(ctx, c, c.b ?? pos, buttonRef.current);
         } else {
-            strokeCurve(ctx, c, pos);
+            // Bending done: this release is the control point — commit the curve.
+            drawCurve(ctx, c, pos, buttonRef.current);
             curveRef.current = null;
         }
     };
@@ -914,7 +917,7 @@ const Paint = ({ id, content }: PaintProps) => {
             if (polyDraggingRef.current && polyPointsRef.current) drawPolygon(ctx, pos, buttonRef.current, false);
             return;
         }
-        if (tool === "curve") { if (curveDraggingRef.current) handleCurveMove(event); return; }
+        if (tool === "curve") { if (curveRef.current) handleCurveMove(event); return; }
         if (tool === "text") { if (textDefiningRef.current) handleTextMove(event); return; }
         if (!drawingRef.current) return;
 
