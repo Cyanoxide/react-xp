@@ -372,6 +372,9 @@
     cursor: crosshair;
     touch-action: none;
     box-shadow: 0 0 0 0.1rem #000;
+    // Scaled up via CSS width/height when zoomed (not CSS `zoom`, which would also
+    // magnify and blur the cursor); pixelated keeps the magnified bitmap crisp.
+    image-rendering: pixelated;
 }
 
 // Bitmap resize handles: small blue squares at right-middle, bottom-middle and

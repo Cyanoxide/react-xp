@@ -132,16 +132,17 @@ const BRUSHES: Array<{ id: string; kind: BrushKind; v: number }> = [
 
 const SHAPE_TOOLS = new Set<Tool>(["rectangle", "polygon", "ellipse", "roundRectangle"]);
 
-// Monochrome tool-icon cursors (black glyph with a white outline for contrast),
-// with a hotspot for each. Tools not listed keep the default crosshair.
-const cursorSvg = (inner: string) => `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>${inner}</svg>`;
-const TOOL_CURSORS: Partial<Record<Tool, { svg: string; x: number; y: number }>> = {
-    pencil: { svg: cursorSvg("<path d='M16 2l6 6-12 12-6 1 1-6z' fill='#000' stroke='#fff' stroke-width='2' stroke-linejoin='round' paint-order='stroke'/>"), x: 4, y: 21 },
-    fill: { svg: cursorSvg("<path d='M12 2l9 9-8 8-9-9z' fill='#000' stroke='#fff' stroke-width='2' stroke-linejoin='round' paint-order='stroke'/><circle cx='4' cy='21' r='2.4' fill='#000' stroke='#fff' stroke-width='1.5' paint-order='stroke'/>"), x: 4, y: 21 },
-    eyedropper: { svg: cursorSvg("<path d='M15 3l6 6-2.5 2.5-1.5-1.5-7 7-1 4-3 1 1-3 4-1 7-7-1.5-1.5z' fill='#000' stroke='#fff' stroke-width='1.5' stroke-linejoin='round' paint-order='stroke'/>"), x: 4, y: 20 },
-    magnifier: { svg: cursorSvg("<circle cx='10' cy='10' r='6.5' fill='none' stroke='#fff' stroke-width='4'/><path d='M14.5 14.5l7 7' stroke='#fff' stroke-width='5' stroke-linecap='round'/><circle cx='10' cy='10' r='6.5' fill='none' stroke='#000' stroke-width='2'/><path d='M14.5 14.5l7 7' stroke='#000' stroke-width='2.5' stroke-linecap='round'/>"), x: 10, y: 10 },
-    airbrush: { svg: cursorSvg("<rect x='5' y='10' width='6' height='11' rx='1' fill='#000' stroke='#fff' stroke-width='1.5' paint-order='stroke'/><rect x='7' y='6' width='4' height='4' fill='#000' stroke='#fff' stroke-width='1' paint-order='stroke'/><g fill='#000' stroke='#fff' stroke-width='0.8' paint-order='stroke'><circle cx='15' cy='5' r='1.2'/><circle cx='18' cy='8' r='1.2'/><circle cx='15' cy='10' r='1.2'/><circle cx='19' cy='12' r='1.2'/></g>"), x: 16, y: 8 },
-};
+// The five tool cursors are generated at runtime as monochrome (greyscale)
+// versions of their spritemap icons. Each entry is [tool, sprite cell index,
+// [hotspot x, hotspot y] as 0–1 fractions of the rendered cursor].
+const CURSOR_CONFIG: Array<[Tool, number, [number, number]]> = [
+    ["pencil", 6, [0.12, 0.9]],
+    ["fill", 3, [0.14, 0.88]],
+    ["eyedropper", 4, [0.1, 0.9]],
+    ["magnifier", 5, [0.4, 0.4]],
+    ["airbrush", 8, [0.72, 0.42]],
+];
+const CURSOR_PX = 24;
 
 // The classic Windows Paint 28-colour palette (two rows of fourteen).
 const PALETTE = [
@@ -242,6 +243,8 @@ const Paint = ({ id, content }: PaintProps) => {
     const [sprayId, setSprayId] = useState("m");
     const [shapeFill, setShapeFill] = useState<(typeof SHAPE_FILLS)[number]>("stroke");
     const [zoom, setZoom] = useState(1);
+    const [canvasSize, setCanvasSize] = useState({ w: 0, h: 0 });
+    const [toolCursors, setToolCursors] = useState<Partial<Record<Tool, string>>>({});
     const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
     // Text tool: a box (dragged out like a selection) you type plain text into
     const [textBox, setTextBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
@@ -308,6 +311,7 @@ const Paint = ({ id, content }: PaintProps) => {
                     canvas.width = img.width;
                     canvas.height = img.height;
                     canvas.getContext("2d")?.drawImage(img, 0, 0);
+                    setCanvasSize({ w: img.width, h: img.height });
                 };
                 img.src = content;
             } else {
@@ -318,6 +322,7 @@ const Paint = ({ id, content }: PaintProps) => {
                     ctx.fillStyle = "#ffffff";
                     ctx.fillRect(0, 0, w, h);
                 }
+                setCanvasSize({ w, h });
             }
             initedRef.current = true;
             observer.disconnect();
@@ -325,6 +330,37 @@ const Paint = ({ id, content }: PaintProps) => {
         observer.observe(area);
         return () => observer.disconnect();
     }, [content]);
+
+    // Build monochrome (greyscale) cursors from the toolbox spritemap once, so the
+    // active tool's icon doubles as the canvas cursor.
+    useEffect(() => {
+        const img = new Image();
+        img.onload = () => {
+            const generated: Partial<Record<Tool, string>> = {};
+            for (const [toolId, cellIdx, [hx, hy]] of CURSOR_CONFIG) {
+                const [sx, sy, sw, sh] = CELLS[cellIdx];
+                const scale = CURSOR_PX / Math.max(sw, sh);
+                const cw = Math.max(1, Math.round(sw * scale));
+                const ch = Math.max(1, Math.round(sh * scale));
+                const off = document.createElement("canvas");
+                off.width = cw;
+                off.height = ch;
+                const octx = off.getContext("2d");
+                if (!octx) continue;
+                octx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+                const pixels = octx.getImageData(0, 0, cw, ch);
+                const d = pixels.data;
+                for (let i = 0; i < d.length; i += 4) {
+                    const lum = Math.round(0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]);
+                    d[i] = d[i + 1] = d[i + 2] = lum;
+                }
+                octx.putImageData(pixels, 0, 0);
+                generated[toolId] = `url("${off.toDataURL()}") ${Math.round(hx * cw)} ${Math.round(hy * ch)}, crosshair`;
+            }
+            setToolCursors(generated);
+        };
+        img.src = "/spritemap__paint-tools.png";
+    }, []);
 
     // Switching away from a selection tool commits the floating selection (its
     // pixels are already drawn) and drops the marquee.
@@ -938,6 +974,7 @@ const Paint = ({ id, content }: PaintProps) => {
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, w, h);
         ctx.putImageData(r.snapshot, 0, 0);
+        setCanvasSize({ w, h });
     };
 
     const handleResizeUp = (event: ReactPointerEvent<HTMLSpanElement>) => {
@@ -1003,7 +1040,7 @@ const Paint = ({ id, content }: PaintProps) => {
         return <rect x="2" y="2" width="36" height="10" fill="#808080" />;
     };
 
-    const cursorTool = TOOL_CURSORS[tool];
+    const canvasCursor = toolCursors[tool];
 
     return (
         <div ref={rootRef} className={`${styles.paint} flex flex-col h-full`} tabIndex={0} onKeyDown={handleKeyDown}>
@@ -1099,11 +1136,15 @@ const Paint = ({ id, content }: PaintProps) => {
 
                 <div ref={canvasAreaRef} className={styles.canvasArea}>
                     <XPScrollbars className={styles.scroll} viewportClassName={styles.scrollViewport}>
-                        <div className={styles.canvasWrap} style={{ zoom }}>
+                        <div className={styles.canvasWrap}>
                             <canvas
                                 ref={canvasRef}
                                 className={styles.canvas}
-                                style={cursorTool ? { cursor: `url("data:image/svg+xml,${encodeURIComponent(cursorTool.svg)}") ${cursorTool.x} ${cursorTool.y}, crosshair` } : undefined}
+                                style={{
+                                    width: canvasSize.w ? canvasSize.w * zoom : undefined,
+                                    height: canvasSize.h ? canvasSize.h * zoom : undefined,
+                                    ...(canvasCursor ? { cursor: canvasCursor } : {}),
+                                }}
                                 onPointerDown={handlePointerDown}
                                 onPointerMove={handlePointerMove}
                                 onPointerUp={endStroke}
@@ -1125,14 +1166,14 @@ const Paint = ({ id, content }: PaintProps) => {
                             {selection && selection.w > 0 && selection.h > 0 && (
                                 <div
                                     className={styles.marquee}
-                                    style={{ left: selection.x, top: selection.y, width: selection.w, height: selection.h }}
+                                    style={{ left: selection.x * zoom, top: selection.y * zoom, width: selection.w * zoom, height: selection.h * zoom }}
                                 />
                             )}
                             {textBox && (textEditing ? (
                                 <textarea
                                     ref={textareaRef}
                                     className={styles.textInput}
-                                    style={{ left: textBox.x, top: textBox.y, width: textBox.w, height: textBox.h, color: fgColor }}
+                                    style={{ left: textBox.x * zoom, top: textBox.y * zoom, width: textBox.w * zoom, height: textBox.h * zoom, color: fgColor, fontSize: TEXT_SIZE * zoom }}
                                     value={textValue}
                                     onChange={(e) => setTextValue(e.target.value)}
                                     onBlur={commitText}
@@ -1140,7 +1181,7 @@ const Paint = ({ id, content }: PaintProps) => {
                             ) : (
                                 <div
                                     className={styles.marquee}
-                                    style={{ left: textBox.x, top: textBox.y, width: textBox.w, height: textBox.h }}
+                                    style={{ left: textBox.x * zoom, top: textBox.y * zoom, width: textBox.w * zoom, height: textBox.h * zoom }}
                                 />
                             ))}
                         </div>
