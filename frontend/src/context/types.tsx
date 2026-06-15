@@ -30,6 +30,9 @@ export interface SavedImage {
     id: string;
     name: string;
     dataUrl: string;
+    // Binned images stay in state (hidden from the desktop, shown in the recycle
+    // bin) so they can be restored, mirroring how recycledItems works
+    recycled?: boolean;
 }
 
 export interface AbsoluteObject {

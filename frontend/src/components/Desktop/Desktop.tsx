@@ -123,7 +123,7 @@ const Desktop = () => {
             {desktopItems.filter(({ appId }) => !recycledItems.includes(appId)).map(({ itemId, appId }) => (
                 <DesktopIcon key={itemId} id={itemId} appId={appId} position={positions[itemId]} selectedIds={selectedIds} setSelectedIds={setSelectedIds} moveIcons={moveIcons} />
             ))}
-            {savedImages.map((image) => (
+            {savedImages.filter((image) => !image.recycled).map((image) => (
                 <DesktopIcon key={image.id} id={image.id} appId="paint" label={image.name} content={image.dataUrl} iconSrc={image.dataUrl} position={positions[image.id]} selectedIds={selectedIds} setSelectedIds={setSelectedIds} moveIcons={moveIcons} />
             ))}
             {selectionRect && <div className={styles.selectionRect} style={{ top: selectionRect.top, left: selectionRect.left, width: selectionRect.width, height: selectionRect.height }} />}

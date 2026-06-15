@@ -89,16 +89,16 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
             const isOverBin = upEvent.clientX >= binRect.left && upEvent.clientX <= binRect.right && upEvent.clientY >= binRect.top && upEvent.clientY <= binRect.bottom;
             if (!isOverBin) return;
 
-            // Saved-image icons are identified by id (deleted outright); other
-            // icons are recycled by appId
-            const savedToRemove = dragIds.filter((dragId) => savedImages.some((image) => image.id === dragId));
+            // Saved-image icons are flagged recycled by id (so they can be
+            // restored from the bin); other icons are recycled by appId
+            const savedToRecycle = dragIds.filter((dragId) => savedImages.some((image) => image.id === dragId));
             const binnedAppIds = dragIds
-                .filter((dragId) => !savedToRemove.includes(dragId))
+                .filter((dragId) => !savedToRecycle.includes(dragId))
                 .map((dragId) => (document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement)?.dataset.appId)
                 .filter((itemAppId): itemAppId is string => !!itemAppId && itemAppId !== "recycleBin" && !recycledItems.includes(itemAppId));
-            if (!savedToRemove.length && !binnedAppIds.length) return;
+            if (!savedToRecycle.length && !binnedAppIds.length) return;
 
-            if (savedToRemove.length) dispatch({ type: "SET_SAVED_IMAGES", payload: savedImages.filter((image) => !savedToRemove.includes(image.id)) });
+            if (savedToRecycle.length) dispatch({ type: "SET_SAVED_IMAGES", payload: savedImages.map((image) => savedToRecycle.includes(image.id) ? { ...image, recycled: true } : image) });
             if (binnedAppIds.length) dispatch({ type: "SET_RECYCLED_ITEMS", payload: [...recycledItems, ...binnedAppIds] });
             playSound("recycle", true);
             setSelectedIds([]);

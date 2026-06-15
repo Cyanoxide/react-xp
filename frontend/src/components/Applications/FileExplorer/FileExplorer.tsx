@@ -14,7 +14,8 @@ const Applications = applicationsJSON as unknown as Record<string, Application>;
 const Files = filesJSON as unknown as Record<string, string[] | File[]>;
 
 const FileExplorer = ({ appId }: Record<string, string>) => {
-    const { currentWindows, recycledItems, dispatch } = useContext();
+    const { currentWindows, recycledItems, savedImages, dispatch } = useContext();
+    const recycledImages = savedImages.filter((image) => image.recycled);
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
     const [isBackDisabled, setIsBackDisabled] = useState(true);
     const [isForwardDisabled, setIsForwardDisabled] = useState(true);
@@ -36,6 +37,12 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
 
     const emptyRecycleBinHandler = () => {
         dispatch({ type: "SET_RECYCLED_ITEMS", payload: [] });
+        if (recycledImages.length) dispatch({ type: "SET_SAVED_IMAGES", payload: savedImages.map((image) => image.recycled ? { ...image, recycled: false } : image) });
+        playSound("recycle", true);
+    };
+
+    const restoreSavedImageHandler = (id: string) => {
+        dispatch({ type: "SET_SAVED_IMAGES", payload: savedImages.map((image) => image.id === id ? { ...image, recycled: false } : image) });
         playSound("recycle", true);
     };
 
@@ -194,7 +201,7 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                             <CollapseBox title="Recycle Bin Tasks">
                                 <ul className="flex flex-col gap-2 p-3">
                                     <li>
-                                        <button className="flex items-center" onClick={emptyRecycleBinHandler} disabled={!recycledItems.length}>
+                                        <button className="flex items-center" onClick={emptyRecycleBinHandler} disabled={!recycledItems.length && !recycledImages.length}>
                                             <img src="/icon__recycle_bin.png" className="mr-2" width="12" height="12" />
                                             <p>Empty the Recycle Bin</p>
                                         </button>
@@ -267,6 +274,15 @@ const FileExplorer = ({ appId }: Record<string, string>) => {
                                     <button key={itemId} data-id={itemId} data-selected={isActive} data-link={!!link} className={`${styles.file} ${(disabled) ? "cursor-not-allowed" : ""}`} onDoubleClick={(e) => fileDBClickHandler(e, itemId)} onClick={(e) => fileClickHandler(e, itemId)}>
                                         <span className="flex items-center shrink-0" style={{ maskImage: imageMask }}><img src={iconLarge || icon} width="35" height="35" draggable={false} /></span>
                                         <h4 className="px-0.5">{title}</h4>
+                                    </button>
+                                );
+                            })}
+                            {appId === "recycleBin" && recycledImages.map((image) => {
+                                const isActive = (selectedItem === image.id);
+                                return (
+                                    <button key={image.id} data-id={image.id} data-selected={isActive} className={styles.file} title="Double-click to restore" onDoubleClick={() => restoreSavedImageHandler(image.id)} onClick={(e) => fileClickHandler(e, image.id)}>
+                                        <span className="flex items-center shrink-0"><img src={image.dataUrl} width="35" height="35" draggable={false} style={{ objectFit: "contain", border: "0.1rem solid #888", background: "#fff" }} /></span>
+                                        <h4 className="px-0.5">{image.name}</h4>
                                     </button>
                                 );
                             })}
