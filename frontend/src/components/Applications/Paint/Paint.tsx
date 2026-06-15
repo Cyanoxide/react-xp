@@ -2,7 +2,66 @@ import { useEffect, useRef, useState } from "react";
 import WindowMenu from "../../WindowMenu/WindowMenu";
 import XPScrollbars from "../../XPScrollbars/XPScrollbars";
 import styles from "./Paint.module.scss";
+import type { WindowMenuDef } from "../../WindowMenu/WindowMenu";
 import type { PointerEvent as ReactPointerEvent, KeyboardEvent as ReactKeyboardEvent } from "react";
+
+// The full Paint menu bar. Every item is disabled for now (the dropdowns open
+// to show the greyed options); individual items can be wired up later.
+const PAINT_MENUS: WindowMenuDef[] = [
+    { label: "File", items: [
+        { label: "New", shortcut: "Ctrl+N", disabled: true },
+        { label: "Open...", shortcut: "Ctrl+O", disabled: true },
+        { label: "Save", shortcut: "Ctrl+S", disabled: true },
+        { label: "Save As...", disabled: true },
+        { separator: true },
+        { label: "Print Preview", disabled: true },
+        { label: "Page Setup...", disabled: true },
+        { label: "Print...", shortcut: "Ctrl+P", disabled: true },
+        { separator: true },
+        { label: "Set As Background (Tiled)", disabled: true },
+        { label: "Set As Background (Centered)", disabled: true },
+        { separator: true },
+        { label: "Exit", disabled: true },
+    ] },
+    { label: "Edit", items: [
+        { label: "Undo", shortcut: "Ctrl+Z", disabled: true },
+        { label: "Repeat", shortcut: "F4", disabled: true },
+        { separator: true },
+        { label: "Cut", shortcut: "Ctrl+X", disabled: true },
+        { label: "Copy", shortcut: "Ctrl+C", disabled: true },
+        { label: "Paste", shortcut: "Ctrl+V", disabled: true },
+        { label: "Clear Selection", shortcut: "Del", disabled: true },
+        { label: "Select All", shortcut: "Ctrl+A", disabled: true },
+        { separator: true },
+        { label: "Copy To...", disabled: true },
+        { label: "Paste From...", disabled: true },
+    ] },
+    { label: "View", items: [
+        { label: "Tool Box", shortcut: "Ctrl+T", disabled: true },
+        { label: "Color Box", shortcut: "Ctrl+L", disabled: true },
+        { label: "Status Bar", disabled: true },
+        { label: "Text Toolbar", disabled: true },
+        { separator: true },
+        { label: "Zoom", disabled: true },
+        { label: "View Bitmap", shortcut: "Ctrl+F", disabled: true },
+    ] },
+    { label: "Image", items: [
+        { label: "Flip/Rotate...", shortcut: "Ctrl+R", disabled: true },
+        { label: "Stretch/Skew...", shortcut: "Ctrl+W", disabled: true },
+        { label: "Invert Colors", shortcut: "Ctrl+I", disabled: true },
+        { label: "Attributes...", shortcut: "Ctrl+E", disabled: true },
+        { label: "Clear Image", shortcut: "Ctrl+Shft+N", disabled: true },
+        { label: "Draw Opaque", disabled: true },
+    ] },
+    { label: "Colors", items: [
+        { label: "Edit Colors...", disabled: true },
+    ] },
+    { label: "Help", items: [
+        { label: "Help Topics", disabled: true },
+        { separator: true },
+        { label: "About Paint", disabled: true },
+    ] },
+];
 
 type Tool =
     | "freeSelect" | "select" | "eraser" | "fill" | "eyedropper" | "magnifier"
@@ -895,7 +954,7 @@ const Paint = () => {
     return (
         <div ref={rootRef} className={`${styles.paint} flex flex-col h-full`} tabIndex={0} onKeyDown={handleKeyDown}>
             <div className={styles.menuBar}>
-                <WindowMenu menuItems={["File", "Edit", "View", "Image", "Colors", "Help"]} />
+                <WindowMenu menus={PAINT_MENUS} />
             </div>
 
             <div className={`${styles.main} flex flex-1 min-h-0`}>

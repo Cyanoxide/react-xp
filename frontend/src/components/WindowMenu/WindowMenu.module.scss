@@ -13,22 +13,141 @@
         border-left: 0.1rem solid #dedaca;
         object-fit: cover;
     }
+}
 
-    ul {
-        position: absolute;
-        left: -0.15rem;
-        top: -0.15rem;
+// Legacy placeholder menu: flat, non-interactive labels
+.flatList {
+    position: absolute;
+    left: -0.15rem;
+    top: -0.15rem;
 
-        li {
-            &:hover {
-                color: #fff;
-                background-color: #4069bf;
-                cursor: not-allowed;
-            }
+    li {
+        &:hover {
+            color: #fff;
+            background-color: #4069bf;
+            cursor: not-allowed;
+        }
 
-            button {
-                cursor: not-allowed;
-            }
+        button {
+            cursor: not-allowed;
         }
     }
+}
+
+// ---- Data-driven dropdown menu ---------------------------------------------
+.dropdownMenu {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    z-index: 5;
+}
+
+.menuInner {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+}
+
+.menuList {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menuItem {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 0.1rem;
+
+    &>button {
+        border: none;
+        background: none;
+        padding: 0 0.55rem;
+        margin: 0;
+        font: inherit;
+        color: inherit;
+        cursor: default;
+        align-self: stretch;
+    }
+
+    // Highlight follows the active theme (blue / olive / silver)
+    &[data-disabled="false"]:hover,
+    &[data-open="true"] {
+        color: #fff;
+        background-color: #4069bf;
+
+        @include theme-color("green") {
+            background-color: #95a075;
+        }
+
+        @include theme-color("silver") {
+            background-color: #b5b7c8;
+            color: #000;
+        }
+    }
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin: 0;
+    padding: 0.2rem 0;
+    list-style: none;
+    min-width: 15rem;
+    background: #fff;
+    color: #000;
+    border: 0.1rem solid #aca899;
+    box-shadow: 0.2rem 0.2rem 0.4rem #00000033;
+    z-index: 10;
+}
+
+.dropdownItem {
+    &>button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        width: 100%;
+        border: none;
+        background: none;
+        font: inherit;
+        color: inherit;
+        text-align: left;
+        white-space: nowrap;
+        padding: 0.4rem 1.4rem 0.4rem 1.8rem;
+        cursor: default;
+    }
+
+    &[data-disabled="true"]>button {
+        color: #8c8c8c;
+    }
+
+    &[data-disabled="false"]>button:hover {
+        background-color: #316ac5;
+        color: #fff;
+
+        @include theme-color("green") {
+            background-color: #95a075;
+        }
+
+        @include theme-color("silver") {
+            background-color: #b5b7c8;
+            color: #000;
+        }
+    }
+}
+
+.shortcut {
+    color: inherit;
+}
+
+.separator {
+    height: 0;
+    margin: 0.3rem 0.25rem;
+    border-top: 0.1rem solid #d6d3c4;
+    list-style: none;
 }
