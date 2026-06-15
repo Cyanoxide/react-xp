@@ -96,7 +96,11 @@ const Desktop = () => {
                     iconRect.right > rect.left &&
                     iconRect.top < rect.top + rect.height &&
                     iconRect.bottom > rect.top;
-                if (overlaps && icon.dataset.iconId) intersecting.push(Number(icon.dataset.iconId));
+                // Keep string ids (saved images) as-is; numeric file ids stay numeric
+                if (overlaps && icon.dataset.iconId) {
+                    const raw = icon.dataset.iconId;
+                    intersecting.push(Number.isNaN(Number(raw)) ? raw : Number(raw));
+                }
             });
             setSelectedIds(intersecting);
         };

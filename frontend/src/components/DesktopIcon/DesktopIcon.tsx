@@ -24,7 +24,7 @@ type DesktopIconProps = {
 const applications = applicationsJSON as unknown as Record<string, Application>;
 
 const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIcons, label, content, iconSrc }: DesktopIconProps) => {
-    const { currentWindows, recycledItems, dispatch } = useContext();
+    const { currentWindows, recycledItems, savedImages, dispatch } = useContext();
     const desktopIconRef = useRef<HTMLButtonElement | null>(null);
     const isActive = selectedIds.includes(id);
     const appData = applications[appId];
@@ -89,12 +89,17 @@ const DesktopIcon = ({ appId, id, position, selectedIds, setSelectedIds, moveIco
             const isOverBin = upEvent.clientX >= binRect.left && upEvent.clientX <= binRect.right && upEvent.clientY >= binRect.top && upEvent.clientY <= binRect.bottom;
             if (!isOverBin) return;
 
+            // Saved-image icons are identified by id (deleted outright); other
+            // icons are recycled by appId
+            const savedToRemove = dragIds.filter((dragId) => savedImages.some((image) => image.id === dragId));
             const binnedAppIds = dragIds
+                .filter((dragId) => !savedToRemove.includes(dragId))
                 .map((dragId) => (document.querySelector(`[data-icon-id="${dragId}"]`) as HTMLElement)?.dataset.appId)
                 .filter((itemAppId): itemAppId is string => !!itemAppId && itemAppId !== "recycleBin" && !recycledItems.includes(itemAppId));
-            if (!binnedAppIds.length) return;
+            if (!savedToRemove.length && !binnedAppIds.length) return;
 
-            dispatch({ type: "SET_RECYCLED_ITEMS", payload: [...recycledItems, ...binnedAppIds] });
+            if (savedToRemove.length) dispatch({ type: "SET_SAVED_IMAGES", payload: savedImages.filter((image) => !savedToRemove.includes(image.id)) });
+            if (binnedAppIds.length) dispatch({ type: "SET_RECYCLED_ITEMS", payload: [...recycledItems, ...binnedAppIds] });
             playSound("recycle", true);
             setSelectedIds([]);
         };
