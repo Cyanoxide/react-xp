@@ -251,6 +251,7 @@
     },
     "doom": {
         "title": "DOOM",
+        "icon": "/icon__doom.png",
         "iconLarge": "/icon__doom--large.png",
         "component": "Doom",
         "height": 520,
