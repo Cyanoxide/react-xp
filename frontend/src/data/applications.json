@@ -248,5 +248,12 @@
         "component": "Solitaire",
         "height": 400,
         "width": 500
+    },
+    "doom": {
+        "title": "DOOM",
+        "iconLarge": "/icon__doom--large.png",
+        "component": "Doom",
+        "height": 520,
+        "width": 660
     }
 }

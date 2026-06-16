@@ -36,6 +36,13 @@
             }
         ],
         [
+            "doom",
+            {
+                "top": 340,
+                "left": 5
+            }
+        ],
+        [
             "recycleBin",
             {
                 "bottom": 5,

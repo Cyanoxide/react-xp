@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8" />
+        <title>DOOM</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <style>
+            * { box-sizing: border-box; }
+            html, body { height: 100%; margin: 0; }
+            body {
+                background: #000;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            /* Fill the frame, keep the bitmap's aspect, render crisp pixels.
+               The canvas must have no border/padding or mouse coords drift. */
+            canvas#canvas {
+                background: #000;
+                display: block;
+                height: 100%;
+                width: auto;
+                max-width: 100%;
+                image-rendering: pixelated;
+                outline: none;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
+        <script>
+            // Single-player. "-nomusic" is required: this WASM build hangs during
+            // music init (the same reason the upstream cloudflare build sets it) —
+            // sound effects still play. The "-servername" multiplayer flag is dropped.
+            var doomArgs = ["-iwad", "doom1.wad", "-window", "-nogui", "-nomusic", "-config", "default.cfg"];
+
+            var canvas = document.getElementById("canvas");
+            // Keyboard goes to the engine only while the canvas is focused, so grab
+            // focus as soon as the player interacts with the frame.
+            var focusCanvas = function () { try { canvas.focus(); } catch (e) {} };
+            window.addEventListener("pointerdown", focusCanvas);
+            window.addEventListener("load", focusCanvas);
+
+            var Module = {
+                noInitialRun: true,
+                arguments: doomArgs,
+                canvas: canvas,
+                onRuntimeInitialized: function () { callMain(doomArgs); },
+                preRun: function () {
+                    Module.FS.createPreloadedFile("", "doom1.wad", "doom1.wad", true, true);
+                    Module.FS.createPreloadedFile("", "default.cfg", "default.cfg", true, true);
+                },
+                print: function (text) { console.log(text); },
+                printErr: function (text) {
+                    if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+                    console.error(text);
+                },
+                // No on-screen status/loading bar or splash — just log to the console.
+                setStatus: function (text) { if (text) console.log("[doom] " + text); },
+                monitorRunDependencies: function () {},
+            };
+
+            canvas.addEventListener("webglcontextlost", function (e) {
+                console.warn("DOOM WebGL context lost — reopen the window to restart.");
+                e.preventDefault();
+            }, false);
+        </script>
+        <script src="websockets-doom.js"></script>
+    </body>
+</html>

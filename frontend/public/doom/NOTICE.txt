@@ -1,0 +1,17 @@
+DOOM in react-xp
+=================
+
+The game engine here is **Chocolate Doom** compiled to WebAssembly
+(`websockets-doom.js` + `websockets-doom.wasm`). Chocolate Doom and this
+WebAssembly port are licensed under the **GNU General Public License v2**
+(see the bundled `LICENSE` file).
+
+Corresponding source code for the WebAssembly build:
+  https://github.com/cloudflare/doom-wasm
+  (upstream engine: https://github.com/chocolate-doom/chocolate-doom)
+
+`doom1.wad` is the freely redistributable **shareware** DOOM data file
+(Episode 1, "Knee-Deep in the Dead") by id Software. It is not part of, and
+not covered by, the GPL above.
+
+`index.html` is the minimal loader shell written for react-xp.
