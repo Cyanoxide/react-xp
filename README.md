@@ -46,7 +46,7 @@ Then open [http://localhost:5174](http://localhost:5174) in your browser.
 
 - [XP.css](https://github.com/botoxparty/XP.css) — Used specifically for scrollbar assets (arrows, track and thumb)
 - [clippyjs](https://github.com/pithings/clippy)
-- [Chocolate Doom](https://github.com/chocolate-doom/chocolate-doom) (GPL-2.0) via its [WebAssembly port](https://github.com/cloudflare/doom-wasm) — powers the DOOM app. Ships with id Software's freely redistributable shareware `doom1.wad`.
+- [PrBoom+](https://github.com/coelckers/prboom-plus) / [PrBoomX](https://github.com/JadingTsunami/prboomX) (GPL-2.0) via the [Dwasm](https://github.com/GMH-Code/Dwasm) WebAssembly build — powers the DOOM app (with OPL2 music). Ships with id Software's freely redistributable shareware `doom1.wad`.
 
 ## Support & Contribution
 
