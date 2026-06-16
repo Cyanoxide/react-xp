@@ -38,14 +38,39 @@
             window.addEventListener("pointerdown", focusCanvas);
             window.addEventListener("load", focusCanvas);
 
+            // Bring DOOM's main menu up on its own, so the player lands on the menu
+            // (New Game / Options / ...) instead of the attract-mode demo — no key
+            // press needed. Esc is what DOOM uses to open the menu; we fire it once,
+            // as soon as the engine is running (title music registering is the cue),
+            // with a timed fallback.
+            var menuOpened = false;
+            function openDoomMenu() {
+                if (menuOpened) return;
+                menuOpened = true;
+                window.focus();
+                ["keydown", "keyup"].forEach(function (type, i) {
+                    setTimeout(function () {
+                        window.dispatchEvent(new KeyboardEvent(type, { key: "Escape", code: "Escape", keyCode: 27, which: 27, bubbles: true, cancelable: true }));
+                    }, 400 + i * 70);
+                });
+            }
+            setTimeout(openDoomMenu, 6000);
+
             var Module = {
                 canvas: canvas,
-                arguments: ["-iwad", "DOOM1.WAD"],
+                // -nomouse stops SDL grabbing the pointer (pointer lock); otherwise the
+                // browser eats the first Esc to release the lock, forcing a double-press
+                // to reach the menu. Without it a single Esc always works — play with
+                // the keyboard (arrows move/turn, Ctrl fire, Space use).
+                arguments: ["-iwad", "DOOM1.WAD", "-nomouse"],
                 preRun: [function () {
                     // Mount the shareware IWAD into the engine's filesystem
                     FS.createPreloadedFile("/", "DOOM1.WAD", "doom1.wad", true, true);
                 }],
-                print: function (text) { console.log(text); },
+                print: function (text) {
+                    if (/Exp_RegisterSongEx|G_DoPlayDemo|gamestate/i.test(text)) openDoomMenu();
+                    console.log(text);
+                },
                 printErr: function (text) {
                     if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
                     console.error(text);
